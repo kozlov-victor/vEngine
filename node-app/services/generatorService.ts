@@ -111,6 +111,7 @@ class GeneratorService {
     private async compile(params,response) {
         return new Promise((resolve,reject)=>{
             console.log('compiling');
+            wsService.send(params.clientId,{message:'compiling',success:true});
             let compiler = this.getCompiler(params);
             response.setHeader('Content-Type', 'text/html');
             compiler.onProgress((msg)=>{
@@ -154,6 +155,7 @@ class GeneratorService {
                         await fs.createFile(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
                         //fs.deleteFolderSync(`./workspace/${params.projectName}/generated/tmp`);
                         response.end();
+                        console.log('completed');
                         resolve();
                     }
                 }
@@ -163,7 +165,6 @@ class GeneratorService {
 
     async generate(params,response){
 
-        console.log('cache',this.processCache);
         if (this.processCache[params.projectName]) {
             let message = `generation of ${params.projectName} already started`;
             console.error('generator error',message);

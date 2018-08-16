@@ -44,7 +44,7 @@ export class WsService {
             });
             connection.on('close', (connection)=> {
                 let index = this.connections.findIndex(it=>it.connection===connection);
-                let conn = this.connections.splice(index,1);
+                let conn:any = this.connections.splice(index,1);
                 console.log('closed',conn.clientId);
             });
         });

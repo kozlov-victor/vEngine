@@ -6960,7 +6960,7 @@ if (sessionStorage['projectName']) {
 }
 else
     RF.Router.navigateTo('explorer');
-console.log("built at: " + new Date(+1534431779545));
+console.log("built at: " + new Date(+1534434514233));
 
 
 /***/ }),
@@ -14026,9 +14026,16 @@ var TopPanel = (function (_super) {
         }
         return this.w;
     };
+    TopPanel.prototype.writeDataToPopup = function (w, data) {
+        if (!w || w.closed)
+            return;
+        w.title = data.message;
+        w.innerHTML = "\n            <div style=\"\n                \n            \">" + data.message + "</div>\n        ";
+    };
     TopPanel.prototype.run = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var w, buildOpts, wsClient;
+            var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -14039,7 +14046,7 @@ var TopPanel = (function (_super) {
                         }
                         wsClient = new wsClient_1.WsClient(this.clientId);
                         wsClient.onData(function (data) {
-                            console.log(data);
+                            _this.writeDataToPopup(w, data);
                         });
                         return [4, this.http.get('/resource/generate', {
                                 debug: buildOpts.debug ? '1' : '',
