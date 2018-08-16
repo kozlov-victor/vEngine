@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -972,6 +972,32 @@ exports.View = function () {
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1033,314 +1059,265 @@ exports.dataSourceHelper = new DataSourceHelper();
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1, eval)("this");
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var defaultColors = ['#000', '#D00', '#00CF12', '#C2CB00', '#3100CA',
-    '#E100C6', '#00CBCB', '#C7C7C7', '#686868', '#FF5959', '#00FF6B',
-    '#FAFF5C', '#775AFF', '#FF47FE', '#0FF', '#FFF'];
-exports.termToHtml = function (text, options) {
-    options = options || {};
-    var colors = options.colors || defaultColors;
-    text = text.replace(/^.*\u001B\[[12]K/mg, '');
-    text = text.replace(/^(.*)\u001B\[(\d+)G/mg, function (_, text, n) {
-        return text.slice(0, n);
-    });
-    var state = {
-        bg: -1,
-        fg: -1,
-        bold: false,
-        underline: false,
-        negative: false
+var fns_1 = __webpack_require__(2);
+var WsService = (function () {
+    function WsService() {
+        this.connections = [];
+    }
+    WsService.prototype.send = function (clientId, data) {
+        var connectionItem = this.connections.find(function (c) { return c.clientId == clientId; });
+        if (!connectionItem)
+            return false;
+        connectionItem.connection.sendUTF(JSON.stringify(data));
+        return true;
     };
-    text = text.replace(/\u001B\[([\d;]+)m([^\u001B]+)/g, function (_, n, text) {
-        n.split(';').forEach(function (code) {
-            code = code | 0;
-            if (code === 0) {
-                state.bg = -1;
-                state.fg = -1;
-                state.bold = false;
-                state.underline = false;
-                state.negative = false;
-            }
-            else if (code === 1) {
-                state.bold = true;
-            }
-            else if (code === 4) {
-                state.underline = true;
-            }
-            else if (code === 7) {
-                state.negative = true;
-            }
-            else if (code === 21) {
-                state.bold = false;
-            }
-            else if (code === 24) {
-                state.underline = false;
-            }
-            else if (code === 27) {
-                state.negative = false;
-            }
-            else if (code >= 30 && code <= 37) {
-                state.fg = code - 30;
-            }
-            else if (code === 39) {
-                state.fg = -1;
-            }
-            else if (code >= 40 && code <= 47) {
-                state.bg = code - 40;
-            }
-            else if (code === 49) {
-                state.bg = -1;
-            }
-            else if (code >= 90 && code <= 97) {
-                state.fg = code - 90 + 8;
-            }
-            else if (code >= 100 && code <= 107) {
-                state.bg = code - 100 + 8;
-            }
+    WsService.prototype.execute = function (connection, payload) {
+        if (payload.clientId) {
+            this.connections.push({
+                connection: connection,
+                clientId: payload.clientId
+            });
+        }
+    };
+    WsService.prototype.start = function (httpServer) {
+        var _this = this;
+        var WebSocketServer = fns_1.nodeRequire('websocket').server;
+        var wsServer = new WebSocketServer({
+            httpServer: httpServer,
+            autoAcceptConnections: false
         });
-        var bold = +(state.bold) * 8;
-        var fg, bg;
-        if (state.negative) {
-            fg = state.bg | bold;
-            bg = state.fg;
-        }
-        else {
-            fg = state.fg | bold;
-            bg = state.bg;
-        }
-        fg = colors[fg] || '';
-        bg = colors[bg] || '';
-        var style = '';
-        if (bg) {
-            style += 'background-color:' + bg + ';';
-        }
-        if (fg) {
-            style += 'color:' + fg + ';';
-        }
-        if (bold) {
-            style += 'font-weight:bold;';
-        }
-        if (state.underline) {
-            style += 'text-decoration:underline';
-        }
-        var html = text.
-            replace(/&/g, '&amp;').
-            replace(/</g, '&lt;').
-            replace(/>/g, '&gt;');
-        if (style) {
-            return '<span style="' + style + '">' + html + '</span>';
-        }
-        else {
-            return html;
-        }
-    });
-    return text.replace(/\u001B\[.*?[A-Za-z]/g, '');
-};
+        wsServer.on('request', function (request) {
+            var connection = request.accept(null, request.origin);
+            connection.on('message', function (message) {
+                if (message.type === 'utf8') {
+                    var payload = JSON.parse(message.utf8Data);
+                    console.log('ws user message', payload);
+                    _this.execute(connection, payload);
+                }
+            });
+            connection.on('close', function (connection) {
+                var index = _this.connections.findIndex(function (it) { return it.connection === connection; });
+                _this.connections.splice(index, 1);
+            });
+        });
+    };
+    return WsService;
+}());
+exports.WsService = WsService;
+exports.wsService = new WsService();
 
 
 /***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var fns_1 = __webpack_require__(2);
-var path = fns_1.nodeRequire('path');
-var webpack = fns_1.nodeRequire('webpack');
-var HardSourceWebpackPlugin = fns_1.nodeRequire('hard-source-webpack-plugin');
-exports.configFn = function (params) {
-    var config = {
-        entry: {
-            bundle: "./workspace/" + params.projectName + "/generated/src/index.ts",
-            debug: ['./client-app/debug/debug.ts', './client-app/debug/devConsole.ts']
-        },
-        output: {
-            path: path.resolve("./workspace/" + params.projectName + "/generated/tmp"),
-            filename: '[name].js'
-        },
-        mode: 'production',
-        resolveLoader: {
-            modules: ['node_modules', 'node_tools/loaders']
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.ts$/,
-                    loader: "awesome-typescript-loader",
-                    options: {
-                        configFileName: "./node-app/generator/tsconfig.json"
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    exclude: /node_modules/,
-                    loader: "babel-loader",
-                    query: {
-                        presets: ['es2015'],
-                        plugins: []
-                    }
-                },
-                {
-                    test: /\.(frag|vert)$/,
-                    loader: 'text-loader',
-                    options: {
-                        minimize: true
-                    }
-                },
-            ]
-        },
-        resolve: {
-            extensions: ['.js', '.ts'],
-            modules: [
-                path.resolve('node_modules')
-            ]
-        },
-        optimization: {
-            minimize: !!params.minify
-        },
-        plugins: [
-            new webpack.DefinePlugin({
-                BUILD_AT: new Date().getTime(),
-                IN_EDITOR: false,
-                DEBUG: !!params.debug,
-                PROJECT_NAME: params.projectName,
-                EMBED_RESOURCES: !!params.embedResources
-            }),
-        ],
-    };
-    return config;
-};
+module.exports = __webpack_require__(8);
 
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var expressApp_1 = __webpack_require__(9);
+var wsService_1 = __webpack_require__(6);
+global.process.on('uncaughtException', function (e) {
+    console.log(e);
+});
+var Server = (function () {
+    function Server() {
+    }
+    Server.prototype.start = function () {
+        var PORT = 9000;
+        console.log('app started at', new Date());
+        var expressApp = new expressApp_1.ExpressApp();
+        var server = expressApp.getApp().listen(PORT, function () {
+            var address = server.address();
+            var host = address.address;
+            var port = address.port;
+            console.log("app listening at http://" + host + ":" + port);
+        });
+        return server;
+    };
+    return Server;
+}());
+var server = new Server();
+var httpServer = server.start();
+wsService_1.wsService.start(httpServer);
 
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
+"use strict";
 
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var fs_1 = __webpack_require__(1);
+var fns_1 = __webpack_require__(2);
+var hbsSettings_1 = __webpack_require__(10);
+var all_1 = __webpack_require__(11);
+var express = fns_1.nodeRequire('express');
+var url = fns_1.nodeRequire('url');
+var path = fns_1.nodeRequire('path');
+var exphbs = fns_1.nodeRequire('express-handlebars');
+var session = fns_1.nodeRequire('express-session');
+var bodyParser = fns_1.nodeRequire('body-parser');
+var multipart = fns_1.nodeRequire('connect-multiparty')();
+var ExpressApp = (function () {
+    function ExpressApp() {
+        new hbsSettings_1.HbsSettings();
+        this.initApp();
+        this.setUpControllers();
+        this.handleErrors();
     }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = ((value * c) - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
+    ExpressApp.prototype.initApp = function () {
+        var app = express();
+        app.set('views', './node-app/mvc/views');
+        app.engine('html', exphbs({}));
+        app.set('view engine', 'html');
+        app.use(session({
+            key: 'session_cookie_name',
+            secret: 'session_cookie_secret',
+            resave: true,
+            saveUninitialized: true
+        }));
+        app.use(express.static('assets'));
+        app.use(express.static('workspace'));
+        app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({
+            extended: true
+        }));
+        this.app = app;
+    };
+    ExpressApp.prototype.getApp = function () {
+        return this.app;
+    };
+    ExpressApp.prototype.setHeader = function (res, responseObj) {
+        if (typeof responseObj == 'object')
+            res.setHeader('Content-Type', 'application/json');
+    };
+    ExpressApp.prototype.createResponse = function (opts, response, params) {
+        var _this = this;
+        var callback = function (result) {
+            if (opts.responseType == 'view') {
+                result = result || {};
+                result.params = params;
+                response.render(opts.controllerPath, result);
+            }
+            else {
+                _this.setHeader(response, result);
+                response.send(result);
+            }
+        };
+        var codeResult = opts.ctrl[opts.methodName](params, response);
+        if (codeResult && codeResult.then) {
+            codeResult.then(function (data) {
+                callback(data);
+            }).catch(function (error) {
+                console.error('catch method promise error', error);
+                response.statusCode = 500;
+                response.end(error);
+            });
+        }
+        else if (typeof codeResult === 'function') {
+        }
+        else {
+            callback(codeResult);
+        }
+    };
+    ExpressApp.prototype.processCommonRequest = function (opts) {
+        var _this = this;
+        this.app[opts.requestType](opts.pathName + "/" + opts.methodName, function (req, res) {
+            opts.methodName = opts.methodName || 'index';
+            var params;
+            switch (opts.requestType) {
+                case 'post':
+                    params = req.body;
+                    break;
+                default:
+                    params = url.parse(req.url, true).query;
+                    break;
+            }
+            _this.createResponse(opts, res, params);
+        });
+        console.log("mapped: " + opts.requestType + ": " + opts.pathName + "/" + opts.methodName);
+    };
+    ExpressApp.prototype.processMultiPartRequest = function (opts) {
+        var _this = this;
+        this.app.post(opts.pathName + "/" + opts.methodName, multipart, function (req, res) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+            var pathToUploadedFile, params, file;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        pathToUploadedFile = req.files && req.files.file && req.files.file.path;
+                        params = req.body;
+                        return [4, fs_1.default.readFile(pathToUploadedFile, true)];
+                    case 1:
+                        file = _a.sent();
+                        return [4, fs_1.default.deleteFile(pathToUploadedFile)];
+                    case 2:
+                        _a.sent();
+                        params.file = file;
+                        if (params.fileName && params.fileName.splice && params.fileName[0]) {
+                            params.fileName = params.fileName[0];
+                        }
+                        this.createResponse(opts, res, params);
+                        return [2];
+                }
+            });
+        }); });
+        console.log("mapped: " + opts.requestType + ": " + opts.pathName + "/" + opts.methodName);
+    };
+    ExpressApp.prototype.setUpControllers = function () {
+        var _this = this;
+        all_1.all.forEach(function (Ctrl) {
+            var ctrl = new Ctrl();
+            var controllerName = Ctrl.name;
+            controllerName = controllerName.replace('Controller', '');
+            controllerName = controllerName.substr(0, 1).toLowerCase() + controllerName.substr(1);
+            Object.keys(ctrl.meta).forEach(function (methodName) {
+                var requestType = ctrl.meta[methodName].requestType;
+                var responseType = ctrl.meta[methodName].responseType;
+                var pathName = '';
+                if (controllerName == 'index') {
+                    pathName = '';
+                    if (methodName == 'index')
+                        methodName = '';
+                }
+                else
+                    pathName = '/' + controllerName;
+                var controllerPath = controllerName + "/" + methodName;
+                var opts = { ctrl: ctrl, requestType: requestType, responseType: responseType, pathName: pathName, controllerPath: controllerPath, methodName: methodName };
+                if (requestType == 'multipart') {
+                    _this.processMultiPartRequest(opts);
+                }
+                else {
+                    _this.processCommonRequest(opts);
+                }
+            });
+        });
+    };
+    ExpressApp.prototype.handleErrors = function () {
+        this.app.use(function (err, req, res, next) {
+            if (err)
+                console.error(err);
+            res.status(500).send('error 500: ' + (err.message || err));
+        });
+    };
+    return ExpressApp;
+}());
+exports.ExpressApp = ExpressApp;
 
 
 /***/ }),
@@ -1349,160 +1326,864 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 "use strict";
 
-
-exports.byteLength = byteLength
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for (var i = 0, len = code.length; i < len; ++i) {
-  lookup[i] = code[i]
-  revLookup[code.charCodeAt(i)] = i
-}
-
-// Support decoding URL-safe base64 strings, as Node.js does.
-// See: https://en.wikipedia.org/wiki/Base64#URL_applications
-revLookup['-'.charCodeAt(0)] = 62
-revLookup['_'.charCodeAt(0)] = 63
-
-function getLens (b64) {
-  var len = b64.length
-
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // Trim off extra bytes after placeholder bytes are found
-  // See: https://github.com/beatgammit/base64-js/issues/42
-  var validLen = b64.indexOf('=')
-  if (validLen === -1) validLen = len
-
-  var placeHoldersLen = validLen === len
-    ? 0
-    : 4 - (validLen % 4)
-
-  return [validLen, placeHoldersLen]
-}
-
-// base64 is 4/3 + up to two characters of the original data
-function byteLength (b64) {
-  var lens = getLens(b64)
-  var validLen = lens[0]
-  var placeHoldersLen = lens[1]
-  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
-}
-
-function _byteLength (b64, validLen, placeHoldersLen) {
-  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
-}
-
-function toByteArray (b64) {
-  var tmp
-  var lens = getLens(b64)
-  var validLen = lens[0]
-  var placeHoldersLen = lens[1]
-
-  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
-
-  var curByte = 0
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  var len = placeHoldersLen > 0
-    ? validLen - 4
-    : validLen
-
-  for (var i = 0; i < len; i += 4) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 18) |
-      (revLookup[b64.charCodeAt(i + 1)] << 12) |
-      (revLookup[b64.charCodeAt(i + 2)] << 6) |
-      revLookup[b64.charCodeAt(i + 3)]
-    arr[curByte++] = (tmp >> 16) & 0xFF
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  if (placeHoldersLen === 2) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 2) |
-      (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  if (placeHoldersLen === 1) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 10) |
-      (revLookup[b64.charCodeAt(i + 1)] << 4) |
-      (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] +
-    lookup[num >> 12 & 0x3F] +
-    lookup[num >> 6 & 0x3F] +
-    lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp =
-      ((uint8[i] << 16) & 0xFF0000) +
-      ((uint8[i + 1] << 8) & 0xFF00) +
-      (uint8[i + 2] & 0xFF)
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 2] +
-      lookup[(tmp << 4) & 0x3F] +
-      '=='
-    )
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 10] +
-      lookup[(tmp >> 4) & 0x3F] +
-      lookup[(tmp << 2) & 0x3F] +
-      '='
-    )
-  }
-
-  return parts.join('')
-}
+Object.defineProperty(exports, "__esModule", { value: true });
+var fns_1 = __webpack_require__(2);
+var fs = fns_1.nodeRequire('fs');
+var handlebars = fns_1.nodeRequire('handlebars');
+var HbsSettings = (function () {
+    function HbsSettings() {
+        handlebars.registerHelper('json', function (obj) {
+            return JSON.stringify(obj);
+        });
+        handlebars.registerHelper('isEmptyObject', function (obj) {
+            return Object.keys(obj).length > 0;
+        });
+        handlebars.registerHelper('var', function (name, value, context) {
+            this[name] = value;
+        });
+        handlebars.registerHelper('include', function (name, value, context) {
+            return fs.readFileSync("./node-app/mvc/views/" + name);
+        });
+        handlebars.registerHelper('script', function (name, value, context) {
+            return "<script onerror=\"onLoadingError()\" type=\"text/javascript\" src=\"" + name + "\"></script>";
+        });
+    }
+    return HbsSettings;
+}());
+exports.HbsSettings = HbsSettings;
 
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var fileSystemController_1 = __webpack_require__(12);
+var indexController_1 = __webpack_require__(13);
+var projectController_1 = __webpack_require__(14);
+var resourceController_1 = __webpack_require__(18);
+exports.all = [
+    indexController_1.IndexController,
+    fileSystemController_1.FileSystemController,
+    projectController_1.ProjectController,
+    resourceController_1.ResourceController
+];
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var decorators_1 = __webpack_require__(3);
+var fs_1 = __webpack_require__(1);
+var FileSystemController = (function () {
+    function FileSystemController() {
+    }
+    FileSystemController.prototype.renameFolder = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, fs_1.default.rename(params.oldName, params.newName)];
+                    case 1:
+                        _a.sent();
+                        return [2, { success: true }];
+                }
+            });
+        });
+    };
+    FileSystemController.prototype.deleteFolder = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, fs_1.default.deleteFolder(params.name)];
+                    case 1:
+                        _a.sent();
+                        return [2, { success: true }];
+                }
+            });
+        });
+    };
+    FileSystemController.prototype.createFile = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!params.projectName)
+                            throw 'project name not specified';
+                        return [4, fs_1.default.writeFile("workspace/" + params.projectName + "/" + params.path, params.content)];
+                    case 1:
+                        _a.sent();
+                        return [2, {}];
+                }
+            });
+        });
+    };
+    FileSystemController.prototype.removeFile = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!params.projectName)
+                            throw 'project name not specified';
+                        return [4, fs_1.default.deleteFile("workspace/" + params.projectName + "/" + params.path)];
+                    case 1:
+                        _a.sent();
+                        return [2, { success: true }];
+                }
+            });
+        });
+    };
+    FileSystemController.prototype.uploadFile = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, fs_1.default.writeFile("workspace/" + params.projectName + "/" + params.path, params.file, true)];
+                    case 1:
+                        _a.sent();
+                        return [2, { success: true }];
+                }
+            });
+        });
+    };
+    FileSystemController.prototype.readFile = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!params.projectName)
+                            throw 'project name not specified';
+                        return [4, fs_1.default.readFile("workspace/" + params.projectName + "/" + params.path)];
+                    case 1: return [2, _a.sent()];
+                }
+            });
+        });
+    };
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], FileSystemController.prototype, "renameFolder", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], FileSystemController.prototype, "deleteFolder", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], FileSystemController.prototype, "createFile", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], FileSystemController.prototype, "removeFile", null);
+    tslib_1.__decorate([
+        decorators_1.Multipart()
+    ], FileSystemController.prototype, "uploadFile", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], FileSystemController.prototype, "readFile", null);
+    return FileSystemController;
+}());
+exports.FileSystemController = FileSystemController;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var decorators_1 = __webpack_require__(3);
+var IndexController = (function () {
+    function IndexController() {
+    }
+    IndexController.prototype.index = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                return [2];
+            });
+        });
+    };
+    IndexController.prototype.editor = function () {
+    };
+    tslib_1.__decorate([
+        decorators_1.Get(),
+        decorators_1.View()
+    ], IndexController.prototype, "index", null);
+    tslib_1.__decorate([
+        decorators_1.Get(),
+        decorators_1.View()
+    ], IndexController.prototype, "editor", null);
+    return IndexController;
+}());
+exports.IndexController = IndexController;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var decorators_1 = __webpack_require__(3);
+var fs_1 = __webpack_require__(1);
+var projectService_1 = __webpack_require__(15);
+var ProjectController = (function () {
+    function ProjectController() {
+    }
+    ProjectController.prototype.getAll = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var list;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, fs_1.default.getDirList('./workspace')];
+                    case 1:
+                        list = _a.sent();
+                        return [2, list.map(function (it) { return ({ name: it }); })];
+                }
+            });
+        });
+    };
+    ProjectController.prototype.create = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, projectService_1.projectService.createProject(params.projectName)];
+                    case 1: return [2, _a.sent()];
+                }
+            });
+        });
+    };
+    ProjectController.prototype.exist = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, projectService_1.projectService.exist(params.projectName)];
+                    case 1: return [2, _a.sent()];
+                }
+            });
+        });
+    };
+    tslib_1.__decorate([
+        decorators_1.Get()
+    ], ProjectController.prototype, "getAll", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], ProjectController.prototype, "create", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], ProjectController.prototype, "exist", null);
+    return ProjectController;
+}());
+exports.ProjectController = ProjectController;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var fs_1 = __webpack_require__(1);
+var dataSourceHelper_1 = __webpack_require__(5);
+var codeTemplates_1 = __webpack_require__(16);
+var consts_1 = __webpack_require__(17);
+var ProjectService = (function () {
+    function ProjectService() {
+    }
+    ProjectService.prototype.createProject = function (projectName) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var mainSceneName, mainSceneId, mainLayerId, initialRepoStructure, mainSceneScript;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        mainSceneName = 'mainScene';
+                        mainSceneId = 1;
+                        mainLayerId = ++mainSceneId;
+                        initialRepoStructure = {
+                            Scene: [
+                                {
+                                    id: mainSceneId,
+                                    name: mainSceneName,
+                                    type: 'Scene',
+                                    layers: [
+                                        {
+                                            type: 'Layer',
+                                            id: mainLayerId
+                                        }
+                                    ],
+                                }
+                            ],
+                            Layer: [
+                                {
+                                    id: mainLayerId,
+                                    name: 'layer1',
+                                    type: 'Layer'
+                                }
+                            ]
+                        };
+                        return [4, fs_1.default.createFolder("workspace/" + projectName + "/resources")];
+                    case 1:
+                        _a.sent();
+                        return [4, fs_1.default.createFolder("workspace/" + projectName + "/scripts/custom")];
+                    case 2:
+                        _a.sent();
+                        return [4, fs_1.default.createFile("workspace/" + projectName + "/scripts/custom/appLib.js", codeTemplates_1.getLibCodeScript('AppLib'))];
+                    case 3:
+                        _a.sent();
+                        mainSceneScript = codeTemplates_1.getDefaultCodeScript(mainSceneName[0].toUpperCase() + mainSceneName.substr(1));
+                        return [4, fs_1.default.createFile("workspace/" + projectName + "/scripts/" + mainSceneName + ".js", mainSceneScript)];
+                    case 4:
+                        _a.sent();
+                        dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + projectName + "/repository.json", initialRepoStructure);
+                        dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + projectName + "/gameProps.json", {
+                            width: 800,
+                            height: 600,
+                            scaleStrategy: consts_1.SCALE_STRATEGY.FIT,
+                            startSceneId: mainSceneId,
+                            gravityConstant: 0
+                        });
+                        dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + projectName + "/meta.json", { idSeq: mainLayerId });
+                        return [2, {}];
+                }
+            });
+        });
+    };
+    ProjectService.prototype.exist = function (projectName) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, fs_1.default.exists("workspace/" + projectName)];
+                    case 1: return [2, _a.sent()];
+                }
+            });
+        });
+    };
+    return ProjectService;
+}());
+exports.projectService = new ProjectService();
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDefaultCodeScript = function (name) {
+    return "\n\nexport class " + name + "Behaviour {\n\n    onCreate(){\n\n    }\n\n    onUpdate(){\n\n    }\n\n    onDestroy(){\n\n    }\n\n}\n";
+};
+exports.getLibCodeScript = function (name) {
+    return "\n\nexport class " + name + " {\n\n}";
+};
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SCALE_STRATEGY;
+(function (SCALE_STRATEGY) {
+    SCALE_STRATEGY[SCALE_STRATEGY["NO_SCALE"] = 0] = "NO_SCALE";
+    SCALE_STRATEGY[SCALE_STRATEGY["FIT"] = 1] = "FIT";
+    SCALE_STRATEGY[SCALE_STRATEGY["STRETCH"] = 2] = "STRETCH";
+})(SCALE_STRATEGY = exports.SCALE_STRATEGY || (exports.SCALE_STRATEGY = {}));
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var decorators_1 = __webpack_require__(3);
+var fs_1 = __webpack_require__(1);
+var resourceService_1 = __webpack_require__(19);
+var generatorService_1 = __webpack_require__(20);
+var dataSourceHelper_1 = __webpack_require__(5);
+var ResourceController = (function () {
+    function ResourceController() {
+    }
+    ResourceController.prototype.getAll = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var result, repository, gameProps, _a, _b;
+            return tslib_1.__generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        result = {};
+                        return [4, fs_1.default.readFile("workspace/" + params.projectName + "/repository.json")];
+                    case 1:
+                        repository = _c.sent();
+                        return [4, fs_1.default.readFile("workspace/" + params.projectName + "/gameProps.json")];
+                    case 2:
+                        gameProps = _c.sent();
+                        result.repository = JSON.parse(repository);
+                        result.gameProps = JSON.parse(gameProps);
+                        _a = result;
+                        return [4, resourceService_1.resourceService.getCommonBehaviourAttrs(params.projectName)];
+                    case 3:
+                        _a.commonBehaviourProtos = _c.sent();
+                        _b = result;
+                        return [4, fs_1.default.readDir("workspace/" + params.projectName + "/scripts/custom/")];
+                    case 4:
+                        _b.customScripts = (_c.sent()).map(function (it) { return it.name; });
+                        return [2, result];
+                }
+            });
+        });
+    };
+    ResourceController.prototype.save = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var repository, model, createdId, objectToUpdateIndex;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, dataSourceHelper_1.dataSourceHelper.loadModel("workspace/" + params.projectName + "/repository.json")];
+                    case 1:
+                        repository = _a.sent();
+                        model = params.model;
+                        if (!repository[model.type])
+                            repository[model.type] = [];
+                        if (!!model.id) return [3, 3];
+                        return [4, dataSourceHelper_1.dataSourceHelper.uuid(params.projectName)];
+                    case 2:
+                        createdId = _a.sent();
+                        model.id = createdId;
+                        repository[model.type].push(model);
+                        return [3, 4];
+                    case 3:
+                        objectToUpdateIndex = repository[model.type].findIndex(function (it) { return it.id == model.id; });
+                        if (objectToUpdateIndex == -1)
+                            throw "can not find object with type " + model.type + " and id " + model.id;
+                        repository[model.type][objectToUpdateIndex] = model;
+                        _a.label = 4;
+                    case 4:
+                        Object.keys(repository).forEach(function (key) {
+                            if (repository[key].splice && !repository[key].length)
+                                delete repository[key];
+                        });
+                        return [4, dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + params.projectName + "/repository.json", repository)];
+                    case 5:
+                        _a.sent();
+                        if (createdId)
+                            return [2, { created: true, id: createdId }];
+                        return [2, { updated: true }];
+                }
+            });
+        });
+    };
+    ResourceController.prototype.saveGameProps = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var path, model;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        path = "workspace/" + params.projectName + "/gameProps.json";
+                        return [4, dataSourceHelper_1.dataSourceHelper.loadModel(path)];
+                    case 1:
+                        model = _a.sent();
+                        Object.keys(params.model).forEach(function (key) {
+                            model[key] = params.model[key];
+                        });
+                        return [4, dataSourceHelper_1.dataSourceHelper.saveModel(path, model)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    ResourceController.prototype.remove = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var repository, model, objectToRemoveIndex;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, dataSourceHelper_1.dataSourceHelper.loadModel("workspace/" + params.projectName + "/repository.json")];
+                    case 1:
+                        repository = _a.sent();
+                        model = params.model;
+                        objectToRemoveIndex = repository[model.type].findIndex(function (it) { return it.id == model.id; });
+                        if (objectToRemoveIndex == -1)
+                            throw "can not find object with type " + model.type + " and id " + model.id;
+                        repository[model.type].splice(objectToRemoveIndex, 1);
+                        return [4, dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + params.projectName + "/repository.json", repository)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    ResourceController.prototype.generate = function (params, response) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, generatorService_1.generatorService.generate(params, response)];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    ResourceController.prototype.saveTile = function (params, callback) {
+        return resourceService_1.resourceService.saveTile(params.projectName, params.model);
+    };
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], ResourceController.prototype, "getAll", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], ResourceController.prototype, "save", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], ResourceController.prototype, "saveGameProps", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], ResourceController.prototype, "remove", null);
+    tslib_1.__decorate([
+        decorators_1.Get()
+    ], ResourceController.prototype, "generate", null);
+    tslib_1.__decorate([
+        decorators_1.Post()
+    ], ResourceController.prototype, "saveTile", null);
+    return ResourceController;
+}());
+exports.ResourceController = ResourceController;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var dataSourceHelper_1 = __webpack_require__(5);
+var ResourceService = (function () {
+    function ResourceService() {
+    }
+    ResourceService.prototype.getCommonBehaviourAttrs = function (projectName) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!projectName)
+                            throw 'project name is not specified';
+                        return [4, dataSourceHelper_1.dataSourceHelper.loadModel('client-app/engine/commonBehaviour/impl/desc/desc.json')];
+                    case 1: return [2, _a.sent()];
+                }
+            });
+        });
+    };
+    ResourceService.prototype.saveTile = function (projectName, model) {
+    };
+    return ResourceService;
+}());
+exports.resourceService = new ResourceService();
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Buffer, global) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var fns_1 = __webpack_require__(2);
+var webpack = fns_1.nodeRequire('webpack');
+var ProgressPlugin = fns_1.nodeRequire('webpack/lib/ProgressPlugin');
+var fs_1 = __webpack_require__(1);
+var webpack_config_1 = __webpack_require__(25);
+var termToHtml_1 = __webpack_require__(26);
+var wsService_1 = __webpack_require__(6);
+var GeneratorService = (function () {
+    function GeneratorService() {
+        this.cnt = 0;
+        this.compilerCache = {};
+        this.processCache = {};
+    }
+    GeneratorService._createError = function (params, error) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var content;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!error)
+                            error = '';
+                        console.log('compiling error', error);
+                        return [4, fs_1.default.readFile('./node-app/generator/error.html')];
+                    case 1:
+                        content = (_a.sent());
+                        content = content.replace('${error}', termToHtml_1.termToHtml(error));
+                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/index.html", content)];
+                    case 2:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    GeneratorService.createCompiler = function (params) {
+        var config = webpack_config_1.configFn(params);
+        var compiler = webpack(config);
+        var lastMsg = '';
+        var cb = null;
+        compiler.apply(new ProgressPlugin(function (percentage, msg) {
+            var m = (~~(percentage * 100)) + '% ' + msg;
+            if (lastMsg !== m) {
+                lastMsg = m;
+                if (cb)
+                    cb(m);
+            }
+        }));
+        return {
+            nativeCompiler: compiler,
+            onProgress: function (fn) {
+                cb = fn;
+            }
+        };
+    };
+    GeneratorService.prototype.getCompiler = function (params) {
+        return GeneratorService.createCompiler(params);
+    };
+    GeneratorService.prototype.clearFolders = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log('clear folders');
+                        return [4, fs_1.default.deleteFolder("workspace/" + params.projectName + "/generated/")];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    GeneratorService.prototype.createFolders = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log('creating folders');
+                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/out/")];
+                    case 1:
+                        _a.sent();
+                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/generated/src/engine")];
+                    case 2:
+                        _a.sent();
+                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/generated/src/app")];
+                    case 3:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    GeneratorService.prototype.generateData = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var allScripts, allScriptCode, repository, _a, _b, gameProps, _c, _d, embeddedResources;
+            return tslib_1.__generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        console.log('generating data', params);
+                        return [4, fs_1.default.copyFolder("client-app/engine", "workspace/" + params.projectName + "/generated/src/")];
+                    case 1:
+                        _e.sent();
+                        return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/scripts", "workspace/" + params.projectName + "/generated/src/app/")];
+                    case 2:
+                        _e.sent();
+                        return [4, fs_1.default.readDir("workspace/" + params.projectName + "/scripts", undefined, false)];
+                    case 3:
+                        allScripts = (_e.sent()).map(function (it) { return it.name.split('.')[0]; });
+                        allScriptCode = '';
+                        allScripts.forEach(function (scriptName) {
+                            allScriptCode += "export {" + scriptName[0].toUpperCase() + scriptName.substr(1) + "Behaviour} from './" + scriptName + "'\n";
+                        });
+                        allScriptCode = allScriptCode.split('  ').join('');
+                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/generated/src/app/scripts/allScripts.js", allScriptCode)];
+                    case 4:
+                        _e.sent();
+                        _b = (_a = JSON).parse;
+                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/repository.json")];
+                    case 5:
+                        repository = _b.apply(_a, [_e.sent()]);
+                        _d = (_c = JSON).parse;
+                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/gameProps.json")];
+                    case 6:
+                        gameProps = _d.apply(_c, [_e.sent()]);
+                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/repository.ts", "export let repository:any = \n\t" + JSON.stringify(repository, null, 4) + ";")];
+                    case 7:
+                        _e.sent();
+                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/gameProps.ts", "export let gameProps:any = \n\t" + JSON.stringify(gameProps, null, 4) + ";")];
+                    case 8:
+                        _e.sent();
+                        return [4, fs_1.default.copyFile('node-app/generator/index.tpl', "workspace/" + params.projectName + "/generated/src/index.ts")];
+                    case 9:
+                        _e.sent();
+                        embeddedResources = {};
+                        if (!!params.embedResources) return [3, 11];
+                        return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/resources/", "workspace/" + params.projectName + "/out/")];
+                    case 10:
+                        _e.sent();
+                        return [3, 13];
+                    case 11: return [4, fs_1.default.readDir("workspace/" + params.projectName + "/resources", 'binary')];
+                    case 12:
+                        (_e.sent()).forEach(function (file) {
+                            embeddedResources["resources/" + file.name] = "data:image/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
+                        });
+                        _e.label = 13;
+                    case 13: return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/embeddedResources.ts", "export let embeddedResources:any = \n\t" + JSON.stringify(embeddedResources, null, 4) + ";")];
+                    case 14:
+                        _e.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    GeneratorService.prototype.compile = function (params, response) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return tslib_1.__generator(this, function (_a) {
+                return [2, new Promise(function (resolve, reject) {
+                        console.log('compiling');
+                        var compiler = _this.getCompiler(params);
+                        response.setHeader('Content-Type', 'text/html');
+                        compiler.onProgress(function (msg) {
+                            global.process.stdout.write("\r                                                             ");
+                            global.process.stdout.write("\r" + msg);
+                            wsService_1.wsService.send(params.clientId, { message: msg, success: true });
+                        });
+                        compiler.nativeCompiler.run(function (err, data) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                            var errorMsg, indexHtml, debugJs, appBundleJs;
+                            return tslib_1.__generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        if (!err) return [3, 2];
+                                        console.error('compiler run error: ', err);
+                                        return [4, GeneratorService._createError(params, err)];
+                                    case 1:
+                                        _a.sent();
+                                        response.end();
+                                        reject(err);
+                                        return [3, 10];
+                                    case 2:
+                                        if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 3];
+                                        console.error("compiled with " + data.compilation.errors.length + " error(s)");
+                                        errorMsg = data.compilation.errors.map(function (err) {
+                                            var msg = (err.details || err.message || err.toString());
+                                            if (err.file)
+                                                msg += "\n\t at file " + err.file;
+                                            else if (err.module && err.module && err.module.resource)
+                                                msg += "\n\t at file " + err.module.resource;
+                                            return msg;
+                                        }).join('\n\t---------\t\n');
+                                        response.end();
+                                        reject(errorMsg);
+                                        return [3, 10];
+                                    case 3:
+                                        console.log('creating index.html');
+                                        return [4, fs_1.default.readFile('./node-app/generator/index.html')];
+                                    case 4:
+                                        indexHtml = _a.sent();
+                                        debugJs = '';
+                                        if (!params.debug) return [3, 6];
+                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/generated/tmp/debug.js")];
+                                    case 5:
+                                        debugJs = (_a.sent());
+                                        _a.label = 6;
+                                    case 6:
+                                        indexHtml = indexHtml.replace('${debug}', params.debug ? "<script>" + debugJs + "</script>" : '');
+                                        indexHtml = indexHtml.replace('${hash}', (this.cnt++).toString());
+                                        indexHtml = indexHtml.replace('${projectName}', params.projectName);
+                                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/index.html", indexHtml)];
+                                    case 7:
+                                        _a.sent();
+                                        console.log('creating bundle');
+                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/generated/tmp/bundle.js")];
+                                    case 8:
+                                        appBundleJs = _a.sent();
+                                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/bundle.js", appBundleJs)];
+                                    case 9:
+                                        _a.sent();
+                                        response.end();
+                                        resolve();
+                                        _a.label = 10;
+                                    case 10: return [2];
+                                }
+                            });
+                        }); });
+                    })];
+            });
+        });
+    };
+    GeneratorService.prototype.generate = function (params, response) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var message, e_1;
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log('cache', this.processCache);
+                        if (this.processCache[params.projectName]) {
+                            message = "generation of " + params.projectName + " already started";
+                            console.error('generator error', message);
+                            return [2];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 8]);
+                        this.processCache[params.projectName] = true;
+                        return [4, this.clearFolders(params)];
+                    case 2:
+                        _a.sent();
+                        return [4, this.createFolders(params)];
+                    case 3:
+                        _a.sent();
+                        return [4, this.generateData(params)];
+                    case 4:
+                        _a.sent();
+                        return [4, this.compile(params, response)];
+                    case 5:
+                        _a.sent();
+                        delete this.processCache[params.projectName];
+                        return [3, 8];
+                    case 6:
+                        e_1 = _a.sent();
+                        delete this.processCache[params.projectName];
+                        console.error('generator error', e_1);
+                        return [4, GeneratorService._createError(params, e_1.toString())];
+                    case 7:
+                        _a.sent();
+                        response.write("error<br>");
+                        response.end();
+                        return [3, 8];
+                    case 8: return [2];
+                }
+            });
+        });
+    };
+    return GeneratorService;
+}());
+exports.generatorService = new GeneratorService();
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer, __webpack_require__(4)))
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1516,9 +2197,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(10)
-var ieee754 = __webpack_require__(9)
-var isArray = __webpack_require__(8)
+var base64 = __webpack_require__(22)
+var ieee754 = __webpack_require__(23)
+var isArray = __webpack_require__(24)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -3296,838 +3977,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(Buffer, global) {
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var fns_1 = __webpack_require__(2);
-var webpack = fns_1.nodeRequire('webpack');
-var ProgressPlugin = fns_1.nodeRequire('webpack/lib/ProgressPlugin');
-var fs_1 = __webpack_require__(1);
-var webpack_config_1 = __webpack_require__(7);
-var termToHtml_1 = __webpack_require__(6);
-var GeneratorService = (function () {
-    function GeneratorService() {
-        this.cnt = 0;
-        this.compilerCache = {};
-        this.processCache = {};
-    }
-    GeneratorService._createError = function (params, error) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var content;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!error)
-                            error = '';
-                        console.log('compiling error', error);
-                        return [4, fs_1.default.readFile('./node-app/generator/error.html')];
-                    case 1:
-                        content = (_a.sent());
-                        content = content.replace('${error}', termToHtml_1.termToHtml(error));
-                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/index.html", content)];
-                    case 2:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    GeneratorService.createCompiler = function (params) {
-        var config = webpack_config_1.configFn(params);
-        var compiler = webpack(config);
-        var lastMsg = '';
-        var cb = null;
-        compiler.apply(new ProgressPlugin(function (percentage, msg) {
-            var m = (~~(percentage * 100)) + '% ' + msg;
-            if (lastMsg !== m) {
-                lastMsg = m;
-                if (cb)
-                    cb(m);
-            }
-        }));
-        return {
-            nativeCompiler: compiler,
-            onProgress: function (fn) {
-                cb = fn;
-            }
-        };
-    };
-    GeneratorService.prototype.getCompiler = function (params) {
-        return GeneratorService.createCompiler(params);
-    };
-    GeneratorService.prototype.clearFolders = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        console.log('clear folders');
-                        return [4, fs_1.default.deleteFolder("workspace/" + params.projectName + "/generated/")];
-                    case 1:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    GeneratorService.prototype.createFolders = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        console.log('creating folders');
-                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/out/")];
-                    case 1:
-                        _a.sent();
-                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/generated/src/engine")];
-                    case 2:
-                        _a.sent();
-                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/generated/src/app")];
-                    case 3:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    GeneratorService.prototype.generateData = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var allScripts, allScriptCode, repository, _a, _b, gameProps, _c, _d, embeddedResources;
-            return tslib_1.__generator(this, function (_e) {
-                switch (_e.label) {
-                    case 0:
-                        console.log('generating data', params);
-                        return [4, fs_1.default.copyFolder("client-app/engine", "workspace/" + params.projectName + "/generated/src/")];
-                    case 1:
-                        _e.sent();
-                        return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/scripts", "workspace/" + params.projectName + "/generated/src/app/")];
-                    case 2:
-                        _e.sent();
-                        return [4, fs_1.default.readDir("workspace/" + params.projectName + "/scripts", undefined, false)];
-                    case 3:
-                        allScripts = (_e.sent()).map(function (it) { return it.name.split('.')[0]; });
-                        allScriptCode = '';
-                        allScripts.forEach(function (scriptName) {
-                            allScriptCode += "export {" + scriptName[0].toUpperCase() + scriptName.substr(1) + "Behaviour} from './" + scriptName + "'\n";
-                        });
-                        allScriptCode = allScriptCode.split('  ').join('');
-                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/generated/src/app/scripts/allScripts.js", allScriptCode)];
-                    case 4:
-                        _e.sent();
-                        _b = (_a = JSON).parse;
-                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/repository.json")];
-                    case 5:
-                        repository = _b.apply(_a, [_e.sent()]);
-                        _d = (_c = JSON).parse;
-                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/gameProps.json")];
-                    case 6:
-                        gameProps = _d.apply(_c, [_e.sent()]);
-                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/repository.ts", "export let repository:any = \n\t" + JSON.stringify(repository, null, 4) + ";")];
-                    case 7:
-                        _e.sent();
-                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/gameProps.ts", "export let gameProps:any = \n\t" + JSON.stringify(gameProps, null, 4) + ";")];
-                    case 8:
-                        _e.sent();
-                        return [4, fs_1.default.copyFile('node-app/generator/index.tpl', "workspace/" + params.projectName + "/generated/src/index.ts")];
-                    case 9:
-                        _e.sent();
-                        embeddedResources = {};
-                        if (!!params.embedResources) return [3, 11];
-                        return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/resources/", "workspace/" + params.projectName + "/out/")];
-                    case 10:
-                        _e.sent();
-                        return [3, 13];
-                    case 11: return [4, fs_1.default.readDir("workspace/" + params.projectName + "/resources", 'binary')];
-                    case 12:
-                        (_e.sent()).forEach(function (file) {
-                            embeddedResources["resources/" + file.name] = "data:image/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
-                        });
-                        _e.label = 13;
-                    case 13: return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/embeddedResources.ts", "export let embeddedResources:any = \n\t" + JSON.stringify(embeddedResources, null, 4) + ";")];
-                    case 14:
-                        _e.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    GeneratorService.prototype.compile = function (params, response) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return tslib_1.__generator(this, function (_a) {
-                return [2, new Promise(function (resolve, reject) {
-                        console.log('compiling');
-                        var compiler = _this.getCompiler(params);
-                        response.setHeader('Content-Type', 'text/html');
-                        compiler.onProgress(function (msg) {
-                            global.process.stdout.write("\r                                                             ");
-                            global.process.stdout.write("\r" + msg);
-                            response.write(msg + '<br>');
-                        });
-                        compiler.nativeCompiler.run(function (err, data) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                            var errorMsg, indexHtml, debugJs, appBundleJs;
-                            return tslib_1.__generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        if (!err) return [3, 2];
-                                        console.error('compiler run error: ', err);
-                                        return [4, GeneratorService._createError(params, err)];
-                                    case 1:
-                                        _a.sent();
-                                        response.write("error<br>");
-                                        response.end();
-                                        reject(err);
-                                        return [3, 10];
-                                    case 2:
-                                        if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 3];
-                                        console.error("compiled with " + data.compilation.errors.length + " error(s)");
-                                        errorMsg = data.compilation.errors.map(function (err) {
-                                            var msg = (err.details || err.message || err.toString());
-                                            if (err.file)
-                                                msg += "\n\t at file " + err.file;
-                                            else if (err.module && err.module && err.module.resource)
-                                                msg += "\n\t at file " + err.module.resource;
-                                            return msg;
-                                        }).join('\n\t---------\t\n');
-                                        response.write("error<br>");
-                                        response.end();
-                                        reject(errorMsg);
-                                        return [3, 10];
-                                    case 3:
-                                        console.log('creating index.html');
-                                        return [4, fs_1.default.readFile('./node-app/generator/index.html')];
-                                    case 4:
-                                        indexHtml = _a.sent();
-                                        debugJs = '';
-                                        if (!params.debug) return [3, 6];
-                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/generated/tmp/debug.js")];
-                                    case 5:
-                                        debugJs = (_a.sent());
-                                        _a.label = 6;
-                                    case 6:
-                                        indexHtml = indexHtml.replace('${debug}', params.debug ? "<script>" + debugJs + "</script>" : '');
-                                        indexHtml = indexHtml.replace('${hash}', (this.cnt++).toString());
-                                        indexHtml = indexHtml.replace('${projectName}', params.projectName);
-                                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/index.html", indexHtml)];
-                                    case 7:
-                                        _a.sent();
-                                        console.log('creating bundle');
-                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/generated/tmp/bundle.js")];
-                                    case 8:
-                                        appBundleJs = _a.sent();
-                                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/bundle.js", appBundleJs)];
-                                    case 9:
-                                        _a.sent();
-                                        console.log('compiled with no errors');
-                                        response.end();
-                                        resolve();
-                                        _a.label = 10;
-                                    case 10: return [2];
-                                }
-                            });
-                        }); });
-                    })];
-            });
-        });
-    };
-    GeneratorService.prototype.generate = function (params, response) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var message, e_1;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        console.log('cache', this.processCache);
-                        if (this.processCache[params.projectName]) {
-                            message = "generation of " + params.projectName + " already started";
-                            console.error('generator error', message);
-                            return [2];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 8]);
-                        this.processCache[params.projectName] = true;
-                        return [4, this.clearFolders(params)];
-                    case 2:
-                        _a.sent();
-                        return [4, this.createFolders(params)];
-                    case 3:
-                        _a.sent();
-                        return [4, this.generateData(params)];
-                    case 4:
-                        _a.sent();
-                        return [4, this.compile(params, response)];
-                    case 5:
-                        _a.sent();
-                        delete this.processCache[params.projectName];
-                        return [3, 8];
-                    case 6:
-                        e_1 = _a.sent();
-                        delete this.processCache[params.projectName];
-                        console.error('generator error', e_1);
-                        return [4, GeneratorService._createError(params, e_1.toString())];
-                    case 7:
-                        _a.sent();
-                        response.write("error<br>");
-                        response.end();
-                        return [3, 8];
-                    case 8: return [2];
-                }
-            });
-        });
-    };
-    return GeneratorService;
-}());
-exports.generatorService = new GeneratorService();
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(11).Buffer, __webpack_require__(5)))
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var dataSourceHelper_1 = __webpack_require__(4);
-var ResourceService = (function () {
-    function ResourceService() {
-    }
-    ResourceService.prototype.getCommonBehaviourAttrs = function (projectName) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!projectName)
-                            throw 'project name is not specified';
-                        return [4, dataSourceHelper_1.dataSourceHelper.loadModel('client-app/engine/commonBehaviour/impl/desc/desc.json')];
-                    case 1: return [2, _a.sent()];
-                }
-            });
-        });
-    };
-    ResourceService.prototype.saveTile = function (projectName, model) {
-    };
-    return ResourceService;
-}());
-exports.resourceService = new ResourceService();
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var decorators_1 = __webpack_require__(3);
-var fs_1 = __webpack_require__(1);
-var resourceService_1 = __webpack_require__(13);
-var generatorService_1 = __webpack_require__(12);
-var dataSourceHelper_1 = __webpack_require__(4);
-var ResourceController = (function () {
-    function ResourceController() {
-    }
-    ResourceController.prototype.getAll = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var result, repository, gameProps, _a, _b;
-            return tslib_1.__generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        result = {};
-                        return [4, fs_1.default.readFile("workspace/" + params.projectName + "/repository.json")];
-                    case 1:
-                        repository = _c.sent();
-                        return [4, fs_1.default.readFile("workspace/" + params.projectName + "/gameProps.json")];
-                    case 2:
-                        gameProps = _c.sent();
-                        result.repository = JSON.parse(repository);
-                        result.gameProps = JSON.parse(gameProps);
-                        _a = result;
-                        return [4, resourceService_1.resourceService.getCommonBehaviourAttrs(params.projectName)];
-                    case 3:
-                        _a.commonBehaviourProtos = _c.sent();
-                        _b = result;
-                        return [4, fs_1.default.readDir("workspace/" + params.projectName + "/scripts/custom/")];
-                    case 4:
-                        _b.customScripts = (_c.sent()).map(function (it) { return it.name; });
-                        return [2, result];
-                }
-            });
-        });
-    };
-    ResourceController.prototype.save = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var repository, model, createdId, objectToUpdateIndex;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, dataSourceHelper_1.dataSourceHelper.loadModel("workspace/" + params.projectName + "/repository.json")];
-                    case 1:
-                        repository = _a.sent();
-                        model = params.model;
-                        if (!repository[model.type])
-                            repository[model.type] = [];
-                        if (!!model.id) return [3, 3];
-                        return [4, dataSourceHelper_1.dataSourceHelper.uuid(params.projectName)];
-                    case 2:
-                        createdId = _a.sent();
-                        model.id = createdId;
-                        repository[model.type].push(model);
-                        return [3, 4];
-                    case 3:
-                        objectToUpdateIndex = repository[model.type].findIndex(function (it) { return it.id == model.id; });
-                        if (objectToUpdateIndex == -1)
-                            throw "can not find object with type " + model.type + " and id " + model.id;
-                        repository[model.type][objectToUpdateIndex] = model;
-                        _a.label = 4;
-                    case 4:
-                        Object.keys(repository).forEach(function (key) {
-                            if (repository[key].splice && !repository[key].length)
-                                delete repository[key];
-                        });
-                        return [4, dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + params.projectName + "/repository.json", repository)];
-                    case 5:
-                        _a.sent();
-                        if (createdId)
-                            return [2, { created: true, id: createdId }];
-                        return [2, { updated: true }];
-                }
-            });
-        });
-    };
-    ResourceController.prototype.saveGameProps = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var path, model;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = "workspace/" + params.projectName + "/gameProps.json";
-                        return [4, dataSourceHelper_1.dataSourceHelper.loadModel(path)];
-                    case 1:
-                        model = _a.sent();
-                        Object.keys(params.model).forEach(function (key) {
-                            model[key] = params.model[key];
-                        });
-                        return [4, dataSourceHelper_1.dataSourceHelper.saveModel(path, model)];
-                    case 2:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    ResourceController.prototype.remove = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var repository, model, objectToRemoveIndex;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, dataSourceHelper_1.dataSourceHelper.loadModel("workspace/" + params.projectName + "/repository.json")];
-                    case 1:
-                        repository = _a.sent();
-                        model = params.model;
-                        objectToRemoveIndex = repository[model.type].findIndex(function (it) { return it.id == model.id; });
-                        if (objectToRemoveIndex == -1)
-                            throw "can not find object with type " + model.type + " and id " + model.id;
-                        repository[model.type].splice(objectToRemoveIndex, 1);
-                        return [4, dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + params.projectName + "/repository.json", repository)];
-                    case 2:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    ResourceController.prototype.generate = function (params, response) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, generatorService_1.generatorService.generate(params, response)];
-                    case 1:
-                        _a.sent();
-                        return [2];
-                }
-            });
-        });
-    };
-    ResourceController.prototype.saveTile = function (params, callback) {
-        return resourceService_1.resourceService.saveTile(params.projectName, params.model);
-    };
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "getAll", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "save", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "saveGameProps", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "remove", null);
-    tslib_1.__decorate([
-        decorators_1.Get()
-    ], ResourceController.prototype, "generate", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "saveTile", null);
-    return ResourceController;
-}());
-exports.ResourceController = ResourceController;
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var SCALE_STRATEGY;
-(function (SCALE_STRATEGY) {
-    SCALE_STRATEGY[SCALE_STRATEGY["NO_SCALE"] = 0] = "NO_SCALE";
-    SCALE_STRATEGY[SCALE_STRATEGY["FIT"] = 1] = "FIT";
-    SCALE_STRATEGY[SCALE_STRATEGY["STRETCH"] = 2] = "STRETCH";
-})(SCALE_STRATEGY = exports.SCALE_STRATEGY || (exports.SCALE_STRATEGY = {}));
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDefaultCodeScript = function (name) {
-    return "\n\nexport class " + name + "Behaviour {\n\n    onCreate(){\n\n    }\n\n    onUpdate(){\n\n    }\n\n    onDestroy(){\n\n    }\n\n}\n";
-};
-exports.getLibCodeScript = function (name) {
-    return "\n\nexport class " + name + " {\n\n}";
-};
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var fs_1 = __webpack_require__(1);
-var dataSourceHelper_1 = __webpack_require__(4);
-var codeTemplates_1 = __webpack_require__(16);
-var consts_1 = __webpack_require__(15);
-var ProjectService = (function () {
-    function ProjectService() {
-    }
-    ProjectService.prototype.createProject = function (projectName) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var mainSceneName, mainSceneId, mainLayerId, initialRepoStructure, mainSceneScript;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        mainSceneName = 'mainScene';
-                        mainSceneId = 1;
-                        mainLayerId = ++mainSceneId;
-                        initialRepoStructure = {
-                            Scene: [
-                                {
-                                    id: mainSceneId,
-                                    name: mainSceneName,
-                                    type: 'Scene',
-                                    layers: [
-                                        {
-                                            type: 'Layer',
-                                            id: mainLayerId
-                                        }
-                                    ],
-                                }
-                            ],
-                            Layer: [
-                                {
-                                    id: mainLayerId,
-                                    name: 'layer1',
-                                    type: 'Layer'
-                                }
-                            ]
-                        };
-                        return [4, fs_1.default.createFolder("workspace/" + projectName + "/resources")];
-                    case 1:
-                        _a.sent();
-                        return [4, fs_1.default.createFolder("workspace/" + projectName + "/scripts/custom")];
-                    case 2:
-                        _a.sent();
-                        return [4, fs_1.default.createFile("workspace/" + projectName + "/scripts/custom/appLib.js", codeTemplates_1.getLibCodeScript('AppLib'))];
-                    case 3:
-                        _a.sent();
-                        mainSceneScript = codeTemplates_1.getDefaultCodeScript(mainSceneName[0].toUpperCase() + mainSceneName.substr(1));
-                        return [4, fs_1.default.createFile("workspace/" + projectName + "/scripts/" + mainSceneName + ".js", mainSceneScript)];
-                    case 4:
-                        _a.sent();
-                        dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + projectName + "/repository.json", initialRepoStructure);
-                        dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + projectName + "/gameProps.json", {
-                            width: 800,
-                            height: 600,
-                            scaleStrategy: consts_1.SCALE_STRATEGY.FIT,
-                            startSceneId: mainSceneId,
-                            gravityConstant: 0
-                        });
-                        dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + projectName + "/meta.json", { idSeq: mainLayerId });
-                        return [2, {}];
-                }
-            });
-        });
-    };
-    ProjectService.prototype.exist = function (projectName) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, fs_1.default.exists("workspace/" + projectName)];
-                    case 1: return [2, _a.sent()];
-                }
-            });
-        });
-    };
-    return ProjectService;
-}());
-exports.projectService = new ProjectService();
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var decorators_1 = __webpack_require__(3);
-var fs_1 = __webpack_require__(1);
-var projectService_1 = __webpack_require__(17);
-var ProjectController = (function () {
-    function ProjectController() {
-    }
-    ProjectController.prototype.getAll = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var list;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, fs_1.default.getDirList('./workspace')];
-                    case 1:
-                        list = _a.sent();
-                        return [2, list.map(function (it) { return ({ name: it }); })];
-                }
-            });
-        });
-    };
-    ProjectController.prototype.create = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, projectService_1.projectService.createProject(params.projectName)];
-                    case 1: return [2, _a.sent()];
-                }
-            });
-        });
-    };
-    ProjectController.prototype.exist = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, projectService_1.projectService.exist(params.projectName)];
-                    case 1: return [2, _a.sent()];
-                }
-            });
-        });
-    };
-    tslib_1.__decorate([
-        decorators_1.Get()
-    ], ProjectController.prototype, "getAll", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ProjectController.prototype, "create", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ProjectController.prototype, "exist", null);
-    return ProjectController;
-}());
-exports.ProjectController = ProjectController;
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var decorators_1 = __webpack_require__(3);
-var IndexController = (function () {
-    function IndexController() {
-    }
-    IndexController.prototype.index = function () {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                return [2];
-            });
-        });
-    };
-    IndexController.prototype.editor = function () {
-    };
-    tslib_1.__decorate([
-        decorators_1.Get(),
-        decorators_1.View()
-    ], IndexController.prototype, "index", null);
-    tslib_1.__decorate([
-        decorators_1.Get(),
-        decorators_1.View()
-    ], IndexController.prototype, "editor", null);
-    return IndexController;
-}());
-exports.IndexController = IndexController;
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var decorators_1 = __webpack_require__(3);
-var fs_1 = __webpack_require__(1);
-var FileSystemController = (function () {
-    function FileSystemController() {
-    }
-    FileSystemController.prototype.renameFolder = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, fs_1.default.rename(params.oldName, params.newName)];
-                    case 1:
-                        _a.sent();
-                        return [2, { success: true }];
-                }
-            });
-        });
-    };
-    FileSystemController.prototype.deleteFolder = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, fs_1.default.deleteFolder(params.name)];
-                    case 1:
-                        _a.sent();
-                        return [2, { success: true }];
-                }
-            });
-        });
-    };
-    FileSystemController.prototype.createFile = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!params.projectName)
-                            throw 'project name not specified';
-                        return [4, fs_1.default.writeFile("workspace/" + params.projectName + "/" + params.path, params.content)];
-                    case 1:
-                        _a.sent();
-                        return [2, {}];
-                }
-            });
-        });
-    };
-    FileSystemController.prototype.removeFile = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!params.projectName)
-                            throw 'project name not specified';
-                        return [4, fs_1.default.deleteFile("workspace/" + params.projectName + "/" + params.path)];
-                    case 1:
-                        _a.sent();
-                        return [2, { success: true }];
-                }
-            });
-        });
-    };
-    FileSystemController.prototype.uploadFile = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4, fs_1.default.writeFile("workspace/" + params.projectName + "/" + params.path, params.file, true)];
-                    case 1:
-                        _a.sent();
-                        return [2, { success: true }];
-                }
-            });
-        });
-    };
-    FileSystemController.prototype.readFile = function (params) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!params.projectName)
-                            throw 'project name not specified';
-                        return [4, fs_1.default.readFile("workspace/" + params.projectName + "/" + params.path)];
-                    case 1: return [2, _a.sent()];
-                }
-            });
-        });
-    };
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "renameFolder", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "deleteFolder", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "createFile", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "removeFile", null);
-    tslib_1.__decorate([
-        decorators_1.Multipart()
-    ], FileSystemController.prototype, "uploadFile", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "readFile", null);
-    return FileSystemController;
-}());
-exports.FileSystemController = FileSystemController;
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var fileSystemController_1 = __webpack_require__(20);
-var indexController_1 = __webpack_require__(19);
-var projectController_1 = __webpack_require__(18);
-var resourceController_1 = __webpack_require__(14);
-exports.all = [
-    indexController_1.IndexController,
-    fileSystemController_1.FileSystemController,
-    projectController_1.ProjectController,
-    resourceController_1.ResourceController
-];
-
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
 /* 22 */
@@ -4135,235 +3985,441 @@ exports.all = [
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var fns_1 = __webpack_require__(2);
-var fs = fns_1.nodeRequire('fs');
-var handlebars = fns_1.nodeRequire('handlebars');
-var HbsSettings = (function () {
-    function HbsSettings() {
-        handlebars.registerHelper('json', function (obj) {
-            return JSON.stringify(obj);
-        });
-        handlebars.registerHelper('isEmptyObject', function (obj) {
-            return Object.keys(obj).length > 0;
-        });
-        handlebars.registerHelper('var', function (name, value, context) {
-            this[name] = value;
-        });
-        handlebars.registerHelper('include', function (name, value, context) {
-            return fs.readFileSync("./node-app/mvc/views/" + name);
-        });
-        handlebars.registerHelper('script', function (name, value, context) {
-            return "<script onerror=\"onLoadingError()\" type=\"text/javascript\" src=\"" + name + "\"></script>";
-        });
-    }
-    return HbsSettings;
-}());
-exports.HbsSettings = HbsSettings;
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+// Support decoding URL-safe base64 strings, as Node.js does.
+// See: https://en.wikipedia.org/wiki/Base64#URL_applications
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function getLens (b64) {
+  var len = b64.length
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
+}
+
+// base64 is 4/3 + up to two characters of the original data
+function byteLength (b64) {
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function toByteArray (b64) {
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
+
+  for (var i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
+  }
+
+  return parts.join('')
+}
 
 
 /***/ }),
 /* 23 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var fs_1 = __webpack_require__(1);
-var fns_1 = __webpack_require__(2);
-var hbsSettings_1 = __webpack_require__(22);
-var all_1 = __webpack_require__(21);
-var express = fns_1.nodeRequire('express');
-var url = fns_1.nodeRequire('url');
-var path = fns_1.nodeRequire('path');
-var exphbs = fns_1.nodeRequire('express-handlebars');
-var session = fns_1.nodeRequire('express-session');
-var bodyParser = fns_1.nodeRequire('body-parser');
-var multipart = fns_1.nodeRequire('connect-multiparty')();
-var ExpressApp = (function () {
-    function ExpressApp() {
-        new hbsSettings_1.HbsSettings();
-        this.initApp();
-        this.setUpControllers();
-        this.handleErrors();
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
     }
-    ExpressApp.prototype.initApp = function () {
-        var app = express();
-        app.set('views', './node-app/mvc/views');
-        app.engine('html', exphbs({}));
-        app.set('view engine', 'html');
-        app.use(session({
-            key: 'session_cookie_name',
-            secret: 'session_cookie_secret',
-            resave: true,
-            saveUninitialized: true
-        }));
-        app.use(express.static('assets'));
-        app.use(express.static('workspace'));
-        app.use(bodyParser.json());
-        app.use(bodyParser.urlencoded({
-            extended: true
-        }));
-        this.app = app;
-    };
-    ExpressApp.prototype.getApp = function () {
-        return this.app;
-    };
-    ExpressApp.prototype.setHeader = function (res, responseObj) {
-        if (typeof responseObj == 'object')
-            res.setHeader('Content-Type', 'application/json');
-    };
-    ExpressApp.prototype.createResponse = function (opts, response, params) {
-        var _this = this;
-        var callback = function (result) {
-            if (opts.responseType == 'view') {
-                result = result || {};
-                result.params = params;
-                response.render(opts.controllerPath, result);
-            }
-            else {
-                _this.setHeader(response, result);
-                response.send(result);
-            }
-        };
-        var codeResult = opts.ctrl[opts.methodName](params, response);
-        if (codeResult && codeResult.then) {
-            codeResult.then(function (data) {
-                callback(data);
-            }).catch(function (error) {
-                console.error('catch method promise error', error);
-                response.statusCode = 500;
-                response.end(error);
-            });
-        }
-        else if (typeof codeResult === 'function') {
-        }
-        else {
-            callback(codeResult);
-        }
-    };
-    ExpressApp.prototype.processCommonRequest = function (opts) {
-        var _this = this;
-        this.app[opts.requestType](opts.pathName + "/" + opts.methodName, function (req, res) {
-            opts.methodName = opts.methodName || 'index';
-            var params;
-            switch (opts.requestType) {
-                case 'post':
-                    params = req.body;
-                    break;
-                default:
-                    params = url.parse(req.url, true).query;
-                    break;
-            }
-            _this.createResponse(opts, res, params);
-        });
-        console.log("mapped: " + opts.requestType + ": " + opts.pathName + "/" + opts.methodName);
-    };
-    ExpressApp.prototype.processMultiPartRequest = function (opts) {
-        var _this = this;
-        this.app.post(opts.pathName + "/" + opts.methodName, multipart, function (req, res) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-            var pathToUploadedFile, params, file;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        pathToUploadedFile = req.files && req.files.file && req.files.file.path;
-                        params = req.body;
-                        return [4, fs_1.default.readFile(pathToUploadedFile, true)];
-                    case 1:
-                        file = _a.sent();
-                        return [4, fs_1.default.deleteFile(pathToUploadedFile)];
-                    case 2:
-                        _a.sent();
-                        params.file = file;
-                        if (params.fileName && params.fileName.splice && params.fileName[0]) {
-                            params.fileName = params.fileName[0];
-                        }
-                        this.createResponse(opts, res, params);
-                        return [2];
-                }
-            });
-        }); });
-        console.log("mapped: " + opts.requestType + ": " + opts.pathName + "/" + opts.methodName);
-    };
-    ExpressApp.prototype.setUpControllers = function () {
-        var _this = this;
-        all_1.all.forEach(function (Ctrl) {
-            var ctrl = new Ctrl();
-            var controllerName = Ctrl.name;
-            controllerName = controllerName.replace('Controller', '');
-            controllerName = controllerName.substr(0, 1).toLowerCase() + controllerName.substr(1);
-            Object.keys(ctrl.meta).forEach(function (methodName) {
-                var requestType = ctrl.meta[methodName].requestType;
-                var responseType = ctrl.meta[methodName].responseType;
-                var pathName = '';
-                if (controllerName == 'index') {
-                    pathName = '';
-                    if (methodName == 'index')
-                        methodName = '';
-                }
-                else
-                    pathName = '/' + controllerName;
-                var controllerPath = controllerName + "/" + methodName;
-                var opts = { ctrl: ctrl, requestType: requestType, responseType: responseType, pathName: pathName, controllerPath: controllerPath, methodName: methodName };
-                if (requestType == 'multipart') {
-                    _this.processMultiPartRequest(opts);
-                }
-                else {
-                    _this.processCommonRequest(opts);
-                }
-            });
-        });
-    };
-    ExpressApp.prototype.handleErrors = function () {
-        this.app.use(function (err, req, res, next) {
-            if (err)
-                console.error(err);
-            res.status(500).send('error 500: ' + (err.message || err));
-        });
-    };
-    return ExpressApp;
-}());
-exports.ExpressApp = ExpressApp;
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = ((value * c) - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
 
 
 /***/ }),
 /* 24 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-Object.defineProperty(exports, "__esModule", { value: true });
-var expressApp_1 = __webpack_require__(23);
-global.process.on('uncaughtException', function (e) {
-    console.log(e);
-});
-var Server = (function () {
-    function Server() {
-    }
-    Server.prototype.start = function () {
-        var PORT = 9000;
-        console.log('app started at', new Date());
-        var expressApp = new expressApp_1.ExpressApp();
-        var server = expressApp.getApp().listen(PORT, function () {
-            var address = server.address();
-            var host = address.address;
-            var port = address.port;
-            console.log("app listening at http://" + host + ":" + port);
-        });
-    };
-    return Server;
-}());
-var server = new Server();
-server.start();
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5)))
 
 /***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(24);
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var fns_1 = __webpack_require__(2);
+var path = fns_1.nodeRequire('path');
+var webpack = fns_1.nodeRequire('webpack');
+var HardSourceWebpackPlugin = fns_1.nodeRequire('hard-source-webpack-plugin');
+exports.configFn = function (params) {
+    var config = {
+        entry: {
+            bundle: "./workspace/" + params.projectName + "/generated/src/index.ts",
+            debug: ['./client-app/debug/debug.ts', './client-app/debug/devConsole.ts']
+        },
+        output: {
+            path: path.resolve("./workspace/" + params.projectName + "/generated/tmp"),
+            filename: '[name].js'
+        },
+        mode: 'production',
+        resolveLoader: {
+            modules: ['node_modules', 'node_tools/loaders']
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.ts$/,
+                    loader: "awesome-typescript-loader",
+                    options: {
+                        configFileName: "./node-app/generator/tsconfig.json"
+                    }
+                },
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    loader: "babel-loader",
+                    query: {
+                        presets: ['es2015'],
+                        plugins: []
+                    }
+                },
+                {
+                    test: /\.(frag|vert)$/,
+                    loader: 'text-loader',
+                    options: {
+                        minimize: true
+                    }
+                },
+            ]
+        },
+        resolve: {
+            extensions: ['.js', '.ts'],
+            modules: [
+                path.resolve('node_modules')
+            ]
+        },
+        optimization: {
+            minimize: !!params.minify
+        },
+        plugins: [
+            new webpack.DefinePlugin({
+                BUILD_AT: new Date().getTime(),
+                IN_EDITOR: false,
+                DEBUG: !!params.debug,
+                PROJECT_NAME: params.projectName,
+                EMBED_RESOURCES: !!params.embedResources
+            }),
+        ],
+    };
+    return config;
+};
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var defaultColors = ['#000', '#D00', '#00CF12', '#C2CB00', '#3100CA',
+    '#E100C6', '#00CBCB', '#C7C7C7', '#686868', '#FF5959', '#00FF6B',
+    '#FAFF5C', '#775AFF', '#FF47FE', '#0FF', '#FFF'];
+exports.termToHtml = function (text, options) {
+    options = options || {};
+    var colors = options.colors || defaultColors;
+    text = text.replace(/^.*\u001B\[[12]K/mg, '');
+    text = text.replace(/^(.*)\u001B\[(\d+)G/mg, function (_, text, n) {
+        return text.slice(0, n);
+    });
+    var state = {
+        bg: -1,
+        fg: -1,
+        bold: false,
+        underline: false,
+        negative: false
+    };
+    text = text.replace(/\u001B\[([\d;]+)m([^\u001B]+)/g, function (_, n, text) {
+        n.split(';').forEach(function (code) {
+            code = code | 0;
+            if (code === 0) {
+                state.bg = -1;
+                state.fg = -1;
+                state.bold = false;
+                state.underline = false;
+                state.negative = false;
+            }
+            else if (code === 1) {
+                state.bold = true;
+            }
+            else if (code === 4) {
+                state.underline = true;
+            }
+            else if (code === 7) {
+                state.negative = true;
+            }
+            else if (code === 21) {
+                state.bold = false;
+            }
+            else if (code === 24) {
+                state.underline = false;
+            }
+            else if (code === 27) {
+                state.negative = false;
+            }
+            else if (code >= 30 && code <= 37) {
+                state.fg = code - 30;
+            }
+            else if (code === 39) {
+                state.fg = -1;
+            }
+            else if (code >= 40 && code <= 47) {
+                state.bg = code - 40;
+            }
+            else if (code === 49) {
+                state.bg = -1;
+            }
+            else if (code >= 90 && code <= 97) {
+                state.fg = code - 90 + 8;
+            }
+            else if (code >= 100 && code <= 107) {
+                state.bg = code - 100 + 8;
+            }
+        });
+        var bold = +(state.bold) * 8;
+        var fg, bg;
+        if (state.negative) {
+            fg = state.bg | bold;
+            bg = state.fg;
+        }
+        else {
+            fg = state.fg | bold;
+            bg = state.bg;
+        }
+        fg = colors[fg] || '';
+        bg = colors[bg] || '';
+        var style = '';
+        if (bg) {
+            style += 'background-color:' + bg + ';';
+        }
+        if (fg) {
+            style += 'color:' + fg + ';';
+        }
+        if (bold) {
+            style += 'font-weight:bold;';
+        }
+        if (state.underline) {
+            style += 'text-decoration:underline';
+        }
+        var html = text.
+            replace(/&/g, '&amp;').
+            replace(/</g, '&lt;').
+            replace(/>/g, '&gt;');
+        if (style) {
+            return '<span style="' + style + '">' + html + '</span>';
+        }
+        else {
+            return html;
+        }
+    });
+    return text.replace(/\u001B\[.*?[A-Za-z]/g, '');
+};
 
 
 /***/ })

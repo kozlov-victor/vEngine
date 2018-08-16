@@ -11,6 +11,7 @@ import {ShaderMaterial} from "../../core/light/shaderMaterial";
 import {RigidShape} from "../../core/physics/rigidShapes";
 import {RenderableModel} from "../renderableModel";
 import {_global} from "../../core/global";
+import {BaseAbstractBehaviour} from "../../commonBehaviour/abstract/baseAbstractBehaviour";
 
 let cloneId:number = 0;
 
@@ -18,7 +19,7 @@ export class GameObjectProto extends RenderableModel {
 
     type:string = 'GameObjectProto';
     spriteSheet:SpriteSheet = null;
-    commonBehaviour = [];
+    commonBehaviour:BaseAbstractBehaviour[] = [];
     currFrameIndex:number = 0;
     frameAnimations:ArrayEx<FrameAnimation> = [] as ArrayEx<FrameAnimation>;
 
@@ -65,7 +66,7 @@ export class GameObjectProto extends RenderableModel {
             this.width = this.spriteSheet._frameWidth;
             this.height = this.spriteSheet._frameHeight;
         }
-        this.frameAnimations.forEach((f,i)=>{
+        this.frameAnimations.forEach((f:FrameAnimation,i:number)=>{
             //this.frameAnimations[i] = this.frameAnimations[i].clone(); // todo need clone?
             this.frameAnimations[i]._gameObject = this;
         });

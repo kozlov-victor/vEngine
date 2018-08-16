@@ -14,7 +14,8 @@ export class Move4Dir extends Moveable {
     }
 
     manage(gameObject:GameObject, parameters:BehaviourParameters) {
-        super.manage(gameObject, parameters, Move4Dir.DIRS);
+        this.setDirs(Move4Dir.DIRS);
+        super.manage(gameObject, parameters);
     }
 
     stop() {

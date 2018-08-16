@@ -240,7 +240,7 @@ export class Mouse {
         [
             'mouseMove','ontouchstart','onmousedown',
             'ontouchend','onmouseup','ontouchmove',
-            'onmousemove','ondblclick'].forEach(evtName=>{
+            'onmousemove','ondblclick'].forEach((evtName:string)=>{
             (this.container as any)[evtName] = null;
         })
     }

@@ -150,7 +150,7 @@ export class AbstractRenderer {
             this.debugTextField = textField;
         }
         let res = '';
-        Array.prototype.slice.call(arguments).forEach(txt=>{
+        Array.prototype.slice.call(arguments).forEach((txt:any)=>{
             if (txt===undefined) txt = 'undefined';
             else if (txt===null) txt = 'null';
             else if (txt.toJSON) {

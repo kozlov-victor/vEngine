@@ -69,7 +69,7 @@ export class CommonObject {
     name:string = null;
 
     fromJSON(params = {},forceNew?){
-        Object.keys(params).forEach(key=>{
+        Object.keys(params).forEach((key:string)=>{
             if (key==='type') return;
 
             if (!(key in this)) {
@@ -117,7 +117,7 @@ export class CommonObject {
             } else if (this[key]!=null && this[key]['splice']) { // is arr
                 let col:any = this[key];
                 let arr = [];
-                col.forEach(function(el){
+                col.forEach((el)=>{
                     if (el && el.type && el.id) {
                         arr.push({type:el.type,id:el.id});
                     } else {

@@ -5,6 +5,7 @@ import fs from '../../base/fs';
 import {resourceService} from '../../services/resourceService';
 import {generatorService} from '../../services/generatorService';
 import {dataSourceHelper} from '../../services/dataSourceHelper';
+import {wsService} from "../../services/ws/wsService";
 
 
 export class ResourceController {
@@ -77,6 +78,8 @@ export class ResourceController {
     saveTile(params,callback){
        return resourceService.saveTile(params.projectName,params.model);
     }
+
+
 
 }
 

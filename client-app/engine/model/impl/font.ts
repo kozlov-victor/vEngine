@@ -29,7 +29,7 @@ export class Font extends Resource {
         super.revalidate();
         let s = this.fontContext.symbols;
         this.fontContext.symbols = {};
-        Object.keys(s).forEach(key=>{
+        Object.keys(s).forEach((key:string)=>{
             if (DEBUG) {
                 if (!s[key]) {
                     console.error(s);

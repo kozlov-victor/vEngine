@@ -23,6 +23,7 @@ import {SpriteSheet} from "./spriteSheet";
 import {CAMERA_MATRIX_MODE} from "../../core/camera";
 import {Resource} from "../resource";
 import {TextField} from "./ui/components/textField";
+import {ParticleSystem} from "./particleSystem";
 
 
 export class Scene extends BaseModel  {
@@ -130,7 +131,7 @@ export class Scene extends BaseModel  {
 
     onShow(){
         if (this._individualBehaviour) this._individualBehaviour.onCreate();
-        this.layers.forEach(l=>{
+        this.layers.forEach((l:Layer)=>{
             l.onShow();
         });
     }
@@ -157,7 +158,7 @@ export class Scene extends BaseModel  {
         }
         this.uiLayer.update(currTime,deltaTime);
 
-        this.game.repository.getArray('ParticleSystem').forEach(ps=>{ // todo also while? or foreach
+        this.game.repository.getArray('ParticleSystem').forEach((ps:ParticleSystem)=>{ // todo also while? or foreach
             ps.update(currTime,deltaTime);
         });
         this._tweens.forEach((t:Tween,index:number)=>{
@@ -195,7 +196,7 @@ export class Scene extends BaseModel  {
         renderer.restore();
 
         this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
-        this.game.repository.getArray('ParticleSystem').forEach(ps=>{ // todo also while? or foreach
+        this.game.repository.getArray('ParticleSystem').forEach((ps:ParticleSystem)=>{ // todo also while? or foreach
             ps.render();
         });
 

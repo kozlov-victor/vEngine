@@ -10,15 +10,22 @@ export class Moveable extends BaseAbstractBehaviour {
     protected parameters:BehaviourParameters;
     protected animations:{[key:string]:FrameAnimation};
 
+    private _dirs: string[];
+
     constructor(game:Game) {
         super(game);
     }
 
-    manage(gameObject:GameObject, parameters:BehaviourParameters,dirs:Array<string>) {
+
+    setDirs(value: string[]) {
+        this._dirs = value;
+    }
+
+    manage(gameObject:GameObject, parameters:BehaviourParameters) {
         this.gameObject = gameObject;
         this.parameters = parameters;
         this.animations = {} as {[key:string]:FrameAnimation};
-        dirs.forEach(dir => {
+        this._dirs.forEach((dir:string) => {
             let keyWalk:string = 'walk' + dir + 'Animation', keyIdle = 'idle' + dir + 'Animation';
             this.animations[keyWalk] = <FrameAnimation>this.gameObject.
                     frameAnimations.

@@ -16,7 +16,6 @@
     "hard-source-webpack-plugin": "0.12.0",
     "html-webpack-plugin": "3.2.0",
     "node-sass": "4.9.2",
-    "path": "^0.12.7",
     "sass-loader": "7.1.0",
     "text-loader": "0.0.1",
     "ts-loader": "4.4.2",
@@ -36,7 +35,8 @@
     "handlebars": "4.0.11",
     "node-hint": "0.0.6",
     "path": "0.12.7",
-    "url": "0.11.0"
+    "url": "0.11.0",
+    "websocket": "^1.0.26"
   },
   "scripts": {},
   "main": "",

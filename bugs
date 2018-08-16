@@ -1,1 +1,24 @@
 scene script not renames after scene renames
+
+
+
+let socket = new WebSocket("ws://localhost:9000");
+socket.onopen = function() {
+  console.log('ws opened');
+  socket.send(JSON.stringify({clientId:22}))
+};
+
+socket.onclose = function(event) {
+  if (!event.wasClean) {
+    console.log('ws error',event);
+  }
+};
+
+socket.onmessage = function(event) {
+  let payload = JSON.parse(event.data);
+  console.log("received",payload);
+};
+
+socket.onerror = function(error) {
+  console.error("ws connection error",error);
+};

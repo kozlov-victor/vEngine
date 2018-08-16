@@ -3,8 +3,14 @@ import {GameObjectProto} from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
 import {_global} from "../../core/global";
 import {noop} from "../../core/misc/noop";
+import {BaseAbstractBehaviour} from "../../commonBehaviour/abstract/baseAbstractBehaviour";
+import {Game} from "../../core/game";
 
 declare const DEBUG:boolean;
+
+interface Clazz<T> {
+    new(game:Game) : T;
+}
 
 export class GameObject extends GameObjectProto {
 
@@ -22,11 +28,11 @@ export class GameObject extends GameObjectProto {
             if (!this.hasOwnProperty(key)) continue;
             ownProps[key] = this[key];
         }
-        Object.keys(this.gameObjectProto).forEach(key=>{
+        Object.keys(this.gameObjectProto).forEach((key:string)=>{
             if (this.gameObjectProto[key]===undefined) return;
             this[key] = this.gameObjectProto[key];
         });
-        Object.keys(ownProps).forEach(key=>{
+        Object.keys(ownProps).forEach((key:string)=>{
             if (!ownProps[key]) return; // to avoid corrupt frameIndex val
             if (ownProps[key].splice && ownProps[key].length===0) return;
             this[key] = ownProps[key];
@@ -58,8 +64,9 @@ export class GameObject extends GameObjectProto {
 
     setCommonBehaviour(){
         let instances = [];
-        this.commonBehaviour.forEach(cb=>{
-            let CbClazz = commonBehaviours[cb.name];
+        this.commonBehaviour.forEach((cb:any)=>{
+            let CbClazz:Clazz<BaseAbstractBehaviour> =
+                commonBehaviours[cb.name] as Clazz<BaseAbstractBehaviour>;
             if (DEBUG) {
                 if (!CbClazz) {
                     console.error(cb);
@@ -67,7 +74,7 @@ export class GameObject extends GameObjectProto {
                     throw `can not find common behaviour with name ${cb.name}`
                 }
             }
-            let instance = new CbClazz(this.game);
+            let instance:BaseAbstractBehaviour = new CbClazz(this.game);
             instance.manage(this,cb.parameters);
             instances.push(instance);
         });

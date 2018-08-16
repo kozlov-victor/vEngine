@@ -124,7 +124,7 @@ export abstract class Container extends RenderableModel {
 
     describeStates(description:{[state:string]:any}){
         let allUIRenderable = require('../all');
-        Object.keys(description).forEach(stateName=>{
+        Object.keys(description).forEach((stateName:string)=>{
             let state:STATE = STATE[stateName];
             let clazz = allUIRenderable[description[stateName].type];
             let instance = new clazz(this.game);

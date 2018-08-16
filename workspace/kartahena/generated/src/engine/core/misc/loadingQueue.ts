@@ -48,8 +48,8 @@ export class Queue{
 
     start() {
         if (this.size()===0) this.onResolved();
-        this.tasks.forEach(t=>{
+        this.tasks.forEach((t:Function)=>{
             t && t();
         });
     }
-};
+}

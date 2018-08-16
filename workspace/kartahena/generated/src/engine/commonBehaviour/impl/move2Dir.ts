@@ -15,7 +15,8 @@ export class Move2Dir extends Moveable {
     }
 
     manage(gameObject:GameObject, parameters:BehaviourParameters) {
-        super.manage(gameObject, parameters, Move2Dir.DIRS);
+        this.setDirs(Move2Dir.DIRS);
+        super.manage(gameObject, parameters);
     }
 
     stop() {

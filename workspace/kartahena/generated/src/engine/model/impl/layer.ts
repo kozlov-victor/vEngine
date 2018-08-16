@@ -1,6 +1,7 @@
 import {BaseModel} from '../baseModel'
 import {Game} from "../../core/game";
 import {ArrayEx} from "../../declarations";
+import {GameObjectProto} from "./gameObjectProto";
 
 export class Layer extends BaseModel {
 
@@ -17,14 +18,14 @@ export class Layer extends BaseModel {
     }
     getAllSpriteSheets() {
         let dataSet:any[] = [];
-        this.children.forEach(function(obj){
+        this.children.forEach((obj:GameObjectProto)=>{
             obj.spriteSheet && !dataSet.find(it=>obj.id===it.id) && dataSet.push(obj.spriteSheet);
         });
         return dataSet;
     }
 
     onShow(){
-        this.children.forEach(g=>{
+        this.children.forEach((g:GameObjectProto)=>{
             g.onShow();
         })
     }

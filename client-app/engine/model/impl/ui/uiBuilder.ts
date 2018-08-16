@@ -103,7 +103,7 @@ export class UIBuilder {
     }
 
     private resolveObjProperties(instance:Container,obj:any):void {
-        Object.keys(obj).forEach(propName=>{
+        Object.keys(obj).forEach((propName:string)=>{
             if (propName==='type') return; //reserved word, just skip
             if (obj[propName].type) {
                 if (obj[propName].name) {

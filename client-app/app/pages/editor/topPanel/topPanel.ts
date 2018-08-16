@@ -1,5 +1,6 @@
 
 import {BaseComponent} from "../../../baseComponent";
+import {WsClient} from "../../../providers/wsClient";
 
 declare const RF;
 
@@ -14,6 +15,7 @@ declare const RF;
 export class TopPanel extends BaseComponent {
 
     w;
+    clientId = ~~(Math.random()*1000) + '_' + ~~(Math.random()*1000);
 
     constructor(){
         super();
@@ -38,12 +40,27 @@ export class TopPanel extends BaseComponent {
         return this.w;
     }
 
+    private writeDataToPopup(w,data){
+        if (!w || w.closed) return;
+        w.title = data.message;
+        w.innerHTML = `
+            <div style="
+                
+            ">${data.message}</div>
+        `
+    }
+
     async run(){
         let w = this.w;
         let buildOpts = this.editData.buildOpts;
         if (w && w.document && w.document.body) {
             w.document.title = w.document.body.innerHTML='loading...'
         }
+        let wsClient = new WsClient(this.clientId);
+        wsClient.onData(data=>{
+            this.writeDataToPopup(w,data);
+        });
+
         await this.http.get(
             '/resource/generate',
             {
@@ -51,10 +68,12 @@ export class TopPanel extends BaseComponent {
                 r: Math.random(),
                 projectName: this.editData.projectName,
                 minify: buildOpts.minify?'1':'',
-                embedResources: buildOpts.embedResources?'1':''
+                embedResources: buildOpts.embedResources?'1':'',
+                clientId:this.clientId
             }
         );
 
+        wsClient.close();
         if (!w || w.closed) {
             w = this.openWindow();
             if (!w) {

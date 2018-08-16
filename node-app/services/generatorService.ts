@@ -9,6 +9,7 @@ const ProgressPlugin = nodeRequire('webpack/lib/ProgressPlugin');
 import fs from '../base/fs';
 import {configFn} from '../generator/webpack.config';
 import {termToHtml} from './termToHtml';
+import {wsService} from "./ws/wsService";
 
 class GeneratorService {
 
@@ -115,14 +116,13 @@ class GeneratorService {
             compiler.onProgress((msg)=>{
                 global.process.stdout.write(`\r                                                             `);
                 global.process.stdout.write(`\r${msg}`);
-                response.write(msg + '<br>');
+                wsService.send(params.clientId,{message:msg,success:true});
             });
             compiler.nativeCompiler.run(async (err, data) => {
 
                 if (err) {
                     console.error('compiler run error: ',err);
                     await GeneratorService._createError(params,err);
-                    response.write("error<br>");
                     response.end();
                     reject(err);
                 }
@@ -136,8 +136,6 @@ class GeneratorService {
                                 msg+=`\n\t at file ${err.module.resource}`;
                             return msg;
                         }).join('\n\t---------\t\n');
-                        //await GeneratorService._createError(params,errorMsg); // todo need??????
-                        response.write("error<br>");
                         response.end();
                         reject(errorMsg);
                     } else {
@@ -155,7 +153,6 @@ class GeneratorService {
                         let appBundleJs = await fs.readFile(`./workspace/${params.projectName}/generated/tmp/bundle.js`);
                         await fs.createFile(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
                         //fs.deleteFolderSync(`./workspace/${params.projectName}/generated/tmp`);
-                        console.log('compiled with no errors');
                         response.end();
                         resolve();
                     }

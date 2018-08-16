@@ -18,12 +18,12 @@ export class BaseAbstractBehaviour {
         BaseAbstractBehaviour.instances.push(this);
     }
 
-    manage(gameObject:GameObject,parameters:BehaviourParameters,dirs:string[]){
+    manage(gameObject:GameObject,parameters:BehaviourParameters){
         console.error(this);
         if (DEBUG) throw `BaseAbstractBehaviour: method 'manage' not implemented`;
     }
 
-    onUpdate(){}
+    onUpdate(time:number,delta:number){}
 
     destroy(){}
 

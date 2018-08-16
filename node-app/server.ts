@@ -1,4 +1,5 @@
 import {ExpressApp} from './base/expressApp';
+import {wsService} from './services/ws/wsService'
 
 global.process.on('uncaughtException',function(e){
     console.log(e);
@@ -20,9 +21,11 @@ class Server{
             let port = address.port;
             console.log(`app listening at http://${host}:${port}`);
         });
+        return server;
     }
 }
 
 const server = new Server();
-server.start();
+let httpServer = server.start();
+wsService.start(httpServer);
 

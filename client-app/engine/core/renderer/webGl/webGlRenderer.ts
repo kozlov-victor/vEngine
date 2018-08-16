@@ -469,7 +469,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         super.destroy();
         this.frameBuffer.destroy();
         AbstractDrawer.destroyAll();
-        Object.keys(this.renderableCache).forEach(key=>{
+        Object.keys(this.renderableCache).forEach((key:string)=>{
             let t:Texture = this.renderableCache[key].texture;
             t.destroy();
         });
