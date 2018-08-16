@@ -16,9 +16,6 @@ export class IntroSceneBehaviour {
                     resourceMap: {main:'resources/bg.jpg'},
                     //ABCD: 20
                 },
-                on: ['click',()=>{
-                    self.toGameScene();
-                }],
                 children: [
                     {
                         Image: {
@@ -45,7 +42,9 @@ export class IntroSceneBehaviour {
                                 resourceMap: {main:'resources/button.png'},
                                 ABCD: 20
                             },
-                            on: ['click',()=>{console.log('clicked on btn');}]
+                            on: ['click',()=>{
+                                self.toGameScene();
+                            }]
                         }
                     },
                 ]

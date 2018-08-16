@@ -126,8 +126,9 @@ export class Mouse {
 
     triggerEvent(e:MouseEvent|TouchEvent|Touch,eventName:string,isMouseDown?:boolean):MousePoint{
         if (isMouseDown===undefined) isMouseDown = false;
-        let g = this.game;
-        let scene = g.getCurrScene();
+        let g:Game = this.game;
+        let scene:Scene = g.getCurrScene();
+        if (!scene) return;
         let point:MousePoint = this.resolvePoint(e);
         point.isMouseDown = isMouseDown;
         point.target = undefined;
@@ -135,7 +136,7 @@ export class Mouse {
         for (let go of scene.getAllGameObjects()) {
             let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,point,go);
             if (isCaptured) {
-                //if (go.children) this.triggerChildren(go.children,eventName,point,go.pos.x,go.pos.y);
+                if (go.children) this.triggerChildren(go.children,eventName,point,go.pos.x,go.pos.y);
                 break;
             }
         }
@@ -145,7 +146,7 @@ export class Mouse {
             let go = scene.uiLayer.children[scene.uiLayer.children.length - 1 - j];
             let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,untransformedPoint,go);
             if (isCaptured) {
-                //if (go.children) this.triggerChildren(go.children,eventName,untransformedPoint,go.pos.x,go.pos.y);
+                if (go.children) this.triggerChildren(go.children,eventName,untransformedPoint,go.pos.x,go.pos.y);
                 break;
             }
         }

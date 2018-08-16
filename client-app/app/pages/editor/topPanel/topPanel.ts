@@ -42,12 +42,17 @@ export class TopPanel extends BaseComponent {
 
     private writeDataToPopup(w,data){
         if (!w || w.closed) return;
-        w.title = data.message;
-        w.innerHTML = `
+        w.document.title = data.message;
+        w.document.body && (w.document.body.innerHTML = `
             <div style="
-                
+                text-align: center;
+                padding-top: 20px;
+                font-family: monospace;
+                font-size: 24px;
+                color: #179809;
+                display: block;
             ">${data.message}</div>
-        `
+        `);
     }
 
     async run(){
