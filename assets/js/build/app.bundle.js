@@ -6346,6 +6346,8 @@ var Mouse = (function () {
             isMouseDown = false;
         var g = this.game;
         var scene = g.getCurrScene();
+        if (!scene)
+            return;
         var point = this.resolvePoint(e);
         point.isMouseDown = isMouseDown;
         point.target = undefined;
@@ -6353,6 +6355,8 @@ var Mouse = (function () {
             var go = _a[_i];
             var isCaptured = Mouse.triggerGameObjectEvent(eventName, point, go);
             if (isCaptured) {
+                if (go.children)
+                    this.triggerChildren(go.children, eventName, point, go.pos.x, go.pos.y);
                 break;
             }
         }
@@ -6361,6 +6365,8 @@ var Mouse = (function () {
             var go = scene.uiLayer.children[scene.uiLayer.children.length - 1 - j];
             var isCaptured = Mouse.triggerGameObjectEvent(eventName, untransformedPoint, go);
             if (isCaptured) {
+                if (go.children)
+                    this.triggerChildren(go.children, eventName, untransformedPoint, go.pos.x, go.pos.y);
                 break;
             }
         }
@@ -6960,7 +6966,7 @@ if (sessionStorage['projectName']) {
 }
 else
     RF.Router.navigateTo('explorer');
-console.log("built at: " + new Date(+1534434514233));
+console.log("built at: " + new Date(+1534453696903));
 
 
 /***/ }),
@@ -14029,8 +14035,8 @@ var TopPanel = (function (_super) {
     TopPanel.prototype.writeDataToPopup = function (w, data) {
         if (!w || w.closed)
             return;
-        w.title = data.message;
-        w.innerHTML = "\n            <div style=\"\n                \n            \">" + data.message + "</div>\n        ";
+        w.document.title = data.message;
+        w.document.body && (w.document.body.innerHTML = "\n            <div style=\"\n                text-align: center;\n                padding-top: 20px;\n                font-family: monospace;\n                font-size: 24px;\n                color: #179809;\n                display: block;\n            \">" + data.message + "</div>\n        ");
     };
     TopPanel.prototype.run = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
