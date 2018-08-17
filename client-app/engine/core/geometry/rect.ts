@@ -115,8 +115,8 @@ export class Rect extends ObservableEntity {
         return {x:this.x,y:this.y,width:this.width,height:this.height};
     }
 
-    fromJSON(x:number,y:number,width:number,height:number){
-        this.setXYWH(x,y,width,height);
+    fromJSON(jsonObj:{x:number,y:number,width:number,height:number}){
+        this.setXYWH(jsonObj.x,jsonObj.y,jsonObj.width,jsonObj.height);
     }
 
     static fromPool():Rect {

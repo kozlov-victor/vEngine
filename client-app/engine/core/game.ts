@@ -1,7 +1,7 @@
 import {Layer} from "../model/impl/layer";
 
 
-declare const DEBUG:boolean,IN_EDITOR:boolean;
+declare const DEBUG:boolean,IN_EDITOR:boolean,PROJECT_NAME:string;
 declare const setTimeout: (f:Function,n:number)=>number;
 declare const setInterval: (f:Function,n:number)=>number;
 
@@ -30,6 +30,7 @@ import {ColliderEngine} from "./physics/colliderEngine";
 import * as MathEx from "../core/mathEx";
 import {_global} from "./global";
 import {GameObject} from "../model/impl/gameObject";
+import {DebugError} from "../debugError";
 
 
 @Transient({
@@ -120,18 +121,18 @@ export class Game extends CommonObject {
     debug2(...val){
         this._cnt++;
         console.log(...val);
-        if (this._cnt>10) throw 'too many logs';
+        if (this._cnt>10) throw new DebugError('too many logs');
     }
 
     runScene(scene){
         if (DEBUG && !this._revalidated)
-            throw `game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly`;
+            throw new DebugError(`game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly`);
         if (scene.prepared) {
             this._currentScene = scene;
             return;
         }
         if (!IN_EDITOR) {
-            let allScripts = require(`../../app/scripts/allScripts`);
+            let allScripts = require(`../../../workspace/${PROJECT_NAME}/generated/src/app/scripts/allScripts`);
             let sceneBhScriptName = `${scene.name[0].toUpperCase()}${scene.name.substr(1)}Behaviour`;
             let BhClass = allScripts[sceneBhScriptName];
             if (sceneBhScriptName) scene.setIndividualBehaviour(new BhClass());
@@ -175,11 +176,11 @@ export class Game extends CommonObject {
             this.fps = ~~(1000 / this._deltaTime);
             window.fps = this.fps;
             let renderError = this.renderer.getError();
-            if (renderError) throw `render error with code ${renderError}`;
+            if (renderError) throw new DebugError(`render error with code ${renderError}`);
         }
 
         let dTime = Math.min(this._deltaTime,Game.UPDATE_TIME_RATE);
-        let numOfLoops = 1;//(~~(this._deltaTime / Game.UPDATE_TIME_RATE))||1;
+        let numOfLoops = (~~(this._deltaTime / Game.UPDATE_TIME_RATE))||1;
         let currTime   = this._currTime - numOfLoops * Game.UPDATE_TIME_RATE;
         let loopCnt = 0;
         do {

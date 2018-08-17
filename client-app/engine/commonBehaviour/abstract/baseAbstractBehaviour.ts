@@ -1,4 +1,5 @@
 
+import {DebugError} from "../../debugError";
 declare const DEBUG:boolean;
 
 import {GameObject} from "../../model/impl/gameObject";
@@ -20,7 +21,7 @@ export class BaseAbstractBehaviour {
 
     manage(gameObject:GameObject,parameters:BehaviourParameters){
         console.error(this);
-        if (DEBUG) throw `BaseAbstractBehaviour: method 'manage' not implemented`;
+        if (DEBUG) throw new DebugError(`BaseAbstractBehaviour: method 'manage' not implemented`);
     }
 
     onUpdate(time:number,delta:number){}

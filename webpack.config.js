@@ -1,5 +1,5 @@
 
-
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -11,8 +11,12 @@ class WebpackDonePlugin{
         compiler.hooks.done.tap('compilation',  (stats)=> {
             if (stats.compilation.errors && stats.compilation.errors.length ) {
                 console.error(`errors: ${stats.compilation.errors.length}`);
+                let errorMessage = `;window.onerror("compiled with ${stats.compilation.errors.length} error(s)");`;
+                fs.writeFileSync('assets/js/build/compileMessageScript.js',errorMessage);
             } else {
-                console.log(`build at ${new Date()}`);
+                let successMessage = `build at ${new Date()}`;
+                console.log(successMessage);
+                fs.writeFileSync('assets/js/build/compileMessageScript.js',`console.log("${successMessage}")`);
             }
         });
     }
@@ -97,7 +101,8 @@ module.exports = (env={})=>{
             BUILD_AT: new Date().getTime(),
             DEBUG: true,
             IN_EDITOR: true,
-            EMBED_RESOURCES: false
+            EMBED_RESOURCES: false,
+            PROJECT_NAME: ''
         }),
         new ExtractTextPlugin('css/styles.css'),
         new WebpackDonePlugin()

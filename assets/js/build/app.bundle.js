@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 70);
+/******/ 	return __webpack_require__(__webpack_require__.s = 71);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -304,14 +304,14 @@ function __importDefault(mod) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = __webpack_require__(20);
+var utils_1 = __webpack_require__(21);
 var editData_1 = __webpack_require__(8);
-var restProject_1 = __webpack_require__(69);
-var restFileSystem_1 = __webpack_require__(67);
-var restResource_1 = __webpack_require__(43);
-var resourceHelper_1 = __webpack_require__(68);
+var restProject_1 = __webpack_require__(70);
+var restFileSystem_1 = __webpack_require__(68);
+var restResource_1 = __webpack_require__(44);
+var resourceHelper_1 = __webpack_require__(69);
 var i18n_1 = __webpack_require__(13);
-var httpClient_1 = __webpack_require__(29);
+var httpClient_1 = __webpack_require__(30);
 var BaseComponent = (function () {
     function BaseComponent() {
         this.form = { valid: function () { return true; } };
@@ -338,11 +338,11 @@ exports.BaseComponent = BaseComponent;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var size_1 = __webpack_require__(21);
+var size_1 = __webpack_require__(22);
 var point2d_1 = __webpack_require__(4);
 var objectPool_1 = __webpack_require__(15);
 var global_1 = __webpack_require__(6);
-var observableEntity_1 = __webpack_require__(47);
+var observableEntity_1 = __webpack_require__(48);
 var Rect = (function (_super) {
     tslib_1.__extends(Rect, _super);
     function Rect(x, y, width, height, onChangedFn) {
@@ -431,8 +431,8 @@ var Rect = (function (_super) {
     Rect.prototype.toJSON = function () {
         return { x: this.x, y: this.y, width: this.width, height: this.height };
     };
-    Rect.prototype.fromJSON = function (x, y, width, height) {
-        this.setXYWH(x, y, width, height);
+    Rect.prototype.fromJSON = function (jsonObj) {
+        this.setXYWH(jsonObj.x, jsonObj.y, jsonObj.width, jsonObj.height);
     };
     Rect.fromPool = function () {
         return Rect.rectPool.getNextObject();
@@ -720,7 +720,7 @@ exports.easeInOutBounce = function (t, b, c, d) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var objectPool_1 = __webpack_require__(15);
-var observableEntity_1 = __webpack_require__(47);
+var observableEntity_1 = __webpack_require__(48);
 var global_1 = __webpack_require__(6);
 var Point2d = (function (_super) {
     tslib_1.__extends(Point2d, _super);
@@ -945,15 +945,15 @@ exports.ShaderProgram = ShaderProgram;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var gameObjectProto_1 = __webpack_require__(16);
-var spriteSheet_1 = __webpack_require__(25);
-var frameAnimation_1 = __webpack_require__(31);
-var scene_1 = __webpack_require__(32);
-var layer_1 = __webpack_require__(26);
-var font_1 = __webpack_require__(34);
-var sound_1 = __webpack_require__(35);
-var particleSystem_1 = __webpack_require__(36);
-var game_1 = __webpack_require__(90);
-var gameObject_1 = __webpack_require__(28);
+var spriteSheet_1 = __webpack_require__(26);
+var frameAnimation_1 = __webpack_require__(32);
+var scene_1 = __webpack_require__(33);
+var layer_1 = __webpack_require__(27);
+var font_1 = __webpack_require__(35);
+var sound_1 = __webpack_require__(36);
+var particleSystem_1 = __webpack_require__(37);
+var game_1 = __webpack_require__(91);
+var gameObject_1 = __webpack_require__(29);
 var EditData = (function () {
     function EditData() {
         this.editTileMapModeOn = false;
@@ -1315,11 +1315,11 @@ exports.getUniformSetter = function (size, type) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var timer_1 = __webpack_require__(87);
-var commonObject_1 = __webpack_require__(23);
-var tween_1 = __webpack_require__(50);
-var eventEmitter_1 = __webpack_require__(51);
-var decorators_1 = __webpack_require__(24);
+var timer_1 = __webpack_require__(88);
+var commonObject_1 = __webpack_require__(24);
+var tween_1 = __webpack_require__(51);
+var eventEmitter_1 = __webpack_require__(52);
+var decorators_1 = __webpack_require__(25);
 var rect_1 = __webpack_require__(2);
 var point2d_1 = __webpack_require__(4);
 var BaseModel = (function (_super) {
@@ -1475,8 +1475,8 @@ exports.AbstractDrawer = AbstractDrawer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var rect_1 = __webpack_require__(2);
-var mouse_1 = __webpack_require__(60);
-var renderableModel_1 = __webpack_require__(49);
+var mouse_1 = __webpack_require__(61);
+var renderableModel_1 = __webpack_require__(50);
 var OVERFLOW;
 (function (OVERFLOW) {
     OVERFLOW[OVERFLOW["HIDDEN"] = 0] = "HIDDEN";
@@ -1593,7 +1593,7 @@ var Container = (function (_super) {
     };
     Container.prototype.describeStates = function (description) {
         var _this = this;
-        var allUIRenderable = __webpack_require__(61);
+        var allUIRenderable = __webpack_require__(62);
         Object.keys(description).forEach(function (stateName) {
             var state = STATE[stateName];
             var clazz = allUIRenderable[description[stateName].type];
@@ -2007,8 +2007,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var point2d_1 = __webpack_require__(4);
 var rect_1 = __webpack_require__(2);
-var shaderMaterial_1 = __webpack_require__(48);
-var renderableModel_1 = __webpack_require__(49);
+var shaderMaterial_1 = __webpack_require__(49);
+var renderableModel_1 = __webpack_require__(50);
 var global_1 = __webpack_require__(6);
 var cloneId = 0;
 var GameObjectProto = (function (_super) {
@@ -2129,8 +2129,26 @@ global_1._global['GameObjectProto'] = GameObjectProto;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vertexBuffer_1 = __webpack_require__(94);
-var indexBuffer_1 = __webpack_require__(95);
+var tslib_1 = __webpack_require__(0);
+var DebugError = (function (_super) {
+    tslib_1.__extends(DebugError, _super);
+    function DebugError(message) {
+        return _super.call(this, message) || this;
+    }
+    return DebugError;
+}(Error));
+exports.DebugError = DebugError;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var vertexBuffer_1 = __webpack_require__(95);
+var indexBuffer_1 = __webpack_require__(96);
 var BufferInfo = (function () {
     function BufferInfo(gl, description) {
         this.posVertexBuffer = null;
@@ -2207,7 +2225,7 @@ exports.BufferInfo = BufferInfo;
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2215,7 +2233,7 @@ exports.BufferInfo = BufferInfo;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var shaderProgramUtils_1 = __webpack_require__(9);
-var shaderGenerator_1 = __webpack_require__(56);
+var shaderGenerator_1 = __webpack_require__(57);
 var TexShaderGenerator = (function (_super) {
     tslib_1.__extends(TexShaderGenerator, _super);
     function TexShaderGenerator() {
@@ -2238,7 +2256,7 @@ exports.TexShaderGenerator = TexShaderGenerator;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2497,7 +2515,7 @@ exports.TextField = TextField;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2507,8 +2525,8 @@ var tslib_1 = __webpack_require__(0);
 var userDefinedFns_1 = __webpack_require__(5);
 var mathEx = __webpack_require__(3);
 var editData_1 = __webpack_require__(8);
-var restResource_1 = __webpack_require__(43);
-var restFileSystem_1 = __webpack_require__(67);
+var restResource_1 = __webpack_require__(44);
+var restFileSystem_1 = __webpack_require__(68);
 var i18n_1 = __webpack_require__(13);
 var gameObjectProto_1 = __webpack_require__(16);
 var point2d_1 = __webpack_require__(4);
@@ -2799,7 +2817,7 @@ exports.Utils = Utils;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2836,7 +2854,7 @@ exports.Size = Size;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2928,7 +2946,7 @@ global_1._global['Color'] = Color;
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3114,7 +3132,7 @@ exports.CommonObject = CommonObject;
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3128,7 +3146,7 @@ exports.Transient = function (params) {
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3136,7 +3154,7 @@ exports.Transient = function (params) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var rect_1 = __webpack_require__(2);
-var resource_1 = __webpack_require__(30);
+var resource_1 = __webpack_require__(31);
 var SpriteSheet = (function (_super) {
     tslib_1.__extends(SpriteSheet, _super);
     function SpriteSheet(game) {
@@ -3176,7 +3194,7 @@ exports.SpriteSheet = SpriteSheet;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3233,18 +3251,18 @@ exports.Layer = Layer;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var plane_1 = __webpack_require__(38);
+var plane_1 = __webpack_require__(39);
 var shaderProgram_1 = __webpack_require__(7);
 var abstractDrawer_1 = __webpack_require__(11);
-var bufferInfo_1 = __webpack_require__(17);
-var texShaderGenerator_1 = __webpack_require__(18);
+var bufferInfo_1 = __webpack_require__(18);
+var texShaderGenerator_1 = __webpack_require__(19);
 var SpriteRectDrawer = (function (_super) {
     tslib_1.__extends(SpriteRectDrawer, _super);
     function SpriteRectDrawer(gl, program) {
@@ -3266,7 +3284,7 @@ exports.SpriteRectDrawer = SpriteRectDrawer;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3276,7 +3294,7 @@ var tslib_1 = __webpack_require__(0);
 var gameObjectProto_1 = __webpack_require__(16);
 var commonBehaviours = __webpack_require__(115);
 var global_1 = __webpack_require__(6);
-var noop_1 = __webpack_require__(52);
+var noop_1 = __webpack_require__(53);
 var GameObject = (function (_super) {
     tslib_1.__extends(GameObject, _super);
     function GameObject(game) {
@@ -3366,7 +3384,7 @@ global_1._global['GameObject'] = GameObject;
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3483,7 +3501,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3526,16 +3544,16 @@ exports.Resource = Resource;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var commonObject_1 = __webpack_require__(23);
-var decorators_1 = __webpack_require__(24);
-var eventEmitter_1 = __webpack_require__(51);
+var commonObject_1 = __webpack_require__(24);
+var decorators_1 = __webpack_require__(25);
+var eventEmitter_1 = __webpack_require__(52);
 var FrameAnimation = (function (_super) {
     tslib_1.__extends(FrameAnimation, _super);
     function FrameAnimation(game) {
@@ -3619,21 +3637,21 @@ exports.FrameAnimation = FrameAnimation;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var noop_1 = __webpack_require__(52);
+var noop_1 = __webpack_require__(53);
 var baseModel_1 = __webpack_require__(10);
-var loadingQueue_1 = __webpack_require__(88);
-var tileMap_1 = __webpack_require__(33);
-var layer_1 = __webpack_require__(26);
-var ambientLight_1 = __webpack_require__(89);
-var color_1 = __webpack_require__(22);
-var camera_1 = __webpack_require__(55);
+var loadingQueue_1 = __webpack_require__(89);
+var tileMap_1 = __webpack_require__(34);
+var layer_1 = __webpack_require__(27);
+var ambientLight_1 = __webpack_require__(90);
+var color_1 = __webpack_require__(23);
+var camera_1 = __webpack_require__(56);
 var Scene = (function (_super) {
     tslib_1.__extends(Scene, _super);
     function Scene(game) {
@@ -3796,7 +3814,7 @@ exports.Scene = Scene;
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3804,9 +3822,9 @@ exports.Scene = Scene;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var rect_1 = __webpack_require__(2);
-var rigidShapes_1 = __webpack_require__(53);
-var commonObject_1 = __webpack_require__(23);
-var decorators_1 = __webpack_require__(24);
+var rigidShapes_1 = __webpack_require__(54);
+var commonObject_1 = __webpack_require__(24);
+var decorators_1 = __webpack_require__(25);
 var TileMap = (function (_super) {
     tslib_1.__extends(TileMap, _super);
     function TileMap(game) {
@@ -3945,15 +3963,16 @@ exports.TileMap = TileMap;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
+var debugError_1 = __webpack_require__(17);
 var rect_1 = __webpack_require__(2);
-var resource_1 = __webpack_require__(30);
+var resource_1 = __webpack_require__(31);
 var FontContext = (function () {
     function FontContext() {
         this.width = 0;
@@ -3980,9 +3999,9 @@ var Font = (function (_super) {
         this.fontContext.symbols = {};
         Object.keys(s).forEach(function (key) {
             if (true) {
-                if (!s[key]) {
+                if (s[key] == undefined) {
                     console.error(s);
-                    throw "can not find proper object for key " + key;
+                    throw new debugError_1.DebugError("font revalidation error: can not find proper object for key " + key);
                 }
             }
             _this.fontContext.symbols[key] = new rect_1.Rect(s[key].x, s[key].y, s[key].width, s[key].height);
@@ -3997,7 +4016,7 @@ exports.Font = Font;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4032,7 +4051,7 @@ exports.Sound = Sound;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4112,12 +4131,13 @@ exports.ParticleSystem = ParticleSystem;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var debugError_1 = __webpack_require__(17);
 var BaseAbstractBehaviour = (function () {
     function BaseAbstractBehaviour(game) {
         this.game = game;
@@ -4126,7 +4146,7 @@ var BaseAbstractBehaviour = (function () {
     BaseAbstractBehaviour.prototype.manage = function (gameObject, parameters) {
         console.error(this);
         if (true)
-            throw "BaseAbstractBehaviour: method 'manage' not implemented";
+            throw new debugError_1.DebugError("BaseAbstractBehaviour: method 'manage' not implemented");
     };
     BaseAbstractBehaviour.prototype.onUpdate = function (time, delta) { };
     BaseAbstractBehaviour.prototype.destroy = function () { };
@@ -4142,14 +4162,14 @@ exports.BaseAbstractBehaviour = BaseAbstractBehaviour;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractPrimitive_1 = __webpack_require__(39);
+var abstractPrimitive_1 = __webpack_require__(40);
 var Plane = (function (_super) {
     tslib_1.__extends(Plane, _super);
     function Plane() {
@@ -4175,7 +4195,7 @@ exports.Plane = Plane;
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4190,7 +4210,7 @@ exports.AbstractPrimitive = AbstractPrimitive;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4198,7 +4218,7 @@ exports.AbstractPrimitive = AbstractPrimitive;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var shaderProgramUtils_1 = __webpack_require__(9);
-var shaderGenerator_1 = __webpack_require__(56);
+var shaderGenerator_1 = __webpack_require__(57);
 var ColorShaderGenerator = (function (_super) {
     tslib_1.__extends(ColorShaderGenerator, _super);
     function ColorShaderGenerator() {
@@ -4217,7 +4237,7 @@ exports.ColorShaderGenerator = ColorShaderGenerator;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4232,51 +4252,51 @@ var SCALE_STRATEGY;
 
 
 /***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var frameAnimation_1 = __webpack_require__(31);
-exports.FrameAnimation = frameAnimation_1.FrameAnimation;
-var spriteSheet_1 = __webpack_require__(25);
-exports.SpriteSheet = spriteSheet_1.SpriteSheet;
-var gameObjectProto_1 = __webpack_require__(16);
-exports.GameObjectProto = gameObjectProto_1.GameObjectProto;
-var gameObject_1 = __webpack_require__(28);
-exports.GameObject = gameObject_1.GameObject;
-var commonBehaviour_1 = __webpack_require__(66);
-exports.CommonBehaviour = commonBehaviour_1.CommonBehaviour;
-var particleSystem_1 = __webpack_require__(36);
-exports.ParticleSystem = particleSystem_1.ParticleSystem;
-var scene_1 = __webpack_require__(32);
-exports.Scene = scene_1.Scene;
-var sound_1 = __webpack_require__(35);
-exports.Sound = sound_1.Sound;
-var font_1 = __webpack_require__(34);
-exports.Font = font_1.Font;
-var layer_1 = __webpack_require__(26);
-exports.Layer = layer_1.Layer;
-var textField_1 = __webpack_require__(19);
-exports.TextField = textField_1.TextField;
-var button_1 = __webpack_require__(62);
-exports.Button = button_1.Button;
-var tileMap_1 = __webpack_require__(33);
-exports.TileMap = tileMap_1.TileMap;
-
-
-/***/ }),
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(29);
+var frameAnimation_1 = __webpack_require__(32);
+exports.FrameAnimation = frameAnimation_1.FrameAnimation;
+var spriteSheet_1 = __webpack_require__(26);
+exports.SpriteSheet = spriteSheet_1.SpriteSheet;
+var gameObjectProto_1 = __webpack_require__(16);
+exports.GameObjectProto = gameObjectProto_1.GameObjectProto;
+var gameObject_1 = __webpack_require__(29);
+exports.GameObject = gameObject_1.GameObject;
+var commonBehaviour_1 = __webpack_require__(67);
+exports.CommonBehaviour = commonBehaviour_1.CommonBehaviour;
+var particleSystem_1 = __webpack_require__(37);
+exports.ParticleSystem = particleSystem_1.ParticleSystem;
+var scene_1 = __webpack_require__(33);
+exports.Scene = scene_1.Scene;
+var sound_1 = __webpack_require__(36);
+exports.Sound = sound_1.Sound;
+var font_1 = __webpack_require__(35);
+exports.Font = font_1.Font;
+var layer_1 = __webpack_require__(27);
+exports.Layer = layer_1.Layer;
+var textField_1 = __webpack_require__(20);
+exports.TextField = textField_1.TextField;
+var button_1 = __webpack_require__(63);
+exports.Button = button_1.Button;
+var tileMap_1 = __webpack_require__(34);
+exports.TileMap = tileMap_1.TileMap;
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var httpClient_1 = __webpack_require__(30);
 var editData_1 = __webpack_require__(8);
-var allModels = __webpack_require__(42);
-var utils_1 = __webpack_require__(20);
+var allModels = __webpack_require__(43);
+var utils_1 = __webpack_require__(21);
 var RestResource = (function () {
     function RestResource() {
     }
@@ -4319,7 +4339,7 @@ exports.RestResource = RestResource;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4334,7 +4354,7 @@ exports.getLibCodeScript = function (name) {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports) {
 
 Array.prototype['remove'] = function (callback) {
@@ -4379,7 +4399,7 @@ if (!Array.prototype['find']) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4951,7 +4971,7 @@ if (!Array.prototype['find']) {
 }).call(window);
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5008,13 +5028,13 @@ exports.ObservableEntity = ObservableEntity;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(22);
+var color_1 = __webpack_require__(23);
 var ShaderMaterial = (function () {
     function ShaderMaterial() {
         this.ambient = color_1.Color.BLACK.clone();
@@ -5035,14 +5055,14 @@ exports.ShaderMaterial = ShaderMaterial;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var resource_1 = __webpack_require__(30);
+var resource_1 = __webpack_require__(31);
 var RenderableModel = (function (_super) {
     tslib_1.__extends(RenderableModel, _super);
     function RenderableModel() {
@@ -5093,7 +5113,7 @@ exports.RenderableModel = RenderableModel;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5220,7 +5240,7 @@ global_1._global['Tween'] = Tween;
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5274,7 +5294,7 @@ exports.EventEmitter = EventEmitter;
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5284,7 +5304,7 @@ exports.noop = function () { };
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5737,13 +5757,13 @@ exports.RigidRectangle = RigidRectangle;
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(22);
+var color_1 = __webpack_require__(23);
 var AbstractLight = (function () {
     function AbstractLight(game) {
         this.color = color_1.Color.WHITE;
@@ -5758,13 +5778,14 @@ exports.AbstractLight = AbstractLight;
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var tween_1 = __webpack_require__(50);
+var debugError_1 = __webpack_require__(17);
+var tween_1 = __webpack_require__(51);
 var mat4 = __webpack_require__(14);
 var mathEx = __webpack_require__(3);
 var rect_1 = __webpack_require__(2);
@@ -5821,7 +5842,7 @@ var Camera = (function () {
         if (gameObject === null)
             return;
         if (true && gameObject === undefined)
-            throw "Camera:followTo(gameObject) - gameObject not provided";
+            throw new debugError_1.DebugError("Camera:followTo(gameObject) - gameObject not provided");
         this.objFollowTo = gameObject;
         this.revalidate();
     };
@@ -5921,7 +5942,7 @@ exports.Camera = Camera;
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5992,13 +6013,13 @@ exports.ShaderGenerator = ShaderGenerator;
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var pointLight_1 = __webpack_require__(96);
+var pointLight_1 = __webpack_require__(97);
 var LightArray = (function () {
     function LightArray(game) {
         if (true && !game)
@@ -6024,13 +6045,13 @@ exports.LightArray = LightArray;
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var texture_1 = __webpack_require__(59);
+var texture_1 = __webpack_require__(60);
 var FrameBuffer = (function () {
     function FrameBuffer(gl, width, height) {
         if (true && !gl)
@@ -6087,14 +6108,14 @@ exports.FrameBuffer = FrameBuffer;
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var frameBuffer_1 = __webpack_require__(58);
-var size_1 = __webpack_require__(21);
+var frameBuffer_1 = __webpack_require__(59);
+var size_1 = __webpack_require__(22);
 var isPowerOf2 = function (value) {
     return (value & (value - 1)) === 0;
 };
@@ -6252,7 +6273,7 @@ exports.Texture = Texture;
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6468,30 +6489,30 @@ exports.Mouse = Mouse;
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var button_1 = __webpack_require__(62);
+var button_1 = __webpack_require__(63);
 exports.Button = button_1.Button;
-var textField_1 = __webpack_require__(19);
+var textField_1 = __webpack_require__(20);
 exports.TextField = textField_1.TextField;
 var container_1 = __webpack_require__(12);
 exports.Container = container_1.Container;
-var image_1 = __webpack_require__(63);
+var image_1 = __webpack_require__(64);
 exports.Image = image_1.Image;
-var rectangle_1 = __webpack_require__(110);
+var rectangle_1 = __webpack_require__(111);
 exports.Rectangle = rectangle_1.Rectangle;
-var ninePatchImage_1 = __webpack_require__(111);
+var ninePatchImage_1 = __webpack_require__(112);
 exports.NinePatchImage = ninePatchImage_1.NinePatchImage;
-var absoluteLayout_1 = __webpack_require__(64);
+var absoluteLayout_1 = __webpack_require__(65);
 exports.AbsoluteLayout = absoluteLayout_1.AbsoluteLayout;
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6499,7 +6520,7 @@ exports.AbsoluteLayout = absoluteLayout_1.AbsoluteLayout;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var container_1 = __webpack_require__(12);
-var textField_1 = __webpack_require__(19);
+var textField_1 = __webpack_require__(20);
 var mathEx_1 = __webpack_require__(3);
 var Button = (function (_super) {
     tslib_1.__extends(Button, _super);
@@ -6556,7 +6577,7 @@ exports.Button = Button;
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6597,7 +6618,7 @@ exports.Image = Image;
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6661,14 +6682,14 @@ exports.AbsoluteLayout = AbsoluteLayout;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseAbstractBehaviour_1 = __webpack_require__(37);
+var baseAbstractBehaviour_1 = __webpack_require__(38);
 var Moveable = (function (_super) {
     tslib_1.__extends(Moveable, _super);
     function Moveable(game) {
@@ -6710,7 +6731,7 @@ exports.Moveable = Moveable;
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6733,13 +6754,13 @@ exports.CommonBehaviour = CommonBehaviour;
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(29);
+var httpClient_1 = __webpack_require__(30);
 var editData_1 = __webpack_require__(8);
 var RestFileSystem = (function () {
     function RestFileSystem() {
@@ -6780,7 +6801,7 @@ exports.RestFileSystem = RestFileSystem;
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6788,10 +6809,10 @@ exports.RestFileSystem = RestFileSystem;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var editData_1 = __webpack_require__(8);
-var restResource_1 = __webpack_require__(43);
-var restProject_1 = __webpack_require__(69);
-var commonBehaviour_1 = __webpack_require__(66);
-var textField_1 = __webpack_require__(19);
+var restResource_1 = __webpack_require__(44);
+var restProject_1 = __webpack_require__(70);
+var commonBehaviour_1 = __webpack_require__(67);
+var textField_1 = __webpack_require__(20);
 var cnt = 0;
 var ResourceHelper = (function () {
     function ResourceHelper() {
@@ -6850,13 +6871,13 @@ exports.ResourceHelper = ResourceHelper;
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(29);
+var httpClient_1 = __webpack_require__(30);
 var RestProject = (function () {
     function RestProject() {
     }
@@ -6875,33 +6896,33 @@ exports.RestProject = RestProject;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(71);
+module.exports = __webpack_require__(72);
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(45);
-__webpack_require__(72);
 __webpack_require__(46);
 __webpack_require__(73);
-var modal_1 = __webpack_require__(74);
-var collapsible_1 = __webpack_require__(76);
-var alertDialog_1 = __webpack_require__(78);
-var confirmDialog_1 = __webpack_require__(80);
-var inputFile_1 = __webpack_require__(82);
-var colorPicker_1 = __webpack_require__(84);
-var colorPickerDialog_1 = __webpack_require__(86);
+__webpack_require__(47);
+__webpack_require__(74);
+var modal_1 = __webpack_require__(75);
+var collapsible_1 = __webpack_require__(77);
+var alertDialog_1 = __webpack_require__(79);
+var confirmDialog_1 = __webpack_require__(81);
+var inputFile_1 = __webpack_require__(83);
+var colorPicker_1 = __webpack_require__(85);
+var colorPickerDialog_1 = __webpack_require__(87);
 var anglePicker_1 = __webpack_require__(126);
 var draggableDirective_1 = __webpack_require__(128);
-var resourceHelper_1 = __webpack_require__(68);
+var resourceHelper_1 = __webpack_require__(69);
 var explorer_1 = __webpack_require__(130);
 var editor_1 = __webpack_require__(132);
 var projectDialog_1 = __webpack_require__(134);
@@ -6966,11 +6987,11 @@ if (sessionStorage['projectName']) {
 }
 else
     RF.Router.navigateTo('explorer');
-console.log("built at: " + new Date(+1534453696903));
+console.log("built at: " + new Date(+1534520488240));
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports) {
 
 
@@ -6987,7 +7008,7 @@ if (!Array.prototype.includes) {
 }
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports) {
 
 /******/ (function(modules) { // webpackBootstrap
@@ -10304,7 +10325,7 @@ module.exports = __webpack_require__(10);
 /******/ ]);
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10325,7 +10346,7 @@ var AppModal = (function () {
     AppModal = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-modal',
-            template: __webpack_require__(75)
+            template: __webpack_require__(76)
         })
     ], AppModal);
     return AppModal;
@@ -10334,13 +10355,13 @@ exports.AppModal = AppModal;
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\"><div class=\"fullscreen shadow\"></div><div class=\"dialog\"><div class=\"dialogContent\"><div class=\"dialogClose\"><span data-click=\"close()\" class=\"pointer\">X</span></div><div class=\"withPadding\"><div data-transclusion=\"content\"></div></div></div></div></div>";
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10363,7 +10384,7 @@ var Collapsible = (function () {
     Collapsible = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-collapsible',
-            template: __webpack_require__(77)
+            template: __webpack_require__(78)
         })
     ], Collapsible);
     return Collapsible;
@@ -10372,13 +10393,13 @@ exports.Collapsible = Collapsible;
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><div class=\"collapsible_header bold noSelect\"><div class=\"table width100\"><div class=\"row\"><div class=\"cell width1\"><span class=\"collapsible_point noBrake\" data-click=\"toggle()\" data-class=\"{rotated:opened}\">▷</span></div><div class=\"cell\"><span data-click=\"toggle()\">&nbsp;{{title}}</span></div><div class=\"cell width1\"><div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div></div></div></div></div><div class=\"collapsible_content\" data-class=\"{opened:opened}\"><div data-transclusion=\"content\"></div></div></div>";
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10402,7 +10423,7 @@ var AlertDialog = (function () {
     AlertDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-alert-dialog',
-            template: __webpack_require__(79)
+            template: __webpack_require__(80)
         })
     ], AlertDialog);
     return AlertDialog;
@@ -10411,13 +10432,13 @@ exports.AlertDialog = AlertDialog;
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"alertModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"close()\">{{i18n.get('ok')}}</button></div></div></div></app-modal>";
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10447,7 +10468,7 @@ var ConfirmDialog = (function () {
     ConfirmDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-confirm-dialog',
-            template: __webpack_require__(81)
+            template: __webpack_require__(82)
         })
     ], ConfirmDialog);
     return ConfirmDialog;
@@ -10456,13 +10477,13 @@ exports.ConfirmDialog = ConfirmDialog;
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"confirmModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"confirmAndClose()\">{{i18n.get('confirm')}}</button><button data-click=\"close()\">{{i18n.get('cancel')}}</button></div></div></div></app-modal>";
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10500,7 +10521,7 @@ var InputFile = (function () {
     InputFile = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-input-file',
-            template: __webpack_require__(83)
+            template: __webpack_require__(84)
         })
     ], InputFile);
     return InputFile;
@@ -10509,13 +10530,13 @@ exports.InputFile = InputFile;
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><button>{{title}}</button><input required accept=\"{{accept}}\" type=\"file\"></div>";
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10534,7 +10555,7 @@ var ColorPicker = (function () {
     ColorPicker = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-color-picker',
-            template: __webpack_require__(85)
+            template: __webpack_require__(86)
         })
     ], ColorPicker);
     return ColorPicker;
@@ -10543,20 +10564,20 @@ exports.ColorPicker = ColorPicker;
 
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"inlineBlock\"><div data-style=\"{ cursor: 'pointer', width: 24 + 'px', height:24 + 'px', backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')') }\" data-click=\"click()\"></div></div>";
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var utils_1 = __webpack_require__(20);
+var utils_1 = __webpack_require__(21);
 var i18n_1 = __webpack_require__(13);
 var defaultColor = { r: 0, g: 0, b: 0 };
 var ColorPickerDialog = (function () {
@@ -10616,7 +10637,7 @@ exports.ColorPickerDialog = ColorPickerDialog;
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10643,7 +10664,7 @@ exports.Timer = Timer;
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10702,14 +10723,14 @@ exports.Queue = Queue;
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractLight_1 = __webpack_require__(54);
+var abstractLight_1 = __webpack_require__(55);
 var AmbientLight = (function (_super) {
     tslib_1.__extends(AmbientLight, _super);
     function AmbientLight(game) {
@@ -10727,30 +10748,31 @@ exports.AmbientLight = AmbientLight;
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-__webpack_require__(45);
-var baseAbstractBehaviour_1 = __webpack_require__(37);
-var rendererFactory_1 = __webpack_require__(91);
+__webpack_require__(46);
+var baseAbstractBehaviour_1 = __webpack_require__(38);
+var rendererFactory_1 = __webpack_require__(92);
 var repository_1 = __webpack_require__(114);
-var mouse_1 = __webpack_require__(60);
+var mouse_1 = __webpack_require__(61);
 var keyboard_1 = __webpack_require__(121);
 var gamePad_1 = __webpack_require__(122);
-var decorators_1 = __webpack_require__(24);
-var commonObject_1 = __webpack_require__(23);
-var camera_1 = __webpack_require__(55);
-var consts_1 = __webpack_require__(41);
+var decorators_1 = __webpack_require__(25);
+var commonObject_1 = __webpack_require__(24);
+var camera_1 = __webpack_require__(56);
+var consts_1 = __webpack_require__(42);
 var point2d_1 = __webpack_require__(4);
-var lightArray_1 = __webpack_require__(57);
+var lightArray_1 = __webpack_require__(58);
 var uiBuilder_1 = __webpack_require__(123);
 var colliderEngine_1 = __webpack_require__(124);
 var MathEx = __webpack_require__(3);
 var global_1 = __webpack_require__(6);
+var debugError_1 = __webpack_require__(17);
 var Game = (function (_super) {
     tslib_1.__extends(Game, _super);
     function Game() {
@@ -10813,12 +10835,12 @@ var Game = (function (_super) {
         this._cnt++;
         console.log.apply(console, val);
         if (this._cnt > 10)
-            throw 'too many logs';
+            throw new debugError_1.DebugError('too many logs');
     };
     Game.prototype.runScene = function (scene) {
         var _this = this;
         if (true && !this._revalidated)
-            throw "game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly";
+            throw new debugError_1.DebugError("game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly");
         if (scene.prepared) {
             this._currentScene = scene;
             return;
@@ -10854,10 +10876,10 @@ var Game = (function (_super) {
             window.fps = this.fps;
             var renderError = this.renderer.getError();
             if (renderError)
-                throw "render error with code " + renderError;
+                throw new debugError_1.DebugError("render error with code " + renderError);
         }
         var dTime = Math.min(this._deltaTime, Game_1.UPDATE_TIME_RATE);
-        var numOfLoops = 1;
+        var numOfLoops = (~~(this._deltaTime / Game_1.UPDATE_TIME_RATE)) || 1;
         var currTime = this._currTime - numOfLoops * Game_1.UPDATE_TIME_RATE;
         var loopCnt = 0;
         do {
@@ -10919,13 +10941,13 @@ exports.Game = Game;
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var webGlRenderer_1 = __webpack_require__(92);
+var webGlRenderer_1 = __webpack_require__(93);
 var RendererFactory = (function () {
     function RendererFactory() {
     }
@@ -10940,30 +10962,30 @@ exports.RendererFactory = RendererFactory;
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var spriteRectLightDrawer_1 = __webpack_require__(93);
-var spriteRectDrawer_1 = __webpack_require__(27);
-var tiledSpriteRectDrawer_1 = __webpack_require__(97);
-var colorRectDrawer_1 = __webpack_require__(98);
+var spriteRectLightDrawer_1 = __webpack_require__(94);
+var spriteRectDrawer_1 = __webpack_require__(28);
+var tiledSpriteRectDrawer_1 = __webpack_require__(98);
+var colorRectDrawer_1 = __webpack_require__(99);
 var abstractDrawer_1 = __webpack_require__(11);
-var lineDrawer_1 = __webpack_require__(99);
-var circleDrawer_1 = __webpack_require__(101);
-var frameBuffer_1 = __webpack_require__(58);
-var matrixStack_1 = __webpack_require__(103);
+var lineDrawer_1 = __webpack_require__(100);
+var circleDrawer_1 = __webpack_require__(102);
+var frameBuffer_1 = __webpack_require__(59);
+var matrixStack_1 = __webpack_require__(104);
 var mat4 = __webpack_require__(14);
 var matEx = __webpack_require__(3);
-var texture_1 = __webpack_require__(59);
-var addBlendDrawer_1 = __webpack_require__(104);
+var texture_1 = __webpack_require__(60);
+var addBlendDrawer_1 = __webpack_require__(105);
 var rect_1 = __webpack_require__(2);
-var abstractCanvasRenderer_1 = __webpack_require__(108);
-var shaderMaterial_1 = __webpack_require__(48);
-var size_1 = __webpack_require__(21);
+var abstractCanvasRenderer_1 = __webpack_require__(109);
+var shaderMaterial_1 = __webpack_require__(49);
+var size_1 = __webpack_require__(22);
 var getCtx = function (el) {
     return (el.getContext("webgl", { alpha: false }) ||
         el.getContext('experimental-webgl', { alpha: false }) ||
@@ -11281,18 +11303,18 @@ exports.WebGlRenderer = WebGlRenderer;
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var spriteRectDrawer_1 = __webpack_require__(27);
-var texShaderGenerator_1 = __webpack_require__(18);
+var spriteRectDrawer_1 = __webpack_require__(28);
+var texShaderGenerator_1 = __webpack_require__(19);
 var shaderProgram_1 = __webpack_require__(7);
 var shaderProgramUtils_1 = __webpack_require__(9);
-var lightArray_1 = __webpack_require__(57);
+var lightArray_1 = __webpack_require__(58);
 var SpriteRectLightDrawer = (function (_super) {
     tslib_1.__extends(SpriteRectLightDrawer, _super);
     function SpriteRectLightDrawer(gl) {
@@ -11315,7 +11337,7 @@ exports.SpriteRectLightDrawer = SpriteRectLightDrawer;
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11384,7 +11406,7 @@ exports.VertexBuffer = VertexBuffer;
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11432,7 +11454,7 @@ exports.IndexBuffer = IndexBuffer;
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11440,7 +11462,7 @@ exports.IndexBuffer = IndexBuffer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var point2d_1 = __webpack_require__(4);
-var abstractLight_1 = __webpack_require__(54);
+var abstractLight_1 = __webpack_require__(55);
 var PointLight = (function (_super) {
     tslib_1.__extends(PointLight, _super);
     function PointLight(game) {
@@ -11472,19 +11494,19 @@ exports.PointLight = PointLight;
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var plane_1 = __webpack_require__(38);
+var plane_1 = __webpack_require__(39);
 var shaderProgram_1 = __webpack_require__(7);
-var bufferInfo_1 = __webpack_require__(17);
+var bufferInfo_1 = __webpack_require__(18);
 var abstractDrawer_1 = __webpack_require__(11);
 var shaderProgramUtils_1 = __webpack_require__(9);
-var texShaderGenerator_1 = __webpack_require__(18);
+var texShaderGenerator_1 = __webpack_require__(19);
 var TiledSpriteRectDrawer = (function (_super) {
     tslib_1.__extends(TiledSpriteRectDrawer, _super);
     function TiledSpriteRectDrawer(gl) {
@@ -11509,18 +11531,18 @@ exports.TiledSpriteRectDrawer = TiledSpriteRectDrawer;
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var plane_1 = __webpack_require__(38);
+var plane_1 = __webpack_require__(39);
 var shaderProgram_1 = __webpack_require__(7);
-var bufferInfo_1 = __webpack_require__(17);
+var bufferInfo_1 = __webpack_require__(18);
 var abstractDrawer_1 = __webpack_require__(11);
-var colorShaderGenerator_1 = __webpack_require__(40);
+var colorShaderGenerator_1 = __webpack_require__(41);
 var ColorRectDrawer = (function (_super) {
     tslib_1.__extends(ColorRectDrawer, _super);
     function ColorRectDrawer(gl) {
@@ -11541,18 +11563,18 @@ exports.ColorRectDrawer = ColorRectDrawer;
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var line_1 = __webpack_require__(100);
+var line_1 = __webpack_require__(101);
 var shaderProgram_1 = __webpack_require__(7);
-var bufferInfo_1 = __webpack_require__(17);
+var bufferInfo_1 = __webpack_require__(18);
 var abstractDrawer_1 = __webpack_require__(11);
-var colorShaderGenerator_1 = __webpack_require__(40);
+var colorShaderGenerator_1 = __webpack_require__(41);
 var LineDrawer = (function (_super) {
     tslib_1.__extends(LineDrawer, _super);
     function LineDrawer(gl) {
@@ -11572,14 +11594,14 @@ exports.LineDrawer = LineDrawer;
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractPrimitive_1 = __webpack_require__(39);
+var abstractPrimitive_1 = __webpack_require__(40);
 var Line = (function (_super) {
     tslib_1.__extends(Line, _super);
     function Line() {
@@ -11597,18 +11619,18 @@ exports.Line = Line;
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(102);
+var circle_1 = __webpack_require__(103);
 var shaderProgram_1 = __webpack_require__(7);
 var abstractDrawer_1 = __webpack_require__(11);
-var bufferInfo_1 = __webpack_require__(17);
-var colorShaderGenerator_1 = __webpack_require__(40);
+var bufferInfo_1 = __webpack_require__(18);
+var colorShaderGenerator_1 = __webpack_require__(41);
 var CircleDrawer = (function (_super) {
     tslib_1.__extends(CircleDrawer, _super);
     function CircleDrawer(gl) {
@@ -11628,14 +11650,14 @@ exports.CircleDrawer = CircleDrawer;
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractPrimitive_1 = __webpack_require__(39);
+var abstractPrimitive_1 = __webpack_require__(40);
 var Circle = (function (_super) {
     tslib_1.__extends(Circle, _super);
     function Circle() {
@@ -11658,7 +11680,7 @@ exports.Circle = Circle;
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11726,14 +11748,14 @@ exports.MatrixStack = MatrixStack;
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractBlendDrawer_1 = __webpack_require__(105);
+var abstractBlendDrawer_1 = __webpack_require__(106);
 var AddBlendDrawer = (function (_super) {
     tslib_1.__extends(AddBlendDrawer, _super);
     function AddBlendDrawer(gl) {
@@ -11748,17 +11770,17 @@ exports.AddBlendDrawer = AddBlendDrawer;
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var spriteRectDrawer_1 = __webpack_require__(27);
+var spriteRectDrawer_1 = __webpack_require__(28);
 var shaderProgramUtils_1 = __webpack_require__(9);
-var texShaderGenerator_1 = __webpack_require__(18);
+var texShaderGenerator_1 = __webpack_require__(19);
 var shaderProgram_1 = __webpack_require__(7);
-var simpleCopyFilter_1 = __webpack_require__(106);
+var simpleCopyFilter_1 = __webpack_require__(107);
 var AbstractBlendDrawer = (function () {
     function AbstractBlendDrawer(gl) {
         this.gl = gl;
@@ -11786,14 +11808,14 @@ exports.AbstractBlendDrawer = AbstractBlendDrawer;
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractFilter_1 = __webpack_require__(107);
+var abstractFilter_1 = __webpack_require__(108);
 var shaderProgramUtils_1 = __webpack_require__(9);
 var SimpleCopyFilter = (function (_super) {
     tslib_1.__extends(SimpleCopyFilter, _super);
@@ -11810,16 +11832,16 @@ exports.SimpleCopyFilter = SimpleCopyFilter;
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgram_1 = __webpack_require__(7);
-var spriteRectDrawer_1 = __webpack_require__(27);
+var spriteRectDrawer_1 = __webpack_require__(28);
 var mat4 = __webpack_require__(14);
-var texShaderGenerator_1 = __webpack_require__(18);
+var texShaderGenerator_1 = __webpack_require__(19);
 var makePositionMatrix = function (dstX, dstY, dstWidth, dstHeight) {
     var projectionMatrix = mat4.ortho(0, dstWidth, 0, dstHeight, -1, 1);
     var scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
@@ -11861,15 +11883,15 @@ exports.AbstractFilter = AbstractFilter;
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractRenderer_1 = __webpack_require__(109);
-var consts_1 = __webpack_require__(41);
+var abstractRenderer_1 = __webpack_require__(110);
+var consts_1 = __webpack_require__(42);
 var rect_1 = __webpack_require__(2);
 var AbstractCanvasRenderer = (function (_super) {
     tslib_1.__extends(AbstractCanvasRenderer, _super);
@@ -11948,16 +11970,16 @@ exports.AbstractCanvasRenderer = AbstractCanvasRenderer;
 
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var textField_1 = __webpack_require__(19);
-var device_1 = __webpack_require__(112);
-var size_1 = __webpack_require__(21);
-var debugError_1 = __webpack_require__(113);
+var textField_1 = __webpack_require__(20);
+var device_1 = __webpack_require__(113);
+var size_1 = __webpack_require__(22);
+var debugError_1 = __webpack_require__(17);
 var AbstractRenderer = (function () {
     function AbstractRenderer(game) {
         this.renderableCache = {};
@@ -12082,14 +12104,14 @@ exports.AbstractRenderer = AbstractRenderer;
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var color_1 = __webpack_require__(22);
+var color_1 = __webpack_require__(23);
 var global_1 = __webpack_require__(6);
 var container_1 = __webpack_require__(12);
 var Rectangle = (function (_super) {
@@ -12119,14 +12141,14 @@ global_1._global['Rectangle'] = Rectangle;
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var image_1 = __webpack_require__(63);
+var image_1 = __webpack_require__(64);
 var NinePatchImage = (function (_super) {
     tslib_1.__extends(NinePatchImage, _super);
     function NinePatchImage(game) {
@@ -12169,7 +12191,7 @@ exports.NinePatchImage = NinePatchImage;
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12188,31 +12210,13 @@ exports.Device = Device;
 
 
 /***/ }),
-/* 113 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var DebugError = (function (_super) {
-    tslib_1.__extends(DebugError, _super);
-    function DebugError(message) {
-        return _super.call(this, message) || this;
-    }
-    return DebugError;
-}(Error));
-exports.DebugError = DebugError;
-
-
-/***/ }),
 /* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var models = __webpack_require__(42);
+var models = __webpack_require__(43);
 var Repository = (function () {
     function Repository(game) {
         this._game = game;
@@ -12341,7 +12345,7 @@ exports.Control2Dir = control2Dir_1.Control2Dir;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseAbstractBehaviour_1 = __webpack_require__(37);
+var baseAbstractBehaviour_1 = __webpack_require__(38);
 var DraggableBehaviour = (function (_super) {
     tslib_1.__extends(DraggableBehaviour, _super);
     function DraggableBehaviour(game) {
@@ -12501,7 +12505,7 @@ exports.Control4Dir = Control4Dir;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var moveable_1 = __webpack_require__(65);
+var moveable_1 = __webpack_require__(66);
 var Move4Dir = (function (_super) {
     tslib_1.__extends(Move4Dir, _super);
     function Move4Dir(game) {
@@ -12582,7 +12586,7 @@ exports.Control2Dir = Control2Dir;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var moveable_1 = __webpack_require__(65);
+var moveable_1 = __webpack_require__(66);
 var Move2Dir = (function (_super) {
     tslib_1.__extends(Move2Dir, _super);
     function Move2Dir(game) {
@@ -12811,8 +12815,8 @@ exports.GamePad = GamePad;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var allUIClasses = __webpack_require__(61);
-var absoluteLayout_1 = __webpack_require__(64);
+var allUIClasses = __webpack_require__(62);
+var absoluteLayout_1 = __webpack_require__(65);
 var UIBuilder = (function () {
     function UIBuilder(game) {
         this.game = game;
@@ -12907,7 +12911,7 @@ exports.UIBuilder = UIBuilder;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var rigidShapes_1 = __webpack_require__(53);
+var rigidShapes_1 = __webpack_require__(54);
 var rect_1 = __webpack_require__(2);
 var mathEx = __webpack_require__(3);
 var ColliderEngine = (function () {
@@ -13305,7 +13309,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
 __webpack_require__(206);
-var Split = __webpack_require__(46);
+var Split = __webpack_require__(47);
 var Editor = (function (_super) {
     tslib_1.__extends(Editor, _super);
     function Editor() {
@@ -13429,7 +13433,7 @@ module.exports = "<app-modal id=\"projectDialog\"><div data-transclusion=\"conte
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var consts_1 = __webpack_require__(41);
+var consts_1 = __webpack_require__(42);
 var GameProps = (function (_super) {
     tslib_1.__extends(GameProps, _super);
     function GameProps() {
@@ -13471,7 +13475,7 @@ module.exports = "<app-collapsible data-state=\"{title:i18n.get('game')}\"><div 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var particleSystem_1 = __webpack_require__(36);
+var particleSystem_1 = __webpack_require__(37);
 var userDefinedFns_1 = __webpack_require__(5);
 var ParticleSystems = (function (_super) {
     tslib_1.__extends(ParticleSystems, _super);
@@ -13530,7 +13534,7 @@ module.exports = "<app-collapsible data-state=\"{ crud:{ create:createParticleSy
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var sound_1 = __webpack_require__(35);
+var sound_1 = __webpack_require__(36);
 var Sounds = (function (_super) {
     tslib_1.__extends(Sounds, _super);
     function Sounds() {
@@ -13586,7 +13590,7 @@ module.exports = "<app-collapsible data-state=\"{ crud:{ create:createSound }, t
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var font_1 = __webpack_require__(34);
+var font_1 = __webpack_require__(35);
 var Fonts = (function (_super) {
     tslib_1.__extends(Fonts, _super);
     function Fonts() {
@@ -13643,7 +13647,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
 __webpack_require__(207);
-var spriteSheet_1 = __webpack_require__(25);
+var spriteSheet_1 = __webpack_require__(26);
 var userDefinedFns_1 = __webpack_require__(5);
 var SpriteSheets = (function (_super) {
     tslib_1.__extends(SpriteSheets, _super);
@@ -13772,7 +13776,7 @@ module.exports = "<app-collapsible data-state=\"{ crud: { create:createScript },
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var all_1 = __webpack_require__(42);
+var all_1 = __webpack_require__(43);
 var userDefinedFns_1 = __webpack_require__(5);
 var GameObjects = (function (_super) {
     tslib_1.__extends(GameObjects, _super);
@@ -13848,8 +13852,8 @@ var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
 __webpack_require__(208);
 var userDefinedFns_1 = __webpack_require__(5);
-var layer_1 = __webpack_require__(26);
-var scene_1 = __webpack_require__(32);
+var layer_1 = __webpack_require__(27);
+var scene_1 = __webpack_require__(33);
 var Scenes = (function (_super) {
     tslib_1.__extends(Scenes, _super);
     function Scenes() {
@@ -14223,7 +14227,7 @@ __webpack_require__(210);
 var userDefinedFns_1 = __webpack_require__(5);
 var baseComponent_1 = __webpack_require__(1);
 var gameObjectProto_1 = __webpack_require__(16);
-var gameObject_1 = __webpack_require__(28);
+var gameObject_1 = __webpack_require__(29);
 var point2d_1 = __webpack_require__(4);
 var SceneCentralPanel = (function (_super) {
     tslib_1.__extends(SceneCentralPanel, _super);
@@ -14444,7 +14448,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
 __webpack_require__(211);
-var tileMap_1 = __webpack_require__(33);
+var tileMap_1 = __webpack_require__(34);
 var SceneRightPanel = (function (_super) {
     tslib_1.__extends(SceneRightPanel, _super);
     function SceneRightPanel() {
@@ -15105,9 +15109,9 @@ module.exports = "<app-modal id=\"spriteSheetModal\"><div data-transclusion=\"co
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var frameAnimation_1 = __webpack_require__(31);
+var frameAnimation_1 = __webpack_require__(32);
 var userDefinedFns_1 = __webpack_require__(5);
-var codeTemplates_1 = __webpack_require__(44);
+var codeTemplates_1 = __webpack_require__(45);
 var GameObjectDialog = (function (_super) {
     tslib_1.__extends(GameObjectDialog, _super);
     function GameObjectDialog() {
@@ -15262,7 +15266,7 @@ module.exports = "<app-modal id=\"gameObjectModal\"><div data-transclusion=\"con
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var codeTemplates_1 = __webpack_require__(44);
+var codeTemplates_1 = __webpack_require__(45);
 var SceneDialog = (function (_super) {
     tslib_1.__extends(SceneDialog, _super);
     function SceneDialog() {
@@ -15459,8 +15463,8 @@ module.exports = "<app-modal id=\"particleSystemPreviewModal\"><div data-transcl
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var gameObject_1 = __webpack_require__(28);
-var spriteSheet_1 = __webpack_require__(25);
+var gameObject_1 = __webpack_require__(29);
+var spriteSheet_1 = __webpack_require__(26);
 var FrameAnimationDialog = (function (_super) {
     tslib_1.__extends(FrameAnimationDialog, _super);
     function FrameAnimationDialog() {
@@ -15695,9 +15699,9 @@ module.exports = "<app-modal id=\"buildModal\"><div data-transclusion=\"content\
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var baseComponent_1 = __webpack_require__(1);
-var codeTemplates_1 = __webpack_require__(44);
+var codeTemplates_1 = __webpack_require__(45);
 var editData_1 = __webpack_require__(8);
-var utils_1 = __webpack_require__(20);
+var utils_1 = __webpack_require__(21);
 var getRawName = function (str) {
     var splited = str.split('.');
     if (splited.length == 1)

@@ -1097,13 +1097,13 @@ var WsService = (function () {
             connection.on('message', function (message) {
                 if (message.type === 'utf8') {
                     var payload = JSON.parse(message.utf8Data);
-                    console.log('ws user message', payload);
                     _this.execute(connection, payload);
                 }
             });
             connection.on('close', function (connection) {
                 var index = _this.connections.findIndex(function (it) { return it.connection === connection; });
-                _this.connections.splice(index, 1);
+                var conn = _this.connections.splice(index, 1);
+                console.log('closed', conn.clientId);
             });
         });
     };
@@ -1983,11 +1983,8 @@ var GeneratorService = (function () {
                         return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/out/")];
                     case 1:
                         _a.sent();
-                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/generated/src/engine")];
-                    case 2:
-                        _a.sent();
                         return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/generated/src/app")];
-                    case 3:
+                    case 2:
                         _a.sent();
                         return [2];
                 }
@@ -2001,14 +1998,11 @@ var GeneratorService = (function () {
                 switch (_e.label) {
                     case 0:
                         console.log('generating data', params);
-                        return [4, fs_1.default.copyFolder("client-app/engine", "workspace/" + params.projectName + "/generated/src/")];
+                        return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/scripts", "workspace/" + params.projectName + "/generated/src/app/")];
                     case 1:
                         _e.sent();
-                        return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/scripts", "workspace/" + params.projectName + "/generated/src/app/")];
-                    case 2:
-                        _e.sent();
                         return [4, fs_1.default.readDir("workspace/" + params.projectName + "/scripts", undefined, false)];
-                    case 3:
+                    case 2:
                         allScripts = (_e.sent()).map(function (it) { return it.name.split('.')[0]; });
                         allScriptCode = '';
                         allScripts.forEach(function (scriptName) {
@@ -2016,39 +2010,39 @@ var GeneratorService = (function () {
                         });
                         allScriptCode = allScriptCode.split('  ').join('');
                         return [4, fs_1.default.createFile("workspace/" + params.projectName + "/generated/src/app/scripts/allScripts.js", allScriptCode)];
-                    case 4:
+                    case 3:
                         _e.sent();
                         _b = (_a = JSON).parse;
                         return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/repository.json")];
-                    case 5:
+                    case 4:
                         repository = _b.apply(_a, [_e.sent()]);
                         _d = (_c = JSON).parse;
                         return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/gameProps.json")];
-                    case 6:
+                    case 5:
                         gameProps = _d.apply(_c, [_e.sent()]);
                         return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/repository.ts", "export let repository:any = \n\t" + JSON.stringify(repository, null, 4) + ";")];
-                    case 7:
+                    case 6:
                         _e.sent();
                         return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/gameProps.ts", "export let gameProps:any = \n\t" + JSON.stringify(gameProps, null, 4) + ";")];
-                    case 8:
+                    case 7:
                         _e.sent();
                         return [4, fs_1.default.copyFile('node-app/generator/index.tpl', "workspace/" + params.projectName + "/generated/src/index.ts")];
-                    case 9:
+                    case 8:
                         _e.sent();
                         embeddedResources = {};
-                        if (!!params.embedResources) return [3, 11];
+                        if (!!params.embedResources) return [3, 10];
                         return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/resources/", "workspace/" + params.projectName + "/out/")];
-                    case 10:
+                    case 9:
                         _e.sent();
-                        return [3, 13];
-                    case 11: return [4, fs_1.default.readDir("workspace/" + params.projectName + "/resources", 'binary')];
-                    case 12:
+                        return [3, 12];
+                    case 10: return [4, fs_1.default.readDir("workspace/" + params.projectName + "/resources", 'binary')];
+                    case 11:
                         (_e.sent()).forEach(function (file) {
                             embeddedResources["resources/" + file.name] = "data:image/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
                         });
-                        _e.label = 13;
-                    case 13: return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/embeddedResources.ts", "export let embeddedResources:any = \n\t" + JSON.stringify(embeddedResources, null, 4) + ";")];
-                    case 14:
+                        _e.label = 12;
+                    case 12: return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/embeddedResources.ts", "export let embeddedResources:any = \n\t" + JSON.stringify(embeddedResources, null, 4) + ";")];
+                    case 13:
                         _e.sent();
                         return [2];
                 }
@@ -2061,6 +2055,7 @@ var GeneratorService = (function () {
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
                         console.log('compiling');
+                        wsService_1.wsService.send(params.clientId, { message: 'compiling', success: true });
                         var compiler = _this.getCompiler(params);
                         response.setHeader('Content-Type', 'text/html');
                         compiler.onProgress(function (msg) {
@@ -2080,7 +2075,7 @@ var GeneratorService = (function () {
                                         _a.sent();
                                         response.end();
                                         reject(err);
-                                        return [3, 10];
+                                        return [3, 11];
                                     case 2:
                                         if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 3];
                                         console.error("compiled with " + data.compilation.errors.length + " error(s)");
@@ -2094,7 +2089,7 @@ var GeneratorService = (function () {
                                         }).join('\n\t---------\t\n');
                                         response.end();
                                         reject(errorMsg);
-                                        return [3, 10];
+                                        return [3, 11];
                                     case 3:
                                         console.log('creating index.html');
                                         return [4, fs_1.default.readFile('./node-app/generator/index.html')];
@@ -2120,10 +2115,14 @@ var GeneratorService = (function () {
                                         return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/bundle.js", appBundleJs)];
                                     case 9:
                                         _a.sent();
+                                        return [4, fs_1.default.deleteFolder("./workspace/" + params.projectName + "/generated/")];
+                                    case 10:
+                                        _a.sent();
                                         response.end();
+                                        console.log('completed');
                                         resolve();
-                                        _a.label = 10;
-                                    case 10: return [2];
+                                        _a.label = 11;
+                                    case 11: return [2];
                                 }
                             });
                         }); });
@@ -2137,7 +2136,6 @@ var GeneratorService = (function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log('cache', this.processCache);
                         if (this.processCache[params.projectName]) {
                             message = "generation of " + params.projectName + " already started";
                             console.error('generator error', message);
@@ -4302,7 +4300,7 @@ exports.configFn = function (params) {
                 BUILD_AT: new Date().getTime(),
                 IN_EDITOR: false,
                 DEBUG: !!params.debug,
-                PROJECT_NAME: params.projectName,
+                PROJECT_NAME: JSON.stringify(params.projectName),
                 EMBED_RESOURCES: !!params.embedResources
             }),
         ],

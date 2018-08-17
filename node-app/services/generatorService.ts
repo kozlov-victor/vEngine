@@ -63,13 +63,11 @@ class GeneratorService {
     private async createFolders(params){
         console.log('creating folders');
         await fs.createFolder(`workspace/${params.projectName}/out/`);
-        await fs.createFolder(`workspace/${params.projectName}/generated/src/engine`);
         await fs.createFolder(`workspace/${params.projectName}/generated/src/app`);
     }
 
     private async generateData(params) {
         console.log('generating data',params);
-        await fs.copyFolder(`client-app/engine`,`workspace/${params.projectName}/generated/src/`);
         await fs.copyFolder(`workspace/${params.projectName}/scripts`,`workspace/${params.projectName}/generated/src/app/`);
         let allScripts = (await fs.readDir(`workspace/${params.projectName}/scripts`,undefined,false)).map(it=>it.name.split('.')[0]);
         let allScriptCode = '';
@@ -153,7 +151,7 @@ class GeneratorService {
                         console.log('creating bundle');
                         let appBundleJs = await fs.readFile(`./workspace/${params.projectName}/generated/tmp/bundle.js`);
                         await fs.createFile(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
-                        //fs.deleteFolderSync(`./workspace/${params.projectName}/generated/tmp`);
+                        await fs.deleteFolder(`./workspace/${params.projectName}/generated/`);
                         response.end();
                         console.log('completed');
                         resolve();

@@ -1,3 +1,4 @@
+import {DebugError} from "../debugError";
 declare const DEBUG:boolean;
 
 import {Tween} from "./tween";
@@ -72,7 +73,7 @@ export class Camera {
 
     followTo(gameObject) {
         if (gameObject===null) return;
-        if (DEBUG && gameObject===undefined) throw `Camera:followTo(gameObject) - gameObject not provided`;
+        if (DEBUG && gameObject===undefined) throw new DebugError(`Camera:followTo(gameObject) - gameObject not provided`);
         this.objFollowTo = gameObject;
         this.revalidate();
     }

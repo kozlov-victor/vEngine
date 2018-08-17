@@ -61,7 +61,7 @@ export const configFn = (params)=>{
                 BUILD_AT: new Date().getTime(),
                 IN_EDITOR: false,
                 DEBUG: !!params.debug,
-                PROJECT_NAME: params.projectName,
+                PROJECT_NAME: JSON.stringify(params.projectName),
                 EMBED_RESOURCES: !!params.embedResources
             }),
             //new HardSourceWebpackPlugin()

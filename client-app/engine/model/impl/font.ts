@@ -1,4 +1,5 @@
 
+import {DebugError} from "../../debugError";
 declare const DEBUG: boolean;
 
 import {Game} from "../../core/game";
@@ -25,15 +26,17 @@ export class Font extends Resource {
         super(game);
     }
 
+    //fgh.abstract
+
     revalidate(){
         super.revalidate();
         let s = this.fontContext.symbols;
         this.fontContext.symbols = {};
         Object.keys(s).forEach((key:string)=>{
             if (DEBUG) {
-                if (!s[key]) {
+                if (s[key]==undefined) {
                     console.error(s);
-                    throw `can not find proper object for key ${key}`;
+                    throw new DebugError(`font revalidation error: can not find proper object for key ${key}`);
                 }
             }
             this.fontContext.symbols[key] = new Rect(s[key].x,s[key].y,s[key].width,s[key].height);

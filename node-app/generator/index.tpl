@@ -1,7 +1,7 @@
 declare const DEBUG:boolean;
 declare const EMBED_RESOURCES:boolean;
 
-import {Game} from "./engine/core/game";
+import {Game} from "../../../../client-app/engine/core/game";
 import {gameProps} from "./app/gameProps";
 import {repository} from "./app/repository";
 
