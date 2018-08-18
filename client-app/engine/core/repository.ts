@@ -1,3 +1,4 @@
+import {DebugError} from "../debugError";
 
 declare const DEBUG:boolean;
 
@@ -33,20 +34,20 @@ export class Repository {
     }
 
     getObject(id,type,forceNew = false){
-        if (DEBUG && !type) throw 'repository.getObject: type not specified';
+        if (DEBUG && !type) throw new DebugError('repository.getObject: type not specified');
         if (DEBUG && id==null) {
             console.trace("id is null");
-            throw `::getObject() id not specified for type ${type}`;
+            throw new DebugError(`::getObject() id not specified for type ${type}`);
         }
         let Clazz = models[type];
 
         if (DEBUG && !Clazz) {
-            throw `::getObject() undeclared object type ${type}`
+            throw new DebugError(`::getObject() undeclared object type ${type}`);
         }
         if (DEBUG && !this.descriptions[type]) throw `not found description for type: ${type}`;
         let desc = this.descriptions[type].find(it=>it.id==id);
-        if (!desc) {
-            throw `can not find object "${type}" with id ${id}`;
+        if (DEBUG && !desc) {
+            throw new DebugError(`can not find object "${type}" with id ${id}`);
         }
         if (forceNew || !this.cache[desc[id]]) this.cache[id] = new Clazz(this._game).fromJSON(desc);
         return this.cache[id];
@@ -61,7 +62,7 @@ export class Repository {
     addObject(obj){
         if (DEBUG && !obj.id) {
             console.error(obj);
-            throw `addObject: id is not provided`;
+            throw new DebugError(`addObject: id is not provided`);
         }
         if (!this.arrays[obj.type]) this.arrays[obj.type] = [];
         this.arrays[obj.type].push(obj);
@@ -91,14 +92,14 @@ export class Repository {
     }
 
     getArray(type){
-        if (DEBUG && !models[type]) throw `getArray: unregistered type "${type}"`;
+        if (DEBUG && !models[type]) throw new DebugError(`getArray: unregistered type "${type}"`);
         if (this.arrays[type]) return this.arrays[type];
         let res = [];
         if (!this.descriptions[type]) this.descriptions[type] = [];
         this.descriptions[type].forEach(desc=>{
             if (DEBUG && (desc.id===null || desc.id===undefined)) {
                 console.error(desc);
-                throw `object id must me specified`;
+                throw new DebugError(`object id must me specified`);
             }
             res.push(this.getObject(desc.id,type));
         });

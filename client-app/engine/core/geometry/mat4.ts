@@ -1,3 +1,5 @@
+import {DebugError} from "../../debugError";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 // todo convert to plain good oop style???
@@ -205,7 +207,7 @@ export let inverse = (m:number[])=>{
     let det = m[0]*r[0] + m[1]*r[4] + m[2]*r[8] + m[3]*r[12];
     if (DEBUG && det===0) {
         console.error(m);
-        throw new Error("can not invert matrix");
+        throw new DebugError("can not invert matrix");
     }
     for (let i = 0; i < 16; i++) r[i] /= det;
     return r;

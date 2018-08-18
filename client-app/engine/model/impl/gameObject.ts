@@ -5,6 +5,7 @@ import {_global} from "../../core/global";
 import {noop} from "../../core/misc/noop";
 import {BaseAbstractBehaviour} from "../../commonBehaviour/abstract/baseAbstractBehaviour";
 import {Game} from "../../core/game";
+import {DebugError} from "../../debugError";
 
 declare const DEBUG:boolean;
 
@@ -84,7 +85,7 @@ export class GameObject extends GameObjectProto {
 
     moveToFront(){
         let index = this.parent.children.indexOf(this);
-        if (DEBUG && index==-1) throw `can not move to front: gameObject is detached`;
+        if (DEBUG && index==-1) throw new DebugError(`can not move to front: gameObject is detached`);
         this.parent.children.splice(index,1);
         this.parent.children.push(this);
 
@@ -92,7 +93,7 @@ export class GameObject extends GameObjectProto {
 
     moveToBack(){
         let index = this.parent.children.indexOf(this);
-        if (DEBUG && index==-1) throw `can not move to back: gameObject is detached`;
+        if (DEBUG && index==-1) throw new DebugError(`can not move to back: gameObject is detached`);
         this.parent.children.splice(index,1);
         this.parent.children.unshift(this);
     }

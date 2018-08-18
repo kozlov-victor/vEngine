@@ -1,3 +1,4 @@
+import {DebugError} from "../../debugError";
 
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
@@ -13,7 +14,7 @@ export class ObjectPool<T> {
      * @param {number} numberOfInstances
      */
     constructor(Class:any, numberOfInstances = 16){
-        if (DEBUG && !Class) throw `can not instantiate ObjectPool: class not provided in constructor`;
+        if (DEBUG && !Class) throw new DebugError(`can not instantiate ObjectPool: class not provided in constructor`);
         for (let i=0;i<numberOfInstances;i++){
             this._pool.push(new Class());
         }

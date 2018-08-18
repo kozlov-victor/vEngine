@@ -1,3 +1,4 @@
+import {DebugError} from "../../../debugError";
 
 declare const DEBUG:boolean;
 
@@ -12,7 +13,7 @@ export abstract class AbstractLight {
     protected game:Game;
 
     constructor(game:Game){
-        if (DEBUG && !game) throw `game instanse is not passed to AbstractLight constructor`;
+        if (DEBUG && !game) throw new DebugError(`game instanse is not passed to AbstractLight constructor`);
         this.game = game;
     }
 

@@ -1,3 +1,4 @@
+import {DebugError} from "../../../../debugError";
 
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
@@ -65,7 +66,7 @@ export class Texture {
     static currInstances:{[index:number]:Texture} = {};
 
     constructor(gl:WebGLRenderingContext){
-        if (DEBUG && !gl) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
+        if (DEBUG && !gl) throw new DebugError("can not create Texture, gl context not passed to constructor, expected: Texture(gl)");
         this.gl = gl;
 
         if (DEBUG) {
@@ -75,7 +76,7 @@ export class Texture {
         }
 
         this.tex = gl.createTexture();
-        if (DEBUG && !this.tex) throw `can not allocate memory for texture`;
+        if (DEBUG && !this.tex) throw new DebugError(`can not allocate memory for texture`);
         gl.bindTexture(gl.TEXTURE_2D, this.tex);
         // Fill the texture with a 1x1 blue pixel.
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
@@ -94,7 +95,8 @@ export class Texture {
      */
     setImage(img,width:number = 0,height:number = 0){
         if (DEBUG) {
-            if (!(img || width || height)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
+            if (!(img || width || height))
+                throw new DebugError("texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)");
         }
 
         const gl = this.gl;
@@ -126,7 +128,7 @@ export class Texture {
 
     applyFilters(filters:Array<AbstractFilter>,frameBuffer:FrameBuffer){
         if (DEBUG && frameBuffer===undefined)
-            throw `can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering`;
+            throw new DebugError(`can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering`);
         let len = filters.length;
         if (len===0) return this;
         if (this._texFilterBuff.buffers===null)
@@ -150,7 +152,7 @@ export class Texture {
     bind(name:string,i:number,program:ShaderProgram) { // uniform eq to 0 by default
         if (DEBUG) {
             if (i>Texture.MAX_TEXTURE_IMAGE_UNITS - 1) {
-                throw `can not bind texture with index ${i}. Max supported value by device is ${Texture.MAX_TEXTURE_IMAGE_UNITS}`;
+                throw new DebugError(`can not bind texture with index ${i}. Max supported value by device is ${Texture.MAX_TEXTURE_IMAGE_UNITS}`);
             }
         }
         program.setUniform(name,i);
@@ -173,7 +175,7 @@ export class Texture {
         let gl:WebGLRenderingContext = this.gl;
         let wxh:number = this.size.width*this.size.height;
         if (DEBUG && gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)
-            throw `Texture.GetColorArray() failed!`;
+            throw new DebugError(`Texture.GetColorArray() failed!`);
         let pixels:Uint8Array = new Uint8Array(wxh * 4);
         gl.readPixels(0, 0, this.size.width, this.size.height, gl.RGBA,
         gl.UNSIGNED_BYTE, pixels);

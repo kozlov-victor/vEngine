@@ -1,14 +1,15 @@
+import {DebugError} from "../../../../debugError";
 
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, shaderType:number):WebGLShader|null=> {
     if (DEBUG) {
-        if (!shaderSource) throw `can not compile shader: shader source not specified for type ${shaderType}`;
+        if (!shaderSource) throw new DebugError(`can not compile shader: shader source not specified for type ${shaderType}`);
     }
     // Create the shader object
     let shader = gl.createShader(shaderType);
-    if (DEBUG && !shader) throw `can not allocate memory for shader: gl.createShader(shaderType)`;
+    if (DEBUG && !shader) throw new DebugError(`can not allocate memory for shader: gl.createShader(shaderType)`);
 
     // Load the shader source
     gl.shaderSource(shader, shaderSource);
@@ -24,9 +25,9 @@ export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, sha
         gl.deleteShader(shader);
         if (DEBUG) {
             console.log(shaderSource);
-            throw `Error compiling shader: ${lastError}`;
+            throw new DebugError(`Error compiling shader: ${lastError}`);
         } else {
-            throw lastError;
+            throw new Error(lastError);
         }
 
     }
@@ -37,7 +38,7 @@ export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, sha
 
 export const createProgram = (gl:WebGLRenderingContext, vertexShader:WebGLShader,fragmentShader:WebGLShader):WebGLProgram=> {
     let program:WebGLProgram = gl.createProgram() as WebGLProgram;
-    if (DEBUG && !program) throw `can not allocate memory for gl.createProgram()`;
+    if (DEBUG && !program) throw new DebugError(`can not allocate memory for gl.createProgram()`);
 
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
@@ -52,9 +53,9 @@ export const createProgram = (gl:WebGLRenderingContext, vertexShader:WebGLShader
         if (DEBUG) {
             let status = gl.getProgramParameter( program, gl.VALIDATE_STATUS);
             console.error('VALIDATE_STATUS',status);
-            throw `Error in program linking ${lastError}`;
+            throw new DebugError(`Error in program linking ${lastError}`);
         } else {
-            throw lastError;
+            throw new Error(lastError);
         }
 
     }
@@ -125,10 +126,10 @@ export const extractUniforms = (gl:WebGLRenderingContext, program:WebGLProgram):
 
     for (let i = 0; i < activeUniforms; i++) {
         let uniformData:WebGLActiveInfo = gl.getActiveUniform(program, i) as WebGLActiveInfo;
-        if (DEBUG && !uniformData) throw `can not receive active uniforms info: gl.getActiveUniform()`;
+        if (DEBUG && !uniformData) throw new DebugError(`can not receive active uniforms info: gl.getActiveUniform()`);
         let type = mapType(gl, uniformData.type);
         let location:WebGLUniformLocation = gl.getUniformLocation(program, uniformData.name) as WebGLUniformLocation;
-        if (DEBUG && location===null) throw `error finding uniform location: ${uniformData.name}`;
+        if (DEBUG && location===null) throw new DebugError(`error finding uniform location: ${uniformData.name}`);
 
         uniforms[uniformData.name] = {
             type,
@@ -149,9 +150,9 @@ export const extractAttributes = (gl:WebGLRenderingContext, program:WebGLProgram
     let attrMap:AttributesMap = {};
     for (let i = 0; i < activeAttributes; i++) {
         let attrData:WebGLActiveInfo = gl.getActiveAttrib(program, i) as WebGLActiveInfo;
-        if (DEBUG && !attrData) throw `can not receive active attribute info: gl.getActiveAttrib()`;
+        if (DEBUG && !attrData) throw new DebugError(`can not receive active attribute info: gl.getActiveAttrib()`);
         let location:number = gl.getAttribLocation(program, attrData.name);
-        if (DEBUG && location<0) throw `error finding attribute location: ${attrData.name}`;
+        if (DEBUG && location<0) throw new DebugError(`error finding attribute location: ${attrData.name}`);
         attrMap[attrData.name] = location;
     }
     return attrMap;
@@ -164,7 +165,7 @@ interface IChecker {
 const TypeNumber:IChecker = {
     check: (val:any):void=>{
         if (isNaN(parseFloat(val)) || !isFinite(val))
-            throw `can not set uniform with value ${val}: expected argument of type number`;
+            throw new DebugError(`can not set uniform with value ${val}: expected argument of type number`);
     }
 };
 
@@ -172,14 +173,14 @@ const TypeInt:IChecker = {
     check: (val:any):void=>{
         TypeNumber.check(val);
         if (val!==~~val)
-            throw `can not set uniform with value ${val}: expected argument of integer type, but ${val} found`;
+            throw new DebugError(`can not set uniform with value ${val}: expected argument of integer type, but ${val} found`);
     }
 };
 
 const TypeBool:IChecker = {
     check: (val:any):void=>{
         if (!(val==true || val==false))
-            throw `can not set uniform with value ${val}: expected argument of boolean type, but ${val} found`;
+            throw new DebugError(`can not set uniform with value ${val}: expected argument of boolean type, but ${val} found`);
     }
 };
 
@@ -188,19 +189,19 @@ const TypeArray = (checker:IChecker,size?:number):IChecker=>{
     return {
         check: (val:any)=>{
             if (!val)
-                throw `can not set uniform  value: ${val}`;
+                throw new DebugError(`can not set uniform  value: ${val}`);
             if (!val.splice) {
                 console.error('Can not set uniform value',val);
-                throw `can not set uniform with value [${val}]: expected argument of type Array`;
+                throw new DebugError(`can not set uniform with value [${val}]: expected argument of type Array`);
             }
             if (size!==undefined && val.length!==size)
-                throw `can not set uniform with value [${val}]: expected array with size ${size}, but ${val.length} found`;
+                throw new DebugError(`can not set uniform with value [${val}]: expected array with size ${size}, but ${val.length} found`);
             for (let i=0;i<val.length;i++) {
                 try {
                     checker.check(val[i]);
                 } catch (e){
                     console.error('Can not set uniform array item',val);
-                    throw `can not set uniform array item with value [${val}]: unexpected array element type: ${val[i]}`;
+                    throw new DebugError(`can not set uniform array item with value [${val}]: unexpected array element type: ${val[i]}`);
                 }
             }
         }
@@ -279,7 +280,7 @@ export const getUniformSetter = function(size:number,type:string){
                 gl.uniform1i(location, value);
             };
             default:
-                if (DEBUG) throw `can not set uniform for type ${type} and size ${size}`;
+                if (DEBUG) throw new DebugError(`can not set uniform for type ${type} and size ${size}`);
                 break;
         }
     } else {
@@ -337,7 +338,7 @@ export const getUniformSetter = function(size:number,type:string){
                 gl.uniform1iv(location, value);
             };
             default:
-                if (DEBUG) throw `can not set uniform for type ${type} and size ${size}`;
+                if (DEBUG) throw new DebugError(`can not set uniform for type ${type} and size ${size}`);
                 break;
         }
     }

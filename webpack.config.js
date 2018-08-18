@@ -9,12 +9,15 @@ const debug = true;
 class WebpackDonePlugin{
     apply(compiler){
         compiler.hooks.done.tap('compilation',  (stats)=> {
+            let date = new Date();
+            let hash = date.getTime();
+            fs.writeFileSync('app-meta.json',JSON.stringify({hash}));
             if (stats.compilation.errors && stats.compilation.errors.length ) {
                 console.error(`errors: ${stats.compilation.errors.length}`);
-                let errorMessage = `;window.onerror("compiled with ${stats.compilation.errors.length} error(s)");`;
+                let errorMessage = `window.showError("compiled with ${stats.compilation.errors.length} error(s)");`;
                 fs.writeFileSync('assets/js/build/compileMessageScript.js',errorMessage);
             } else {
-                let successMessage = `build at ${new Date()}`;
+                let successMessage = `build at ${date}`;
                 console.log(successMessage);
                 fs.writeFileSync('assets/js/build/compileMessageScript.js',`console.log("${successMessage}")`);
             }

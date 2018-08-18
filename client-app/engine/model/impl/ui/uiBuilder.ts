@@ -89,6 +89,7 @@ interface UIDescription {
 import * as allUIClasses from './all';
 import {AbsoluteLayout} from "./layouts/absoluteLayout";
 import {Container} from "./generic/container";
+import {DebugError} from "../../../debugError";
 
 export class UIBuilder {
 
@@ -110,7 +111,7 @@ export class UIBuilder {
                     let typeToFind = obj[propName].type;
                     let nameToFind = obj[propName].name;
                     obj[propName] = this.game.repository.getArray(typeToFind).find(it=>it.name==nameToFind);
-                    if (!obj[propName]) throw `can not find object {type:${typeToFind},name:${nameToFind}}`;
+                    if (!obj[propName]) throw new DebugError(`can not find object {type:${typeToFind},name:${nameToFind}}`);
                 }
                 else obj[propName] = this.resolveObj(obj[propName].type,obj[propName]);
             }
@@ -119,7 +120,7 @@ export class UIBuilder {
             let hasProperty:boolean = propName in obj;
             if (DEBUG && !hasProperty && !hasSetter) {
                 console.error(instance);
-                throw `nor method ${setterName} not property ${propName} found`;
+                throw new DebugError(`nor method ${setterName} not property ${propName} found`);
             }
             if (hasSetter) instance[setterName].call(instance,...obj[propName]);
             else {
@@ -129,7 +130,7 @@ export class UIBuilder {
                     if (!(propName in instance)) {
                         console.error(instance);
                         let constructorName = (instance.constructor && instance.constructor.name)||'';
-                        throw `uiBuilder error: object ${constructorName} has not property ${propName}`;
+                        throw new DebugError(`uiBuilder error: object ${constructorName} has not property ${propName}`);
                     }
                     instance[propName] = obj[propName];
                 }
@@ -141,7 +142,7 @@ export class UIBuilder {
 
     private resolveObj(key:string,obj:any):Container{
         let Clazz = allUIClasses[key];
-        if (DEBUG && !Clazz) throw `no such ui class: ${key}`;
+        if (DEBUG && !Clazz) throw new DebugError(`no such ui class: ${key}`);
         let instance = new Clazz(this.game);
         this.resolveObjProperties(instance,obj);
         instance.revalidate();
@@ -165,7 +166,7 @@ export class UIBuilder {
 
     build(desc:UIDescription):Container{
         let allKeys = Object.keys(desc);
-        if (DEBUG && allKeys.length>1) throw `only one root element is supported. Found: ${allKeys}`;
+        if (DEBUG && allKeys.length>1) throw new DebugError(`only one root element is supported. Found: ${allKeys}`);
         let firstKey = Object.keys(desc)[0];
         let rootObj = desc[firstKey];
         if (firstKey==='AbsoluteLayout') return this.resolveAbsoluteLayout(rootObj);

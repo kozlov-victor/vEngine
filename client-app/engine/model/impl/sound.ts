@@ -1,6 +1,7 @@
 
 import {BaseModel} from '../baseModel'
 import {Game} from "../../core/game";
+import {DebugError} from "../../debugError";
 
 export class Sound extends BaseModel {
 
@@ -28,7 +29,7 @@ export class Sound extends BaseModel {
         //audioPlayer.stop(this);
     }
     pause(){
-        throw 'not implemented'
+        throw new DebugError('not implemented');
     }
     setGain(val:number,time:number,easeFnName:string){
         //audioPlayer.setGain(this,val,time,easeFnName);

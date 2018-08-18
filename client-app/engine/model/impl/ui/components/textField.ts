@@ -1,6 +1,7 @@
 import {Container} from "../generic/container";
 import {Font} from "../../font";
 import {Rect} from "../../../../core/geometry/rect";
+import {DebugError} from "../../../../debugError";
 
 declare const DEBUG:boolean;
 type char = string;
@@ -155,11 +156,11 @@ export class TextField extends Container {
         super.revalidate();
         if (DEBUG && !this.name) {
             console.error(this);
-            throw `property 'name' not set at object of type ${this.type}`;
+            throw new DebugError(`property 'name' not set at object of type ${this.type}`);
         }
         if (this.font===null)
             this.font = this.game.repository.getArray('Font')[0];
-        if (DEBUG && !this.font) throw `at least one Font must be created`;
+        if (DEBUG && !this.font) throw new DebugError(`at least one Font must be created`);
         this.setFont(this.font);
         this._dirty = true;
     }
@@ -213,7 +214,7 @@ export class TextField extends Container {
 
     setFontName(name){
         let font = this.game.repository.getArray('Font').find(it=>it.name==name);
-        if (!font) throw `can not find font with name ${name}`;
+        if (!font) throw new DebugError(`can not find font with name ${name}`);
         this.setFont(font);
     }
 

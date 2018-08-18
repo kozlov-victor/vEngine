@@ -1,6 +1,7 @@
 
 import {AbstractDomRenderer} from './abstractDomRender'
 import {Game} from "../../game";
+import {DebugError} from "../../../debugError";
 
 export class SvgRenderer extends AbstractDomRenderer {
 
@@ -52,7 +53,7 @@ export class SvgRenderer extends AbstractDomRenderer {
         setTimeout(()=>{
             let resDomId = resourcePath.split(/[/.]/).join('_');
             let svgEmbeddedInDom = document.getElementById(resDomId);
-            if (!svgEmbeddedInDom) throw `not found embedded svg with id ${resDomId}_svg`;
+            if (!svgEmbeddedInDom) throw new DebugError(`not found embedded svg with id ${resDomId}_svg`);
             this.renderableCache[resourcePath].texture =
                 svgEmbeddedInDom.querySelector('svg').cloneNode(true) as SVGElement;
             svgEmbeddedInDom.parentNode.removeChild(svgEmbeddedInDom);

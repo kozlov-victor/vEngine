@@ -18,7 +18,8 @@ export class HbsSettings {
             return fs.readFileSync(`./node-app/mvc/views/${name}`);
         });
         handlebars.registerHelper('script',function(name, value, context){
-            return `<script onerror="onLoadingError()" type="text/javascript" src="${name}"></script>`
+            let appMeta = JSON.parse(fs.readFileSync('./app-meta.json'));
+            return `<script onerror="onLoadingError()" type="text/javascript" src="${name}?hash=${appMeta.hash}"></script>`
         });
     }
 }

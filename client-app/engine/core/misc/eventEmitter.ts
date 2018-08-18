@@ -1,3 +1,4 @@
+import {DebugError} from "../../debugError";
 
 declare const DEBUG:boolean;
 
@@ -31,7 +32,7 @@ export class EventEmitter{
         let index = es.indexOf(callback);
         if (DEBUG && index==-1) {
             console.error(callback);
-            throw `can not remove event listener ${eventName}`;
+            throw new DebugError(`can not remove event listener ${eventName}`);
         }
         es.splice(index,1);
     };

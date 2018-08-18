@@ -1,3 +1,4 @@
+import {DebugError} from "../../../../debugError";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -13,17 +14,17 @@ export class VertexBuffer {
     private attrName:string;
 
     constructor(gl:WebGLRenderingContext){
-        if (DEBUG && !gl) throw "can not create VertexBuffer, gl context not passed to constructor, expected: VertexBuffer(gl)";
+        if (DEBUG && !gl) throw new DebugError("can not create VertexBuffer, gl context not passed to constructor, expected: VertexBuffer(gl)");
         this.gl = gl;
         this.buffer = gl.createBuffer();
-        if (DEBUG && !this.buffer) throw `can not allocate memory for vertex buffer`;
+        if (DEBUG && !this.buffer) throw new DebugError(`can not allocate memory for vertex buffer`);
     }
 
     setData(bufferData:number[], itemType:number, itemSize:number){
         if (DEBUG) {
-            if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
-            if (!itemType) throw 'can not set data to buffer: itemType not specified';
-            if (!itemSize) throw 'can not set data to buffer: itemSize not specified';
+            if (!bufferData) throw new DebugError('can not set data to buffer: bufferData not specified');
+            if (!itemType) throw new DebugError('can not set data to buffer: itemType not specified');
+            if (!itemSize) throw new DebugError('can not set data to buffer: itemSize not specified');
         }
         const gl:WebGLRenderingContext = this.gl;
 
@@ -41,8 +42,8 @@ export class VertexBuffer {
     }
 
     bind(program:ShaderProgram){
-        if (DEBUG && !program) throw "can not bind VertexBuffer, program not specified";
-        if (DEBUG && !this.attrName) throw "can not bind VertexBuffer, attribute name not specified";
+        if (DEBUG && !program) throw new DebugError("can not bind VertexBuffer, program not specified");
+        if (DEBUG && !this.attrName) throw new DebugError("can not bind VertexBuffer, attribute name not specified");
         program.bindBuffer(this,this.attrName);
     }
 

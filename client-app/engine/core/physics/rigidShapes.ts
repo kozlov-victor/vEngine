@@ -1,6 +1,7 @@
 
 import {Game} from "../game";
 import {Point2d} from "../geometry/point2d";
+import {DebugError} from "../../debugError";
 declare const DEBUG:boolean;
 
 
@@ -251,7 +252,7 @@ export class RigidCircle extends RigidShape {
         } else {
             if (DEBUG) {
                 console.error(this,otherShape);
-                throw `collision test error`;
+                throw new DebugError(`collision test error`);
             }
         }
     }
@@ -375,7 +376,7 @@ export class RigidRectangle extends RigidShape {
         else {
             if (DEBUG) {
                 console.error(this,otherShape);
-                throw `collision test error`;
+                throw new DebugError(`collision test error`);
             }
 
         }

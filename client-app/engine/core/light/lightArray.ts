@@ -1,3 +1,4 @@
+import {DebugError} from "../../debugError";
 
 declare const DEBUG:boolean;
 
@@ -11,7 +12,7 @@ export class LightArray {
     private lights:Array<PointLight>;
 
     constructor(game:Game){
-        if (DEBUG && !game) throw `game instance is not passed to LightArray constructor`;
+        if (DEBUG && !game) throw new DebugError(`game instance is not passed to LightArray constructor`);
         this.lights = new Array(LightArray.NUM_OF_LIGHT_IN_VIEW);
         for (let i=0;i<this.lights.length;i++){
             this.lights[i] = new PointLight(game);

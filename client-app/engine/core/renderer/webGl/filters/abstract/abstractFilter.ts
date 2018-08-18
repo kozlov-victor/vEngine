@@ -10,6 +10,7 @@ import {TexShaderGenerator} from "../../shaders/generators/impl/texShaderGenerat
 import {ShaderGenerator} from "../../shaders/generators/shaderGenerator";
 import {Texture} from "../../base/texture";
 import {FrameBuffer} from "../../base/frameBuffer";
+import {DebugError} from "../../../../../debugError";
 
 
 const makePositionMatrix = (dstX:number,dstY:number,dstWidth:number,dstHeight:number):number[] =>{
@@ -29,7 +30,7 @@ export abstract class AbstractFilter {
     constructor(gl:WebGLRenderingContext){
         if (DEBUG && !gl) {
             console.error(this);
-            throw "can not create Filter, gl context not passed to constructor, expected: Filter(gl)";
+            throw new DebugError("can not create Filter, gl context not passed to constructor, expected: Filter(gl)");
         }
         this.gl = gl;
         let gen = new TexShaderGenerator();

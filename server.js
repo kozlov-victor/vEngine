@@ -1345,7 +1345,8 @@ var HbsSettings = (function () {
             return fs.readFileSync("./node-app/mvc/views/" + name);
         });
         handlebars.registerHelper('script', function (name, value, context) {
-            return "<script onerror=\"onLoadingError()\" type=\"text/javascript\" src=\"" + name + "\"></script>";
+            var appMeta = JSON.parse(fs.readFileSync('./app-meta.json'));
+            return "<script onerror=\"onLoadingError()\" type=\"text/javascript\" src=\"" + name + "?hash=" + appMeta.hash + "\"></script>";
         });
     }
     return HbsSettings;
@@ -4229,8 +4230,10 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 /* 24 */
 /***/ (function(module, exports) {
 
+var toString = {}.toString;
+
 module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
+  return toString.call(arr) == '[object Array]';
 };
 
 

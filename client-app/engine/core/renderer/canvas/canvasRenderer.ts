@@ -1,8 +1,4 @@
-
-
-
-declare const IN_EDITOR:boolean,DEBUG:boolean;
-
+import {DebugError} from "../../../debugError";
 import {Game} from "../../game";
 import {GameObject} from "../../../model/impl/gameObject";
 import {Rect} from "../../geometry/rect";
@@ -12,7 +8,9 @@ import {Color} from "../../color";
 import {Size} from "../../geometry/size";
 import { AbstractFilter } from '../webGl/filters/abstract/abstractFilter';
 import { DrawableInfo } from '../webGl/renderPrograms/interface/drawableInfo';
- 
+
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 const getCtx = el=>{
     return (
         el.getContext("2d")
@@ -151,7 +149,7 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
     }
 
     rotateY(angleInRadians:number) {
-        throw 'rotateY not supported by canvasRenderer'
+        if (DEBUG) throw new DebugError('rotateY not supported by canvasRenderer');
     }
 
     translate(x:number,y:number){

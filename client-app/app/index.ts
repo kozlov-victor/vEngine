@@ -88,5 +88,3 @@ if (sessionStorage['projectName']) {
     resourceHelper.loadProject(sessionStorage['projectName']);
 }
 else RF.Router.navigateTo('explorer');
-
-console.log(`built at: ${new Date(+BUILD_AT)}`);

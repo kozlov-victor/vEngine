@@ -6,6 +6,7 @@ import {AbstractFilter} from "../../core/renderer/webGl/filters/abstract/abstrac
 import {RigidRectangle,Vec2} from '../../core/physics/rigidShapes';
 import {CommonObject} from "../commonObject";
 import {Transient} from "../../core/misc/decorators";
+import {DebugError} from "../../debugError";
 
 declare const DEBUG:boolean;
 
@@ -57,7 +58,7 @@ export class TileMap extends CommonObject  {
             let found = cnt;
             let expected = source.length;
             if (expected!==found) {
-                throw `incorrect mapWidth/mapHeight provided. Expected ${expected} tiles, but ${found} found (${mapWidth}*${mapHeight})`;
+                throw new DebugError(`incorrect mapWidth/mapHeight provided. Expected ${expected} tiles, but ${found} found (${mapWidth}*${mapHeight})`);
             }
         }
     }

@@ -1,3 +1,4 @@
+import {DebugError} from "../../../debugError";
 
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
@@ -147,8 +148,8 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
         let texture:Texture = this.renderableCache[texturePath].texture;
         if (DEBUG && !texture) {
-            if (!texturePath) throw `no texture path provided`;
-            else throw `can not find texture with path ${texturePath}`;
+            if (!texturePath) throw new DebugError(`no texture path provided`);
+            else throw new DebugError(`can not find texture with path ${texturePath}`);
         }
         let texInfo:TextureInfo[] = [{texture,name:'texture'}];
         let drawableInfo:DrawableInfo = {blendMode:'normal',acceptLight:false};
@@ -166,8 +167,8 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         let texture:Texture = this.renderableCache[texturePath].texture;
         texture = texture.applyFilters(filters,this.frameBuffer);
         if (DEBUG && !texture) {
-            if (!texturePath) throw `no texture path provided`;
-            else throw `can not find texture with path ${texturePath}`;
+            if (!texturePath) throw new DebugError(`no texture path provided`);
+            else throw new DebugError(`can not find texture with path ${texturePath}`);
         }
         let texInfo:TextureInfo[] = [{texture,name:'texture'}];
         this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstRect);
@@ -279,8 +280,8 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
         let texture:Texture = this.renderableCache[texturePath].texture;
         if (DEBUG && !texture) {
-            if (!texturePath) throw `no texture path provided`;
-            else throw `can not find texture with path ${texturePath}`;
+            if (!texturePath) throw new DebugError(`no texture path provided`);
+            else throw new DebugError(`can not find texture with path ${texturePath}`);
         }
 
         let uniforms:UniformsInfo = {
@@ -355,7 +356,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     }
 
     setAlpha(a:number){
-        throw 'not implemented';
+        if (DEBUG) throw new DebugError('not implemented');
     }
 
     save() {
@@ -450,7 +451,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     loadTextureInfo(resourcePath:string,onLoad:()=>void){
         let img = new Image();
         let resource = this.getResource(resourcePath);
-        if (DEBUG && !resource) throw `can not find resource with path ${resourcePath}`;
+        if (DEBUG && !resource) throw new DebugError(`can not find resource with path ${resourcePath}`);
         img.src = resource;
         img.onload = ()=>{
             let texture = new Texture(this.gl);
@@ -460,7 +461,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         };
         if (DEBUG) {
             img.onerror = ()=>{
-                throw `Resource loading error: can not load resource "${resourcePath}"`;
+                throw new DebugError(`Resource loading error: can not load resource "${resourcePath}"`);
             }
         }
     }

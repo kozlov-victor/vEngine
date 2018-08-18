@@ -1,5 +1,7 @@
 /*global DEBUG:true*/
 
+import {DebugError} from "../../../../debugError";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import {
@@ -42,12 +44,12 @@ export class ShaderProgram {
         let uniform = this.uniforms[name];
         if (DEBUG && !uniform) {
             console.error(this);
-            throw `no uniform with name ${name} found!`;
+            throw new DebugError(`no uniform with name ${name} found!`);
         }
         if (DEBUG) {
             if (ShaderProgram.currentProgram!==this) {
                 console.error(this);
-                throw `can not set uniform: target program is inactive`;
+                throw new DebugError(`can not set uniform: target program is inactive`);
             }
         }
         uniform.setter(this.gl, uniform.location, value);
@@ -55,10 +57,10 @@ export class ShaderProgram {
 
     bindBuffer(buffer:VertexBuffer, attrName:string) {
         if (DEBUG) {
-            if (!attrName) throw `can not found attribute location: attrLocationName not defined`;
+            if (!attrName) throw new DebugError(`can not found attribute location: attrLocationName not defined`);
             if (this.attributes[attrName]===undefined) {
                 console.log(this);
-                throw `can not found attribute location for  ${attrName}`;
+                throw new DebugError(`can not found attribute location for  ${attrName}`);
             }
         }
 

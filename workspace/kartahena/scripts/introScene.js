@@ -12,9 +12,8 @@ export class IntroSceneBehaviour {
                 layoutWidth: 0,
                 layoutHeight: 0,
                 background: {
-                    type: 'Image', // NinePatchImage Image
+                    type: 'Image',
                     resourceMap: {main:'resources/bg.jpg'},
-                    //ABCD: 20
                 },
                 children: [
                     {
@@ -33,10 +32,10 @@ export class IntroSceneBehaviour {
                     },
                     {
                         Button: {
-                            pos: {x:360,y:522},
+                            pos: {x:360,y:500},
                             fontName: 'scriptFont', 
                             text: "Продолжить",
-                            paddings:15,
+                            paddings:[15,25],
                             background: {
                                 type: 'NinePatchImage',
                                 resourceMap: {main:'resources/button.png'},

@@ -1,3 +1,4 @@
+import {DebugError} from "../../../../debugError";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -34,11 +35,11 @@ export class BufferInfo {
         this.gl = gl;
 
         if (DEBUG && description.drawMethod===undefined)
-            throw `can not create BufferInfo: drawMethod not defined`;
+            throw new DebugError(`can not create BufferInfo: drawMethod not defined`);
         this.drawMethod = description.drawMethod;
 
         if (DEBUG && !description.posVertexInfo)
-            throw `can not create BufferInfo: posVertexInfo is mandatory`;
+            throw new DebugError(`can not create BufferInfo: posVertexInfo is mandatory`);
         this.posVertexBuffer = new VertexBuffer(gl);
         this.posVertexBuffer.setData(
             description.posVertexInfo.array,
@@ -87,7 +88,7 @@ export class BufferInfo {
             case this.gl.TRIANGLE_FAN:
                 return this.posVertexBuffer.getBufferLength() / 2;
             default:
-                throw `unknown draw method: ${drawMethod}`;
+                throw new DebugError(`unknown draw method: ${drawMethod}`);
         }
     }
 

@@ -2,6 +2,7 @@ import {Rect} from "../../../../core/geometry/rect";
 import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 import {MOUSE_EVENTS} from "../../../../core/control/mouse";
 import {RenderableModel} from "../../../renderableModel";
+import {DebugError} from "../../../../debugError";
 
 declare const DEBUG:boolean;
 
@@ -43,9 +44,9 @@ export abstract class Container extends RenderableModel {
     testLayout(){
         if (DEBUG) {
             if (this.layoutWidth===LAYOUT_SIZE.FIXED && this.width===0)
-                throw `layoutWidth is LAYOUT_SIZE.FIXED so width must be specified`;
+                throw new DebugError(`layoutWidth is LAYOUT_SIZE.FIXED so width must be specified`);
             if (this.layoutHeight===LAYOUT_SIZE.FIXED && this.height===0)
-                throw `layoutHeight is LAYOUT_SIZE.FIXED so height must be specified`
+                throw new DebugError(`layoutHeight is LAYOUT_SIZE.FIXED so height must be specified`);
         }
     }
 

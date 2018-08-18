@@ -12,6 +12,7 @@ import {Rect} from "../core/geometry/rect";
 import {Point2d} from "../core/geometry/point2d";
 import {Game} from "../core/game";
 import {AbstractFilter} from "../core/renderer/webGl/filters/abstract/abstractFilter";
+import {DebugError} from "../debugError";
 
 @Transient({
     game: true,
@@ -41,7 +42,7 @@ export abstract class BaseModel extends CommonObject {
 
     constructor(game:Game){
         super();
-        if (DEBUG && !game) throw (
+        if (DEBUG && !game) throw new DebugError(
             `can not create model '${this.type}': game instance not passed to model constructor`
         );
         this.game = game;

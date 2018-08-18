@@ -2,6 +2,9 @@ import {Container} from "../generic/container";
 import {TextField} from "./textField";
 import {Font} from "../../font";
 import {random} from "../../../../core/mathEx";
+import {DebugError} from "../../../../debugError";
+
+declare const DEBUG:boolean;
 
 export class Button extends Container {
 
@@ -47,7 +50,7 @@ export class Button extends Container {
 
     setFontName(name){
         let font = this.game.repository.getArray('Font').find(it=>it.name==name);
-        if (!font) throw `can not find font with name ${name}`;
+        if (DEBUG && !font) throw new DebugError(`can not find font with name ${name}`);
         this.setFont(font);
     }
 

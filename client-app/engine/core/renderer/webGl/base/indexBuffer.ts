@@ -1,3 +1,4 @@
+import {DebugError} from "../../../../debugError";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -8,17 +9,17 @@ export class IndexBuffer {
     private dataLength:number;
     
     constructor(gl:WebGLRenderingContext){
-        if (DEBUG && !gl) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
+        if (DEBUG && !gl) throw new DebugError("can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)");
 
         this.gl = gl;
         this.buffer = gl.createBuffer() as WebGLRenderbuffer;
-        if (DEBUG && !this.buffer) throw `can not allocate memory for index buffer`;
+        if (DEBUG && !this.buffer) throw new DebugError(`can not allocate memory for index buffer`);
         this.dataLength = null;
     }
 
     setData(bufferData:Array<number>){
         if (DEBUG) {
-            if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
+            if (!bufferData) throw new DebugError('can not set data to buffer: bufferData not specified');
         }
 
         const gl = this.gl;

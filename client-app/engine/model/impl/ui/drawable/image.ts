@@ -1,6 +1,7 @@
 import {Game} from "../../../../core/game";
 import {Rect} from "../../../../core/geometry/rect";
 import {Container} from "../generic/container";
+import {DebugError} from "../../../../debugError";
 
 declare const DEBUG: boolean;
 
@@ -14,7 +15,7 @@ export class Image extends Container {
 
     revalidate(){
         if (DEBUG && !this.getDefaultResourcePath()) {
-            throw `can not render Image: default resource path not specified in resourceMap property`;
+            throw new DebugError(`can not render Image: default resource path not specified in resourceMap property`);
         }
         let r:Rect = this.drawingRect;
         let tex = this.game.renderer.getTextureInfo(this.getDefaultResourcePath());

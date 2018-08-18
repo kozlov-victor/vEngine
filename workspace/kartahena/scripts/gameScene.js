@@ -18,9 +18,9 @@ export class GameSceneBehaviour {
                     {
                         TextField: {
                             pos: {x:330,y:300},
-                            fontName: 'cartahena_large',
+                            fontName: 'scriptFont',
                             name: '1',
-                            text: 'Game will be here'
+                            text: 'Здесь будет игра'
                         }
                     },
                 ]

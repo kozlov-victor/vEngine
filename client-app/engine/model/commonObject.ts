@@ -1,5 +1,6 @@
 
 import {Game} from "../core/game";
+import {DebugError} from "../debugError";
 
 declare const DEBUG:boolean;
 
@@ -24,7 +25,11 @@ const deepCopy = (obj, _clonedObjects = [])=> {
     else if (obj===null) return null;
     else if (typeof window !== 'undefined' && obj===window) return undefined;
     else if (_clonedObjects.indexOf(obj)>-1) return obj;
-    else if (obj.fromJSON) return obj.fromJSON(obj.toJSON());
+    else if (obj.fromJSON) {
+        obj.fromJSON(obj.toJSON());
+        return obj;
+    };
+
 
     if (Object.prototype.toString.call(obj) === '[object Array]') {
         let out = [], i = 0, len = obj.length;
@@ -74,7 +79,7 @@ export class CommonObject {
 
             if (!(key in this)) {
                 console.error(this);
-                throw `::fromJSON(): class ${this.constructor[`name`]} has no property ${key}`;
+                throw new DebugError(`::fromJSON(): class ${this.constructor[`name`]} has no property ${key}`);
             }
 
             if (params[key] && params[key].id && params[key].type)
