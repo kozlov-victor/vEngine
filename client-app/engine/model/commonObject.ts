@@ -28,7 +28,7 @@ const deepCopy = (obj, _clonedObjects = [])=> {
     else if (obj.fromJSON) {
         obj.fromJSON(obj.toJSON());
         return obj;
-    };
+    }
 
 
     if (Object.prototype.toString.call(obj) === '[object Array]') {

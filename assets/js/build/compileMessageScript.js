@@ -1,1 +1,1 @@
-build at Fri Aug 17 2018 18:43:17 GMT+0300 (Финляндия (лето))
+console.log("build at Sat Aug 18 2018 22:14:24 GMT+0300 (E. Europe Daylight Time)")

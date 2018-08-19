@@ -2710,5 +2710,13 @@
             },
             "id": 12
         }
+    ],
+    "Sound": [
+        {
+            "name": "uiSound1",
+            "type": "Sound",
+            "resourcePath": "resources/uiSound1.mp3",
+            "id": 15
+        }
     ]
 }

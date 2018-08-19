@@ -42,6 +42,7 @@ export class IntroSceneBehaviour {
                                 ABCD: 20
                             },
                             on: ['click',()=>{
+                                self.game.audioPlayer.play('uiSound1');
                                 self.toGameScene();
                             }]
                         }

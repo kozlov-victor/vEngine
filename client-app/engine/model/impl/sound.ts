@@ -1,17 +1,16 @@
-
-import {BaseModel} from '../baseModel'
 import {Game} from "../../core/game";
 import {DebugError} from "../../debugError";
+import {CommonObject} from "../commonObject";
 
-export class Sound extends BaseModel {
+export class Sound extends CommonObject {
 
     type:string = 'Sound';
     resourcePath:string = '';
     _gain:number = 1;
     _loop:boolean =false;
 
-    constructor(game:Game){
-        super(game);
+    constructor(protected game:Game){
+        super();
     }
 
     static find(name:string){

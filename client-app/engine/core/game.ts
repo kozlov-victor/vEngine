@@ -31,6 +31,7 @@ import * as MathEx from "../core/mathEx";
 import {_global} from "./global";
 import {GameObject} from "../model/impl/gameObject";
 import {DebugError} from "../debugError";
+import {AudioPlayer} from "./media/audioPlayer";
 
 
 @Transient({
@@ -46,7 +47,8 @@ import {DebugError} from "../debugError";
     lightArray: true,
     uiBuilder: true,
     scale: true,
-    pos: true
+    pos: true,
+    audioPlayer: true
 })
 export class Game extends CommonObject {
 
@@ -58,6 +60,7 @@ export class Game extends CommonObject {
     private destroyed:boolean = false;
 
     renderer:AbstractRenderer = null;
+    audioPlayer:AudioPlayer;
     scale:Point2d = new Point2d(1,1);
     pos:Point2d = new Point2d(0,0);
     width:number = 0;
@@ -92,6 +95,7 @@ export class Game extends CommonObject {
         this.camera = new Camera(this);
         this.lightArray = new LightArray(this);
         this.uiBuilder = new UIBuilder(this);
+        this.audioPlayer = new AudioPlayer(this);
         if (DEBUG) window['game'] = this;
 
         // todo
@@ -125,10 +129,10 @@ export class Game extends CommonObject {
     }
 
     runScene(scene){
+        this._currentScene = scene;
         if (DEBUG && !this._revalidated)
             throw new DebugError(`game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly`);
         if (scene.prepared) {
-            this._currentScene = scene;
             return;
         }
         if (!IN_EDITOR) {
@@ -148,7 +152,6 @@ export class Game extends CommonObject {
         scene.preload(()=>{
             scene.onShow();
             scene.prepared = true;
-            this._currentScene = scene;
             if (!this._running) {
                 this.update();
                 this._running = true;
@@ -186,9 +189,10 @@ export class Game extends CommonObject {
         do {
             this._currentScene && this._currentScene.update(currTime,dTime);
             this.collider.collisionArcade();
-            currTime += Game.UPDATE_TIME_RATE;
             this.keyboard.update();
             this.gamePad.update();
+            this.audioPlayer.update(currTime,dTime);
+            currTime += Game.UPDATE_TIME_RATE;
             loopCnt++;
             if (loopCnt>10) { // to avoid to much iterations
                 this._lastTime = this._currTime = currTimeCopy;

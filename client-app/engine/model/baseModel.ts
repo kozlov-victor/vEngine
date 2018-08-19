@@ -1,18 +1,15 @@
 import {Timer} from "../core/timer";
-
-
-declare const DEBUG:boolean;
-
 import {CommonObject} from './commonObject'
-import {Tween,TweenDescription} from '../core/tween'
+import {Tween, TweenDescription} from '../core/tween'
 import {EventEmitter} from '../core/misc/eventEmitter'
 import {Transient} from '../core/misc/decorators'
-
 import {Rect} from "../core/geometry/rect";
 import {Point2d} from "../core/geometry/point2d";
 import {Game} from "../core/game";
 import {AbstractFilter} from "../core/renderer/webGl/filters/abstract/abstractFilter";
 import {DebugError} from "../debugError";
+
+declare const DEBUG:boolean;
 
 @Transient({
     game: true,

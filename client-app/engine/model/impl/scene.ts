@@ -1,22 +1,12 @@
-
-
-
-
 import {noop} from "../../core/misc/noop";
-declare const IN_EDITOR:boolean,DEBUG:boolean;
-
 import {GameObjectProto} from "./gameObjectProto";
-import {PointLight} from "../../core/light/pointLight";
 import {BaseModel} from '../baseModel'
 import {Queue} from '../../core/misc/loadingQueue'
 import {TileMap} from './tileMap'
-import {BlackWhiteFilter} from "../../core/renderer/webGl/filters/textureFilters/blackWhite";
 import {Layer} from "./layer";
 import {AbstractFilter} from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {Game} from "../../core/game";
 import {Tween} from "../../core/tween";
-import {PosterizeFilter} from "../../core/renderer/webGl/filters/textureFilters/posterizeFilter";
-import {SimpleBlurFilter} from "../../core/renderer/webGl/filters/textureFilters/simpleBlurFilter";
 import {AmbientLight} from "../../core/light/ambientLight";
 import {Color} from "../../core/color";
 import {SpriteSheet} from "./spriteSheet";
@@ -24,6 +14,9 @@ import {CAMERA_MATRIX_MODE} from "../../core/camera";
 import {Resource} from "../resource";
 import {TextField} from "./ui/components/textField";
 import {ParticleSystem} from "./particleSystem";
+import {Sound} from "./sound";
+
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 
 export class Scene extends BaseModel  {
@@ -125,6 +118,22 @@ export class Scene extends BaseModel  {
                 id++;
             });
         });
+
+        this.game.repository.getArray('Sound').map((it:Sound)=>it.resourcePath).forEach((url:string)=>{
+            let id = 1000;
+            ((id)=>{
+                q.addTask(()=>{
+                    this.game.audioPlayer.loadSound(
+                        url,
+                        null,
+                        ()=>q.resolveTask(id)
+                    );
+                },id);
+            })(id);
+            id++;
+        });
+
+
         q.start();
 
     }
@@ -169,7 +178,7 @@ export class Scene extends BaseModel  {
     }
 
     render(){
-
+        if (!this.prepared) return;
 
         let renderer = this.game.renderer;
         renderer.beginFrameBuffer();
