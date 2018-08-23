@@ -25,8 +25,7 @@ export class Font extends Resource {
     constructor(game:Game){
         super(game);
     }
-
-    //fgh.abstract
+    
 
     revalidate(){
         super.revalidate();

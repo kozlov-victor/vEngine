@@ -55,6 +55,12 @@ export class ExpressApp {
             res.setHeader('Content-Type', 'application/json');
     }
 
+    private sendError(response,error){
+        response.statusCode = 500;
+        response.send(error && (error.message || error.toString()) || 'internal server error');
+        return false;
+    }
+
     createResponse(opts,response,params){
 
         let callback = (result)=>{
@@ -67,20 +73,23 @@ export class ExpressApp {
                 response.send(result);
             }
         };
-        let codeResult = opts.ctrl[opts.methodName](params,response);
+        let codeResult;
+
+        try {
+            codeResult = opts.ctrl[opts.methodName](params,response);
+        } catch (error){
+            return this.sendError(response,error);
+        }
+
         if (codeResult && codeResult.then) {
             // promise
             codeResult.then((data)=>{
                 callback(data);
             }).catch((error)=>{
-                console.error('catch method promise error',error);
-                response.statusCode = 500;
-                response.end(error);
+                this.sendError(response,error);
             });
         }
-        else if (typeof codeResult === 'function') {
-            // do nothing, callback will be invoked
-        } else {
+        else {
             callback(codeResult);
         }
     }

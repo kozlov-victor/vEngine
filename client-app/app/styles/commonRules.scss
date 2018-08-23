@@ -180,7 +180,7 @@ $icons: 'delete', 'edit', 'script', 'eye', 'add';
 
 @each $icon in $icons {
   .#{$icon} {
-    background: url('../images/#{$icon}.png') no-repeat;
+    background: url('../../images/#{$icon}.png') no-repeat;
     width: 24px;
     height: 24px;
     cursor: pointer;

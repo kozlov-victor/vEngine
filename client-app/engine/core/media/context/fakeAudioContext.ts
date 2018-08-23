@@ -1,4 +1,5 @@
 import {IAudioContext} from "./iAudioContext";
+import {Game} from "../../game";
 
 declare const DEBUG:boolean;
 
@@ -7,7 +8,7 @@ export class FakeAudioContext implements IAudioContext{
     type:string = 'fakeAudioContext';
 
     static isAcceptable():boolean{return true}
-    constructor(){DEBUG && console.log('audio not supported')}
+    constructor(private game:Game){DEBUG && console.log('audio not supported')}
 
     play(resourcePath:string,loop:boolean){}
     stop(){}

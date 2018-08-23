@@ -62,8 +62,11 @@ export class TopPanel extends BaseComponent {
             w.document.title = w.document.body.innerHTML='loading...'
         }
         let wsClient = new WsClient(this.clientId);
+        let consoleComponent = RF.getComponentById('bottomConsole');
         wsClient.onData(data=>{
             this.writeDataToPopup(w,data);
+            consoleComponent.text = data.message;
+            consoleComponent.component.digest();
         });
 
         await this.http.get(

@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -101,7 +101,7 @@ var _domUtils = __webpack_require__(2);
 
 var _domUtils2 = _interopRequireDefault(_domUtils);
 
-var _expressionEngine = __webpack_require__(6);
+var _expressionEngine = __webpack_require__(3);
 
 var _expressionEngine2 = _interopRequireDefault(_expressionEngine);
 
@@ -272,7 +272,7 @@ var Component = function () {
     };
 
     Component.prototype.run = function run() {
-        var DirectiveEngine = __webpack_require__(15).default;
+        var DirectiveEngine = __webpack_require__(14).default;
         var deInstance = new DirectiveEngine(this);
         deInstance.run();
         this.digest();
@@ -393,6 +393,11 @@ var MiscUtils = function () {
             var _out = {};
             for (var _i in obj) {
                 if (!obj.hasOwnProperty(_i)) continue;
+
+                if (obj.constructor['transient'] && obj.constructor['transient'][_i]) {
+                    continue;
+                }
+
                 var _clonedObject = void 0;
                 if (_clonedObjects.indexOf(obj[_i]) > -1) {
                     _clonedObject = obj[_i];
@@ -514,7 +519,7 @@ MiscUtils.isBadBrowser = function () {
     return false;
 }();
 
-MiscUtils.RECURSION_DEEPNESS = 32;
+MiscUtils.RECURSION_DEEPNESS = 8;
 
 var cnt = 0;
 
@@ -897,7 +902,7 @@ var DomUtils = function () {
 
     DomUtils._get_If_expressionTopDownList = function _get_If_expressionTopDownList(el) {
         var res = [];
-        var Core = __webpack_require__(10).default; // to avoid circular dependencies
+        var Core = __webpack_require__(7).default; // to avoid circular dependencies
         do {
             var expression = DomUtils.getAttribute(el, 'data-if') || DomUtils.getAttribute(el, '_data-if');
             if (expression) {
@@ -938,221 +943,9 @@ DomUtils.EXPRESSION_REGEXP = /(\{\{[^\t]*?}})/;
 
 exports.__esModule = true;
 
-var _modelView = __webpack_require__(5);
-
-var _modelView2 = _interopRequireDefault(_modelView);
-
-var _component = __webpack_require__(0);
-
-var _component2 = _interopRequireDefault(_component);
-
-var _templateLoader = __webpack_require__(12);
-
-var _templateLoader2 = _interopRequireDefault(_templateLoader);
-
-var _miscUtils = __webpack_require__(1);
-
-var _miscUtils2 = _interopRequireDefault(_miscUtils);
-
-var _domUtils = __webpack_require__(2);
-
-var _domUtils2 = _interopRequireDefault(_domUtils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ComponentProto = function () {
-    ComponentProto._newComponentInstance = function _newComponentInstance(ComponentClass) {
-        if (!ComponentClass) return {};
-        if (typeof ComponentClass === 'function') return new ComponentClass();
-        return ComponentClass;
-    };
-
-    function ComponentProto(ComponentClassOrObject) {
-        _classCallCheck(this, ComponentProto);
-
-        var tmpl = void 0,
-            templateInstance = void 0;
-        var name = void 0; // todo only for @decorator
-        var decoratedName = ComponentClassOrObject.decoratedName;
-        if (decoratedName) {
-            name = decoratedName;
-            templateInstance = ComponentClassOrObject;
-        } else {
-            templateInstance = ComponentProto._newComponentInstance(ComponentClassOrObject);
-            name = templateInstance.name;
-        }
-        if (!name) {
-            console.error(ComponentClassOrObject);
-            throw 'component name not defined';
-        }
-        name = _miscUtils2.default.camelToSnake(name);
-        tmpl = _templateLoader2.default.getNode(templateInstance, name);
-        if (ComponentProto.getByName(name)) throw 'component with name ' + decoratedName + ' already registered';
-        var domTemplate = tmpl.innerHTML;
-        _domUtils2.default.remove(tmpl);
-        var node = document.createElement('div');
-        node.innerHTML = domTemplate;
-        this.node = node;
-        this.name = name;
-        this.ComponentClass = ComponentClassOrObject;
-        ComponentProto.instances.push(this);
-    }
-
-    ComponentProto.prototype.newInstance = function newInstance(node, externalProperties) {
-        var modelView = new _modelView2.default(this.name, new ComponentProto._newComponentInstance(this.ComponentClass), externalProperties);
-        var cmp = new _component2.default(this.name, node, modelView);
-        modelView.component = cmp;
-        return cmp;
-    };
-
-    ComponentProto.getByName = function getByName(name) {
-        return ComponentProto.instances.find(function (it) {
-            return it.name === name;
-        });
-    };
-
-    ComponentProto.getByComponentClass = function getByComponentClass(ComponentClass) {
-        return ComponentProto.instances.find(function (it) {
-            return it.ComponentClass === ComponentClass;
-        });
-    };
-
-    return ComponentProto;
-}();
-
-exports.default = ComponentProto;
-
-ComponentProto.instances = [];
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _component = __webpack_require__(0);
-
-var _component2 = _interopRequireDefault(_component);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/**
- * безымянный компонент, образованый методом applyBindings
- * либо при итерации
- */
-var ScopedDomFragment = function (_Component) {
-    _inherits(ScopedDomFragment, _Component);
-
-    function ScopedDomFragment(node, modelView) {
-        _classCallCheck(this, ScopedDomFragment);
-
-        var _this = _possibleConstructorReturn(this, _Component.call(this, null, node, modelView));
-
-        _this.scopeLoopContainer = null;
-        return _this;
-    }
-
-    return ScopedDomFragment;
-}(_component2.default);
-
-exports.default = ScopedDomFragment;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _miscUtils = __webpack_require__(1);
-
-var _miscUtils2 = _interopRequireDefault(_miscUtils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var noop = function noop() {
-    return 'noChanged';
-};
-
-var ModelView = function () {
-    function ModelView(componentName) {
-        var properties = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        var externalProperties = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-        _classCallCheck(this, ModelView);
-
-        this.name = componentName || '';
-        this.initialProperties = properties;
-        this.externalProperties = externalProperties;
-        this.component = null;
-        this.resetState({ warnRedefined: true });
-
-        this.onShow = this.onShow || noop;
-        this.onHide = this.onHide || noop;
-        this.onMount = this.onMount || noop;
-        this.onUnmount = this.onUnmount || noop;
-        this.onDestroy = this.onDestroy || noop;
-    }
-
-    ModelView.prototype.resetState = function resetState() {
-        var warnRedefined = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-        var properties = this.initialProperties;
-        this._applyState(properties);
-        var initialState = properties.getInitialState && properties.getInitialState();
-        initialState && (initialState = _miscUtils2.default.deepCopy(initialState));
-        initialState && this._applyState(initialState, { warnRedefined: warnRedefined });
-        this._applyState(this.externalProperties, { strict: true });
-        this.component && this.component._updateExternalState();
-    };
-
-    ModelView.prototype._applyState = function _applyState() {
-        var properties = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        var strict = opts.strict;
-
-        for (var key in properties) {
-            if (strict && !this.hasOwnProperty(key)) throw '\n                    can not apply non declared property "' + key + '" to component "' + this.name + '",\n                    declare property in component\n                ';
-            if (opts.warnRedefined && properties[key] && this.hasOwnProperty(key)) {
-                console.warn('property ' + key + ' is redefined at component ' + this.name);
-            }
-            this[key] = properties[key];
-        }
-    };
-
-    return ModelView;
-}();
-
-exports.default = ModelView;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _lexer = __webpack_require__(9);
+var _lexer = __webpack_require__(8);
 
 var _lexer2 = _interopRequireDefault(_lexer);
 
@@ -1329,7 +1122,7 @@ var ExpressionEngine = function () {
 exports.default = ExpressionEngine;
 
 /***/ }),
-/* 7 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1337,199 +1130,211 @@ exports.default = ExpressionEngine;
 
 exports.__esModule = true;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _miscUtils = __webpack_require__(1);
 
-var Directive = function Directive() {
-    _classCallCheck(this, Directive);
-
-    this.name = null;
-    this.onMount = null;
-};
-
-exports.default = Directive;
-
-
-Directive.all = [];
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Token = function Token(type, val) {
-    _classCallCheck(this, Token);
-
-    this.tokenType = type;
-    this.tokenValue = val;
-};
-
-exports.default = Token;
-
-
-Token.SYMBOL = {
-    L_PAR: '(',
-    R_PAR: ')',
-    L_CURLY: '{',
-    R_CURLY: '}',
-    L_SQUARE: '[',
-    R_SQUARE: ']',
-    COMMA: ',',
-    PLUS: '+',
-    MULTIPLY: '*',
-    MINUS: '-',
-    DIVIDE: '/',
-    GT: '>',
-    LT: '<',
-    EQUAL: '=',
-    QUESTION: '?',
-    COLON: ':',
-    AMPERSAND: '&',
-    OR: '|',
-    EXCLAMATION: '!',
-    SEMICOLON: ';',
-    PERCENT: '%',
-    HAT: '^',
-    TILDA: '~'
-};
-
-Token.KEY_WORDS = ['in', 'of', 'null', 'undefined'];
-
-Token.ALL_SPECIAL_SYMBOLS = Object.keys(Token.SYMBOL).map(function (key) {
-    return Token.SYMBOL[key];
-});
-
-Token.TYPE = {
-    OPERATOR: 'OPERATOR',
-    DIGIT: 'DIGIT',
-    VARIABLE: 'VARIABLE',
-    STRING: 'STRING',
-    OBJECT_KEY: 'OBJECT_KEY',
-    FUNCTION: 'FUNCTION',
-    BOOLEAN: 'BOOLEAN',
-    KEY_WORD: 'KEY_WORD'
-};
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _token = __webpack_require__(8);
-
-var _token2 = _interopRequireDefault(_token);
+var _miscUtils2 = _interopRequireDefault(_miscUtils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function isNumber(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
+var noop = function noop() {
+    return 'noChanged';
+};
 
-function charInArr(char, arr) {
-    return char && arr.indexOf(char) > -1;
-}
+var ModelView = function () {
+    function ModelView(componentName) {
+        var properties = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        var externalProperties = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-var Lexer = function () {
-    function Lexer() {
-        _classCallCheck(this, Lexer);
+        _classCallCheck(this, ModelView);
+
+        this.name = componentName || '';
+        this.initialProperties = properties;
+        this.externalProperties = externalProperties;
+        this.component = null;
+        this.resetState({ warnRedefined: true });
+
+        this.onShow = this.onShow || noop;
+        this.onHide = this.onHide || noop;
+        this.onMount = this.onMount || noop;
+        this.onUnmount = this.onUnmount || noop;
+        this.onDestroy = this.onDestroy || noop;
     }
 
-    Lexer.tokenize = function tokenize(expression) {
-        var isEndWithSemicolon = expression[expression.length - 1] == _token2.default.SYMBOL.SEMICOLON;
-        var tokens = [],
-            t = void 0,
-            lastChar = '';
-        expression = expression.trim();
-        expression = expression.replace(/[\n\t\r]+/gi, '');
-        if (!isEndWithSemicolon) expression = expression + _token2.default.SYMBOL.SEMICOLON;
+    ModelView.prototype.resetState = function resetState() {
+        var warnRedefined = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-        var isStringCurrent = void 0;
-        expression.split('').forEach(function (char, i) {
-
-            var lastToken = tokens[tokens.length - 1];
-            if (lastToken && charInArr(lastToken.tokenValue, ['true', 'false'])) lastToken.tokenType = _token2.default.TYPE.BOOLEAN;
-
-            if (charInArr(char, ['"', "'"])) isStringCurrent = false;
-
-            if (charInArr(char, _token2.default.ALL_SPECIAL_SYMBOLS) && !isStringCurrent) {
-                t = new _token2.default(_token2.default.TYPE.OPERATOR, char);
-                tokens.push(t);
-
-                lastChar = char;
-                if (!lastToken) return;
-                if (char == _token2.default.SYMBOL.L_PAR && !charInArr(lastToken.tokenValue, _token2.default.ALL_SPECIAL_SYMBOLS)) lastToken.tokenType = _token2.default.TYPE.FUNCTION;
-            } else {
-                if (lastToken && lastToken.tokenType != _token2.default.TYPE.STRING && char == ' ') return;
-                if (lastToken && (lastToken.tokenType == _token2.default.TYPE.DIGIT || lastToken.tokenType == _token2.default.TYPE.VARIABLE || lastToken.tokenType == _token2.default.TYPE.STRING)) {
-                    lastToken.tokenValue += char;
-                } else {
-                    var type = void 0;
-                    if (isNumber(char)) type = _token2.default.TYPE.DIGIT;else if (charInArr(char, ['"', "'"])) {
-                        type = _token2.default.TYPE.STRING;
-                        isStringCurrent = true;
-                    } else type = _token2.default.TYPE.VARIABLE;
-                    t = new _token2.default(type, char);
-                    tokens.push(t);
-                }
-                lastChar = char;
-            }
-        });
-
-        tokens.forEach(function (t, i) {
-            t.tokenValue && (t.tokenValue = t.tokenValue.trim());
-            if (charInArr(t.tokenValue, _token2.default.KEY_WORDS)) t.tokenType = _token2.default.KEY_WORDS;
-
-            if (t && t.tokenType == _token2.default.TYPE.VARIABLE) {
-                var next = tokens[i + 1];
-                var prev = tokens[i - 1];
-
-                if (next && next.tokenValue == _token2.default.SYMBOL.COLON && (!prev || prev && prev.tokenValue !== '?')) t.tokenType = _token2.default.TYPE.OBJECT_KEY;
-
-                if (t.tokenValue && t.tokenValue.startsWith('.')) t.tokenType = _token2.default.TYPE.STRING; // resolve expression error at app.task.taskCases[0].text
-            }
-
-            if (t && t.tokenType == _token2.default.TYPE.FUNCTION && t.tokenValue.indexOf('.') == 0) {
-                t.tokenType = _token2.default.TYPE.OBJECT_KEY; // resolve expression [1,2,3].indexOf(2)
-            }
-        });
-        if (!isEndWithSemicolon) tokens.pop();
-        //console.log(JSON.stringify(tokens));
-        return tokens;
+        var properties = this.initialProperties;
+        this._applyState(properties);
+        var initialState = properties.getInitialState && properties.getInitialState();
+        initialState && (initialState = _miscUtils2.default.deepCopy(initialState));
+        initialState && this._applyState(initialState, { warnRedefined: warnRedefined });
+        this._applyState(this.externalProperties, { strict: true });
+        this.component && this.component._updateExternalState();
     };
 
-    Lexer.convertExpression = function convertExpression(expression) {
-        var variableReplacerStr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '{expr}';
+    ModelView.prototype._applyState = function _applyState() {
+        var properties = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-        if (!expression) return variableReplacerStr.replace('{expr}', '');
-        var out = '';
-        expression = expression.split('\n').join('');
-        Lexer.tokenize(expression).forEach(function (token, index) {
-            if (token.tokenValue == _token2.default.SYMBOL.EQUAL && token[index + 1] && token[index + 1].tokenValue != _token2.default.SYMBOL.EQUAL) throw 'assign (like "a=b") not supported at directives for now, change your expression: ' + expression;
-            if ([_token2.default.TYPE.VARIABLE, _token2.default.TYPE.FUNCTION].indexOf(token.tokenType) > -1) {
-                out += variableReplacerStr.replace('{expr}', token.tokenValue);
-            } else out += token.tokenValue || token.tokenType;
-        });
-        return out;
+        var strict = opts.strict;
+
+        for (var key in properties) {
+            if (strict && !this.hasOwnProperty(key)) throw '\n                    can not apply non declared property "' + key + '" to component "' + this.name + '",\n                    declare property in component\n                ';
+            if (opts.warnRedefined && properties[key] && this.hasOwnProperty(key)) {
+                console.warn('property ' + key + ' is redefined at component ' + this.name);
+            }
+            this[key] = properties[key];
+        }
     };
 
-    return Lexer;
+    return ModelView;
 }();
 
-exports.default = Lexer;
+exports.default = ModelView;
 
 /***/ }),
-/* 10 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _component = __webpack_require__(0);
+
+var _component2 = _interopRequireDefault(_component);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * безымянный компонент, образованый методом applyBindings
+ * либо при итерации
+ */
+var ScopedDomFragment = function (_Component) {
+    _inherits(ScopedDomFragment, _Component);
+
+    function ScopedDomFragment(node, modelView) {
+        _classCallCheck(this, ScopedDomFragment);
+
+        var _this = _possibleConstructorReturn(this, _Component.call(this, null, node, modelView));
+
+        _this.scopeLoopContainer = null;
+        return _this;
+    }
+
+    return ScopedDomFragment;
+}(_component2.default);
+
+exports.default = ScopedDomFragment;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _modelView = __webpack_require__(4);
+
+var _modelView2 = _interopRequireDefault(_modelView);
+
+var _component = __webpack_require__(0);
+
+var _component2 = _interopRequireDefault(_component);
+
+var _templateLoader = __webpack_require__(17);
+
+var _templateLoader2 = _interopRequireDefault(_templateLoader);
+
+var _miscUtils = __webpack_require__(1);
+
+var _miscUtils2 = _interopRequireDefault(_miscUtils);
+
+var _domUtils = __webpack_require__(2);
+
+var _domUtils2 = _interopRequireDefault(_domUtils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ComponentProto = function () {
+    ComponentProto._newComponentInstance = function _newComponentInstance(ComponentClass) {
+        if (!ComponentClass) return {};
+        if (typeof ComponentClass === 'function') return new ComponentClass();
+        return ComponentClass;
+    };
+
+    function ComponentProto(ComponentClassOrObject) {
+        _classCallCheck(this, ComponentProto);
+
+        var tmpl = void 0,
+            templateInstance = void 0;
+        var name = void 0; // todo only for @decorator
+        var decoratedName = ComponentClassOrObject.decoratedName;
+        if (decoratedName) {
+            name = decoratedName;
+            templateInstance = ComponentClassOrObject;
+        } else {
+            templateInstance = ComponentProto._newComponentInstance(ComponentClassOrObject);
+            name = templateInstance.name;
+        }
+        if (!name) {
+            console.error(ComponentClassOrObject);
+            throw 'component name not defined';
+        }
+        name = _miscUtils2.default.camelToSnake(name);
+        tmpl = _templateLoader2.default.getNode(templateInstance, name);
+        if (ComponentProto.getByName(name)) throw 'component with name ' + decoratedName + ' already registered';
+        var domTemplate = tmpl.innerHTML;
+        _domUtils2.default.remove(tmpl);
+        var node = document.createElement('div');
+        node.innerHTML = domTemplate;
+        this.node = node;
+        this.name = name;
+        this.ComponentClass = ComponentClassOrObject;
+        ComponentProto.instances.push(this);
+    }
+
+    ComponentProto.prototype.newInstance = function newInstance(node, externalProperties) {
+        var modelView = new _modelView2.default(this.name, new ComponentProto._newComponentInstance(this.ComponentClass), externalProperties);
+        var cmp = new _component2.default(this.name, node, modelView);
+        modelView.component = cmp;
+        return cmp;
+    };
+
+    ComponentProto.getByName = function getByName(name) {
+        return ComponentProto.instances.find(function (it) {
+            return it.name === name;
+        });
+    };
+
+    ComponentProto.getByComponentClass = function getByComponentClass(ComponentClass) {
+        return ComponentProto.instances.find(function (it) {
+            return it.ComponentClass === ComponentClass;
+        });
+    };
+
+    return ComponentProto;
+}();
+
+exports.default = ComponentProto;
+
+ComponentProto.instances = [];
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1539,9 +1344,9 @@ exports.__esModule = true;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-__webpack_require__(17);
+__webpack_require__(12);
 
-__webpack_require__(16);
+__webpack_require__(13);
 
 var _component = __webpack_require__(0);
 
@@ -1551,23 +1356,23 @@ var _miscUtils = __webpack_require__(1);
 
 var _miscUtils2 = _interopRequireDefault(_miscUtils);
 
-var _componentProto = __webpack_require__(3);
+var _componentProto = __webpack_require__(6);
 
 var _componentProto2 = _interopRequireDefault(_componentProto);
 
-var _modelView = __webpack_require__(5);
+var _modelView = __webpack_require__(4);
 
 var _modelView2 = _interopRequireDefault(_modelView);
 
-var _directive = __webpack_require__(7);
+var _directive = __webpack_require__(10);
 
 var _directive2 = _interopRequireDefault(_directive);
 
-var _scopedDomFragment = __webpack_require__(4);
+var _scopedDomFragment = __webpack_require__(5);
 
 var _scopedDomFragment2 = _interopRequireDefault(_scopedDomFragment);
 
-var _router = __webpack_require__(11);
+var _router = __webpack_require__(18);
 
 var _router2 = _interopRequireDefault(_router);
 
@@ -1672,14 +1477,14 @@ var Core = function () {
 exports.default = Core;
 
 
-Core.version = "0.9.13";
-Core.buildAt = 1531229926514;
+Core.version = "0.9.14";
+Core.buildAt = 1535023743088;
 
 window.RF = Core;
 window.RF.Router = _router2.default;
 
 /***/ }),
-/* 11 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1687,191 +1492,203 @@ window.RF.Router = _router2.default;
 
 exports.__esModule = true;
 
-var _domUtils = __webpack_require__(2);
+var _token = __webpack_require__(9);
 
-var _domUtils2 = _interopRequireDefault(_domUtils);
-
-var _component = __webpack_require__(0);
-
-var _component2 = _interopRequireDefault(_component);
-
-var _componentProto = __webpack_require__(3);
-
-var _componentProto2 = _interopRequireDefault(_componentProto);
+var _token2 = _interopRequireDefault(_token);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var HashRouterStrategy = function () {
-    function HashRouterStrategy() {
-        _classCallCheck(this, HashRouterStrategy);
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+function charInArr(char, arr) {
+    return char && arr.indexOf(char) > -1;
+}
+
+var Lexer = function () {
+    function Lexer() {
+        _classCallCheck(this, Lexer);
     }
 
-    HashRouterStrategy.navigateTo = function navigateTo(route, params) {
-        location.hash = route;
-    };
+    Lexer.tokenize = function tokenize(expression) {
+        var isEndWithSemicolon = expression[expression.length - 1] == _token2.default.SYMBOL.SEMICOLON;
+        var tokens = [],
+            t = void 0,
+            lastChar = '';
+        expression = expression.trim();
+        expression = expression.replace(/[\n\t\r]+/gi, '');
+        if (!isEndWithSemicolon) expression = expression + _token2.default.SYMBOL.SEMICOLON;
 
-    HashRouterStrategy.goBack = function goBack() {
-        if (window.history) history.back();
-    };
+        var isStringCurrent = void 0;
+        expression.split('').forEach(function (char, i) {
 
-    HashRouterStrategy._check = function _check(hash) {
-        var isMatch = false;
-        hash = hash.substr(1);
-        Object.keys(Router._pages).some(function (key) {
+            var lastToken = tokens[tokens.length - 1];
+            if (lastToken && charInArr(lastToken.tokenValue, ['true', 'false'])) lastToken.tokenType = _token2.default.TYPE.BOOLEAN;
 
-            var routeParams = {};
-            var keys = key.match(/:([^\/]+)/g);
-            var match = hash.match(new RegExp(key.replace(/:([^\/]+)/g, "([^\/]*)")));
-            if (match) {
-                match.shift();
-                match.forEach(function (value, i) {
-                    routeParams[keys[i].replace(":", "")] = value;
-                });
-                isMatch = true;
-                __showPage(key, routeParams);
-                return true;
-            }
-        });
-        if (!isMatch) throw 'page with path ' + hash + ' not registered, set up router correctly';
-    };
+            if (charInArr(char, ['"', "'"])) isStringCurrent = false;
 
-    HashRouterStrategy.setup = function setup() {
-        location.hash && HashRouterStrategy._check(location.hash);
-        _domUtils2.default.addEventListener(window, 'hashchange', function () {
-            HashRouterStrategy._check(location.hash);
-        });
-    };
+            if (charInArr(char, _token2.default.ALL_SPECIAL_SYMBOLS) && !isStringCurrent) {
+                t = new _token2.default(_token2.default.TYPE.OPERATOR, char);
+                tokens.push(t);
 
-    return HashRouterStrategy;
-}();
-
-var ManualRouterStrategy = function () {
-    function ManualRouterStrategy() {
-        _classCallCheck(this, ManualRouterStrategy);
-    }
-
-    ManualRouterStrategy.navigateTo = function navigateTo(route, params) {
-        if (!Router._pages[route]) throw route + ' not registered, set up router correctly';
-        __showPage(route, params);
-        ManualRouterStrategy.history.push({ route: route, params: params });
-    };
-
-    ManualRouterStrategy.setup = function setup() {};
-
-    ManualRouterStrategy.goBack = function goBack() {
-        ManualRouterStrategy.history.pop();
-        var state = ManualRouterStrategy.history[ManualRouterStrategy.history.length - 1];
-        if (state) __showPage(state.route, state.params);
-    };
-
-    return ManualRouterStrategy;
-}();
-
-ManualRouterStrategy.history = [];
-
-var RouterStrategyProvider = function () {
-    function RouterStrategyProvider() {
-        _classCallCheck(this, RouterStrategyProvider);
-    }
-
-    RouterStrategyProvider.getRouterStrategy = function getRouterStrategy(strategyName) {
-        switch (strategyName) {
-            case Router.STRATEGY.MANUAL:
-                return ManualRouterStrategy;
-            case Router.STRATEGY.HASH:
-                return HashRouterStrategy;
-            default:
-                throw 'cat not find strategy with strategyName ' + strategyName;
-        }
-    };
-
-    return RouterStrategyProvider;
-}();
-
-var routeNode = null;
-var lastPageItem = void 0;
-var __showPage = function __showPage(pageName, params) {
-
-    if (lastPageItem) {
-        lastPageItem.component.setShown(false);
-        _domUtils2.default.nodeListToArray(routeNode.childNodes).forEach(function (el) {
-            lastPageItem.component.node.appendChild(el);
-        });
-        lastPageItem.component.setMounted(false);
-    }
-    lastPageItem = Router._pages[pageName];
-    if (!lastPageItem) throw 'no page with name ' + pageName + ' registered';
-    if (!lastPageItem.component) {
-        var componentNode = lastPageItem.componentProto.node.cloneNode(true);
-        lastPageItem.component = lastPageItem.componentProto.newInstance(componentNode, {});
-        lastPageItem.component.run();
-        delete lastPageItem.componentProto;
-    }
-    _domUtils2.default.nodeListToArray(lastPageItem.component.node.childNodes).forEach(function (el) {
-        routeNode.appendChild(el);
-    });
-    lastPageItem.component.setMounted(true, params);
-    lastPageItem.component.setShown(true, params);
-    _component2.default.digestAll();
-};
-
-var Router = function () {
-    function Router() {
-        _classCallCheck(this, Router);
-    }
-
-    Router.setup = function setup(keyValues) {
-        var strategyName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Router.STRATEGY.MANUAL;
-
-        Router._strategy = RouterStrategyProvider.getRouterStrategy(strategyName);
-        var routePlaceholderNode = _domUtils2.default.getElementByAttribute(document, 'data-route');
-        if (!routePlaceholderNode) throw 'can not run Route: element with data-route attribute not found';
-        routePlaceholderNode.innerHTML = '';
-        routeNode = routePlaceholderNode;
-        Object.keys(keyValues).forEach(function (key) {
-            var ComponentClass = void 0;
-            if (keyValues[key].node) {
-                // if component defined as sinple old js object
-                ComponentClass = keyValues[key];
+                lastChar = char;
+                if (!lastToken) return;
+                if (char == _token2.default.SYMBOL.L_PAR && !charInArr(lastToken.tokenValue, _token2.default.ALL_SPECIAL_SYMBOLS)) lastToken.tokenType = _token2.default.TYPE.FUNCTION;
             } else {
-                // if component defined as class or function
-                ComponentClass = _componentProto2.default.getByComponentClass(keyValues[key]);
-                if (!ComponentClass) {
-                    console.error(keyValues[key]);
-                    throw 'router component error: can not found component for rote ' + key;
+                if (lastToken && lastToken.tokenType != _token2.default.TYPE.STRING && char == ' ') return;
+                if (lastToken && (lastToken.tokenType == _token2.default.TYPE.DIGIT || lastToken.tokenType == _token2.default.TYPE.VARIABLE || lastToken.tokenType == _token2.default.TYPE.STRING)) {
+                    lastToken.tokenValue += char;
+                } else {
+                    var type = void 0;
+                    if (isNumber(char)) type = _token2.default.TYPE.DIGIT;else if (charInArr(char, ['"', "'"])) {
+                        type = _token2.default.TYPE.STRING;
+                        isStringCurrent = true;
+                    } else type = _token2.default.TYPE.VARIABLE;
+                    t = new _token2.default(type, char);
+                    tokens.push(t);
                 }
+                lastChar = char;
             }
-            Router._pages[key] = {
-                componentProto: ComponentClass,
-                component: null
-            };
         });
-        Router._strategy.setup();
+
+        tokens.forEach(function (t, i) {
+            t.tokenValue && (t.tokenValue = t.tokenValue.trim());
+            if (charInArr(t.tokenValue, _token2.default.KEY_WORDS)) t.tokenType = _token2.default.KEY_WORDS;
+
+            if (t && t.tokenType == _token2.default.TYPE.VARIABLE) {
+                var next = tokens[i + 1];
+                var prev = tokens[i - 1];
+
+                if (next && next.tokenValue == _token2.default.SYMBOL.COLON && (!prev || prev && prev.tokenValue !== '?')) t.tokenType = _token2.default.TYPE.OBJECT_KEY;
+
+                if (t.tokenValue && t.tokenValue.startsWith('.')) t.tokenType = _token2.default.TYPE.STRING; // resolve expression error at app.task.taskCases[0].text
+            }
+
+            if (t && t.tokenType == _token2.default.TYPE.FUNCTION && t.tokenValue.indexOf('.') == 0) {
+                t.tokenType = _token2.default.TYPE.OBJECT_KEY; // resolve expression [1,2,3].indexOf(2)
+            }
+        });
+        if (!isEndWithSemicolon) tokens.pop();
+        //console.log(JSON.stringify(tokens));
+        return tokens;
     };
 
-    Router.navigateTo = function navigateTo(pageName, params) {
-        Router._strategy.navigateTo(pageName, params);
+    Lexer.convertExpression = function convertExpression(expression) {
+        var variableReplacerStr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '{expr}';
+
+        if (!expression) return variableReplacerStr.replace('{expr}', '');
+        var out = '';
+        expression = expression.split('\n').join('');
+        Lexer.tokenize(expression).forEach(function (token, index) {
+            if (token.tokenValue == _token2.default.SYMBOL.EQUAL && token[index + 1] && token[index + 1].tokenValue != _token2.default.SYMBOL.EQUAL) throw 'assign (like "a=b") not supported at directives for now, change your expression: ' + expression;
+            if ([_token2.default.TYPE.VARIABLE, _token2.default.TYPE.FUNCTION].indexOf(token.tokenType) > -1) {
+                out += variableReplacerStr.replace('{expr}', token.tokenValue);
+            } else out += token.tokenValue || token.tokenType;
+        });
+        return out;
     };
 
-    Router.goBack = function goBack() {
-        Router._strategy.goBack();
-    };
-
-    return Router;
+    return Lexer;
 }();
 
-exports.default = Router;
+exports.default = Lexer;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
-Router._pages = {};
-Router._strategy = null;
+exports.__esModule = true;
 
-Router.STRATEGY = {
-    MANUAL: 0,
-    HASH: 1
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Token = function Token(type, val) {
+    _classCallCheck(this, Token);
+
+    this.tokenType = type;
+    this.tokenValue = val;
 };
+
+exports.default = Token;
+
+
+Token.SYMBOL = {
+    L_PAR: '(',
+    R_PAR: ')',
+    L_CURLY: '{',
+    R_CURLY: '}',
+    L_SQUARE: '[',
+    R_SQUARE: ']',
+    COMMA: ',',
+    PLUS: '+',
+    MULTIPLY: '*',
+    MINUS: '-',
+    DIVIDE: '/',
+    GT: '>',
+    LT: '<',
+    EQUAL: '=',
+    QUESTION: '?',
+    COLON: ':',
+    AMPERSAND: '&',
+    OR: '|',
+    EXCLAMATION: '!',
+    SEMICOLON: ';',
+    PERCENT: '%',
+    HAT: '^',
+    TILDA: '~'
+};
+
+Token.KEY_WORDS = ['in', 'of', 'null', 'undefined'];
+
+Token.ALL_SPECIAL_SYMBOLS = Object.keys(Token.SYMBOL).map(function (key) {
+    return Token.SYMBOL[key];
+});
+
+Token.TYPE = {
+    OPERATOR: 'OPERATOR',
+    DIGIT: 'DIGIT',
+    VARIABLE: 'VARIABLE',
+    STRING: 'STRING',
+    OBJECT_KEY: 'OBJECT_KEY',
+    FUNCTION: 'FUNCTION',
+    BOOLEAN: 'BOOLEAN',
+    KEY_WORD: 'KEY_WORD'
+};
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Directive = function Directive() {
+    _classCallCheck(this, Directive);
+
+    this.name = null;
+    this.onMount = null;
+};
+
+exports.default = Directive;
+
+
+Directive.all = [];
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(7);
+
 
 /***/ }),
 /* 12 */
@@ -1880,63 +1697,393 @@ Router.STRATEGY = {
 "use strict";
 
 
-exports.__esModule = true;
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var TemplateLoader = function () {
-    function TemplateLoader() {
-        _classCallCheck(this, TemplateLoader);
-    }
-
-    TemplateLoader._getNodeFromDom = function _getNodeFromDom(templateObj, componentName) {
-        if (!templateObj.value) {
-            console.error("can not process template at component " + componentName);
-            throw "template.value must be specified";
-        }
-        var node = document.getElementById(templateObj.value);
-        if (!node) throw "can not fing dom element with id " + templateObj.value;
-        return node;
+if (!window.console) {
+    window.console = {};
+    window.console.log = window.console.error = window.console.warn = window.console.trace = function (msg) {
+        window.status = msg;
     };
+}
 
-    TemplateLoader._getNodeFromString = function _getNodeFromString(templateObj, componentName) {
-        if (!templateObj.value) throw "template string not provided";
-        if (typeof templateObj.value !== 'string') {
-            console.error("can not process template at component " + componentName);
-            throw "template.value mast be a String, but " + _typeof(templateObj.value) + " found";
+if (!document.querySelectorAll) {
+    document.querySelectorAll = function (selector) {
+        var head = document.documentElement.firstChild;
+        var styleTag = document.createElement("STYLE");
+        head.appendChild(styleTag);
+        document.__qsResult = [];
+
+        styleTag.styleSheet.cssText = selector + "{x:expression(document.__qsResult.push(this))}";
+        window.scrollBy(0, 0);
+        head.removeChild(styleTag);
+
+        var result = [];
+        for (var i in document.__qsResult) {
+            if (typeof document.__qsResult[i] === 'function') continue;
+            result.push(document.__qsResult[i]);
         }
-        var container = document.createElement('div');
-        container.innerHTML = templateObj.value;
-        return container;
+        return result;
     };
+}
 
-    TemplateLoader.getNode = function getNode() {
-        var properties = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var componentName = arguments[1];
+if (!document.querySelector) {
+    document.querySelector = function (selector) {
+        var head = document.documentElement.firstChild;
+        var styleTag = document.createElement("STYLE");
+        head.appendChild(styleTag);
+        document.__qsResult = [];
 
-        var templateObj = properties.template;
-        if (!templateObj) throw "template not defined. Provide template at your component '" + componentName + "'";
-        if (typeof templateObj === 'string') templateObj = {
-            type: 'string',
-            value: templateObj
+        styleTag.styleSheet.cssText = selector + "{x:expression(document.__qsResult.push(this))}";
+        window.scrollBy(0, 0);
+        head.removeChild(styleTag);
+
+        return document.__qsResult[0];
+    };
+}
+
+if (!window.Element) {
+    window.Element = function () {};
+}
+
+var ElementPrototype = typeof HTMLElement !== "undefined" ? HTMLElement.prototype : Element.prototype;
+
+if (!ElementPrototype.remove) {
+    ElementPrototype.remove = function () {
+        this.parentNode && this.parentNode.removeChild(this);
+    };
+}
+
+if (!ElementPrototype.matches) {
+    (function (e) {
+        e.matches || (e.matches = e.matchesSelector || function (selector) {
+            var matches = document.querySelectorAll(selector),
+                th = this;
+            return Array.prototype.some.call(matches, function (e) {
+                return e === th;
+            });
+        });
+    })(Element.prototype);
+}
+
+if (!ElementPrototype.closest) {
+    (function (e) {
+        e.closest = e.closest || function (css) {
+            var node = this;
+
+            while (node) {
+                if (node.matches(css)) return node;else node = node.parentElement;
+            }
+            return null;
         };
-        switch (templateObj.type) {
-            case 'dom':
-                return TemplateLoader._getNodeFromDom(templateObj, componentName);
-            case 'string':
-                return TemplateLoader._getNodeFromString(templateObj, componentName);
-            default:
-                console.error("can not process template at component " + componentName);
-                throw "can not load template with type " + templateObj.type + ", only \"dom\" and \"string\" types is supported";
+    })(Element.prototype);
+}
+
+if (!ElementPrototype.addEventListener) {
+    ElementPrototype.addEventListener = function (name, fn) {
+        this.attachEvent('on' + name, fn);
+    };
+}
+
+if (!Object.keys) {
+    Object.keys = function (obj) {
+        var keys = [];
+        for (var i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                keys.push(i);
+            }
+        }
+        return keys;
+    };
+}
+
+if (!Array.prototype.reduce) {
+    Array.prototype.reduce = function (callback /*, initialValue*/) {
+        'use strict';
+
+        if (this == null) {
+            throw new TypeError('Array.prototype.reduce called on null or undefined');
+        }
+        if (typeof callback !== 'function') {
+            throw new TypeError(callback + ' is not a function');
+        }
+        var t = Object(this),
+            len = t.length >>> 0,
+            k = 0,
+            value = void 0;
+        if (arguments.length >= 2) {
+            value = arguments[1];
+        } else {
+            while (k < len && !(k in t)) {
+                k++;
+            }
+            if (k >= len) {
+                throw new TypeError('Reduce of empty array with no initial value');
+            }
+            value = t[k++];
+        }
+        for (; k < len; k++) {
+            if (k in t) {
+                value = callback(value, t[k], k, t);
+            }
+        }
+        return value;
+    };
+}
+
+// Production steps of ECMA-262, Edition 5, 15.4.4.17
+// Reference: http://es5.github.io/#x15.4.4.17
+if (!Array.prototype.some) {
+    Array.prototype.some = function (fun /*, thisArg*/) {
+        'use strict';
+
+        if (this == null) {
+            throw new TypeError('Array.prototype.some called on null or undefined');
+        }
+
+        if (typeof fun !== 'function') {
+            throw new TypeError();
+        }
+
+        var t = Object(this);
+        var len = t.length >>> 0;
+
+        var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+        for (var i = 0; i < len; i++) {
+            if (i in t && fun.call(thisArg, t[i], i, t)) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+}
+
+if (typeof Array.prototype.forEach != 'function') {
+    Array.prototype.forEach = function (callback, thisArg) {
+        if (typeof this.length != 'number') return;
+        if (typeof callback != 'function') return;
+
+        if (_typeof(this) == 'object') {
+            for (var i = 0; i < this.length; i++) {
+                if (i in this) {
+                    callback.call(thisArg || this, this[i], i, this);
+                } else {
+                    return;
+                }
+            }
         }
     };
+}
 
-    return TemplateLoader;
-}();
+Array.prototype.filter = Array.prototype.filter || // Use the native array filter method, if available.
+function (a, //a function to test each value of the array against. Truthy values will be put into the new array and falsy values will be excluded from the new array
+b, // placeholder
+c, // placeholder
+d, // placeholder
+e // placeholder
+) {
+    c = this; // cache the array
+    d = []; // array to hold the new values which match the expression
+    for (e in c) {
+        // for each value in the array,
+        ~~e + '' == e && e >= 0 && // coerce the array position and if valid,
+        a.call(b, c[e], +e, c) && // pass the current value into the expression and if truthy,
+        d.push(c[e]);
+    } // add it to the new array
 
-exports.default = TemplateLoader;
+    return d; // give back the new array
+};
+
+Array.prototype.every = Array.prototype.every || // Use the native every method if available, otherwise:
+function (a, // expression to test each element of the array against
+b, // optionally change the 'this' context in the given expression
+c, // placeholder iterator variable
+d // placeholder variable (stores context of original array)
+) {
+    for (c = 0, d = this; c < d.length; c++) {
+        // iterate over all of the array elements
+        if (!a.call(b, d[c], c, d)) // call the given expression, passing in context, value, index, and original array
+            return !1;
+    } // if any expression evaluates false, immediately return since 'every' is false
+    return !0; // otherwise return true since all expressions evaluated to true
+};
+
+if (!Array.prototype.find) {
+    Array.prototype.find = function (predicate) {
+        if (this == null) {
+            throw new TypeError('Array.prototype.find called on null or undefined');
+        }
+        if (typeof predicate !== 'function') {
+            throw new TypeError('predicate must be a function');
+        }
+        var list = Object(this);
+        var length = list.length >>> 0;
+        var thisArg = arguments[1];
+        var value = void 0;
+
+        for (var i = 0; i < length; i++) {
+            value = list[i];
+            if (predicate.call(thisArg, value, i, list)) {
+                return value;
+            }
+        }
+        return undefined;
+    };
+}
+
+if (!Array.prototype.map) {
+    Array.prototype.map = function (fn) {
+        var rv = [];
+        for (var i = 0, l = this.length; i < l; i++) {
+            rv.push(fn(this[i]));
+        }return rv;
+    };
+}
+
+if (!Array.prototype.indexOf) {
+    Array.prototype.indexOf = function (elt /*, from*/) {
+        var len = this.length >>> 0;
+        var from = Number(arguments[1]) || 0;
+        from = from < 0 ? Math.ceil(from) : Math.floor(from);
+        if (from < 0) from += len;
+
+        for (; from < len; from++) {
+            if (from in this && this[from] === elt) return from;
+        }
+        return -1;
+    };
+}
+
+if (!String.prototype.trim) {
+    String.prototype.trim = function () {
+        return this.replace(/^\s+|\s+$/g, '');
+    };
+}
+
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function (searchString, position) {
+        position = position || 0;
+        return this.indexOf(searchString, position) === position;
+    };
+}
+if (!String.prototype.endsWith) {
+    String.prototype.endsWith = function (searchString, position) {
+        var subjectString = this.toString();
+        if (position === undefined || position > subjectString.length) {
+            position = subjectString.length;
+        }
+        position -= searchString.length;
+        var lastIndex = subjectString.indexOf(searchString, position);
+        return lastIndex !== -1 && lastIndex === position;
+    };
+}
+
+if (!Object.create) {
+    Object.create = function (o, props) {
+        function F() {}
+        F.prototype = o;
+
+        if ((typeof props === "undefined" ? "undefined" : _typeof(props)) === "object") {
+            for (var prop in props) {
+                if (props.hasOwnProperty(prop)) {
+                    F[prop] = props[prop];
+                }
+            }
+        }
+        return new F();
+    };
+}
+
+if (!window.Node) window.Node = {
+    ELEMENT_NODE: 1,
+    ATTRIBUTE_NODE: 2,
+    TEXT_NODE: 3
+};
+
+(function (undef) {
+
+    var nativeSplit = String.prototype.split,
+        compliantExecNpcg = /()??/.exec("")[1] === undef,
+        // NPCG: nonparticipating capturing group
+    self = void 0;
+
+    self = function self(str, separator, limit) {
+        // If `separator` is not a regex, use `nativeSplit`
+        if (Object.prototype.toString.call(separator) !== "[object RegExp]") {
+            return nativeSplit.call(str, separator, limit);
+        }
+        var output = [],
+            flags = (separator.ignoreCase ? "i" : "") + (separator.multiline ? "m" : "") + (separator.extended ? "x" : "") + ( // Proposed for ES6
+        separator.sticky ? "y" : ""),
+            // Firefox 3+
+        lastLastIndex = 0,
+
+        // Make `global` and avoid `lastIndex` issues by working with a copy
+        separator = new RegExp(separator.source, flags + "g"),
+            separator2,
+            match,
+            lastIndex,
+            lastLength;
+        str += ""; // Type-convert
+        if (!compliantExecNpcg) {
+            // Doesn't need flags gy, but they don't hurt
+            separator2 = new RegExp("^" + separator.source + "$(?!\\s)", flags);
+        }
+        /* Values for `limit`, per the spec:
+         * If undefined: 4294967295 // Math.pow(2, 32) - 1
+         * If 0, Infinity, or NaN: 0
+         * If positive number: limit = Math.floor(limit); if (limit > 4294967295) limit -= 4294967296;
+         * If negative number: 4294967296 - Math.floor(Math.abs(limit))
+         * If other: Type-convert, then use the above rules
+         */
+        limit = limit === undef ? -1 >>> 0 : // Math.pow(2, 32) - 1
+        limit >>> 0; // ToUint32(limit)
+        while (match = separator.exec(str)) {
+            // `separator.lastIndex` is not reliable cross-browser
+            lastIndex = match.index + match[0].length;
+            if (lastIndex > lastLastIndex) {
+                output.push(str.slice(lastLastIndex, match.index));
+                // Fix browsers whose `exec` methods don't consistently return `undefined` for
+                // nonparticipating capturing groups
+                if (!compliantExecNpcg && match.length > 1) {
+                    match[0].replace(separator2, function () {
+                        for (var i = 1; i < arguments.length - 2; i++) {
+                            if (arguments[i] === undef) {
+                                match[i] = undef;
+                            }
+                        }
+                    });
+                }
+                if (match.length > 1 && match.index < str.length) {
+                    Array.prototype.push.apply(output, match.slice(1));
+                }
+                lastLength = match[0].length;
+                lastLastIndex = lastIndex;
+                if (output.length >= limit) {
+                    break;
+                }
+            }
+            if (separator.lastIndex === match.index) {
+                separator.lastIndex++; // Avoid an infinite loop
+            }
+        }
+        if (lastLastIndex === str.length) {
+            if (lastLength || !separator.test("")) {
+                output.push("");
+            }
+        } else {
+            output.push(str.slice(lastLastIndex));
+        }
+        return output.length > limit ? output.slice(0, limit) : output;
+    };
+
+    // For convenience
+    String.prototype.split = function (separator, limit) {
+        return self(this, separator, limit);
+    };
+
+    return self;
+})();
 
 /***/ }),
 /* 13 */
@@ -1945,170 +2092,48 @@ exports.default = TemplateLoader;
 "use strict";
 
 
-exports.__esModule = true;
+var setTimeoutNative = window.setTimeout;
+var setIntervalNative = window.setInterval;
+var clearTimeOutNative = window.clearTimeout;
+var clearIntervalNative = window.clearInterval;
 
-var _domUtils = __webpack_require__(2);
-
-var _domUtils2 = _interopRequireDefault(_domUtils);
-
-var _componentProto = __webpack_require__(3);
-
-var _componentProto2 = _interopRequireDefault(_componentProto);
-
-var _expressionEngine = __webpack_require__(6);
-
-var _expressionEngine2 = _interopRequireDefault(_expressionEngine);
-
-var _component = __webpack_require__(0);
-
-var _component2 = _interopRequireDefault(_component);
-
-var _scopedDomFragment = __webpack_require__(4);
-
-var _scopedDomFragment2 = _interopRequireDefault(_scopedDomFragment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var dataTransclusion = 'data-transclusion';
-
-var ComponentHelper = function () {
-    function ComponentHelper() {
-        _classCallCheck(this, ComponentHelper);
-    }
-
-    ComponentHelper._copyAttrs = function _copyAttrs(domEl, attrs) {
-        attrs.forEach(function (attr) {
-            if (attr.name.startsWith('_')) attr.name = attr.name.substr(1);
-            if (['data-component-id', 'data-_processed', 'id', 'data-transclusion', 'data-transclusion-id'].indexOf(attr.name) > -1) return;
-            if (attr.name.startsWith('data-')) {
-                _domUtils2.default.setAttribute(domEl, attr.name, attr.value);
-            }
-        });
+if (window.regeneratorRuntime) {
+    var wrapOrig = window.regeneratorRuntime.wrap;
+    window.regeneratorRuntime.wrap = function (a, b, c, d) {
+        var aWrapped = function aWrapped(ctx) {
+            var stopOrig = ctx.stop;
+            ctx.stop = function () {
+                var res = stopOrig.apply(ctx, arguments);
+                RF.digest();
+                return res;
+            };
+            return a.call(c, ctx);
+        };
+        return wrapOrig.call(window.regeneratorRuntime, aWrapped, b, c, d);
     };
+}
 
-    ComponentHelper._runTransclNode = function _runTransclNode(componentProto, domEl, transclNode, transclComponents) {
-        var transclusionId = _domUtils2.default.getAttribute(domEl, 'data-transclusion-id') || '';
-        var name = transclNode.getAttribute(dataTransclusion);
-        var nameSpecifiedById = transclusionId ? name += '\\:\\#' + transclusionId : '';
-        if (!name) {
-            console.error(componentProto.node);
-            console.error(transclNode);
-            throw dataTransclusion + ' attribute can not be empty';
-        }
+window.setTimeout = function (fn, time) {
+    return setTimeoutNative(function () {
+        fn();
+        RF.digest();
+    }, time);
+};
 
-        var recipients = _domUtils2.default.nodeListToArray(domEl.querySelectorAll('[' + dataTransclusion + '="' + name + '"],[' + dataTransclusion + '="' + nameSpecifiedById + '"]')).filter(function (el) {
-            var closestWithSameName = el.parentNode && (el.parentNode.closest('[' + dataTransclusion + '="' + name + '"]') || el.parentNode.closest('[' + dataTransclusion + '="' + nameSpecifiedById + '"]'));
-            if (!!closestWithSameName) {
-                console.error(domEl);
-                console.error(closestWithSameName);
-                throw '\n                            transclusion name conflict:\n                            dont use same transclusion name at different components with parent-child relations.\n                            Conflicted name: "' + name + '"';
-            }
-            return true;
-        });
+window.setInterval = function (fn, time) {
+    return setIntervalNative(function () {
+        fn();
+        RF.digest();
+    }, time);
+};
 
-        recipients.forEach(function (rcp) {
-            transclNode.innerHTML = '';
-            transclComponents.push({ transclNode: transclNode, rcp: rcp });
-        });
-    };
+window.clearTimeout = function (tid) {
+    return clearTimeOutNative(tid);
+};
 
-    ComponentHelper._runComponentDomEl = function _runComponentDomEl(rootComponent, componentProto, domEl, transclComponents, componentNodes) {
-        if (_domUtils2.default.getAttribute(domEl, 'data-_processed')) return;
-        _domUtils2.default.setAttribute(domEl, 'data-_processed', '1');
-
-        var hasNotTranscluded = false;
-        _domUtils2.default.nodeListToArray(domEl.childNodes).forEach(function (chdrn) {
-            if (chdrn.hasAttribute && !chdrn.hasAttribute(dataTransclusion)) hasNotTranscluded = true;
-        });
-        if (hasNotTranscluded) {
-            console.warn(domEl);
-            console.warn('children elements of component ' + componentProto.name + ' will be removed');
-        }
-
-        var domId = _domUtils2.default.getAttribute(domEl, 'id');
-        var componentAttrs = _domUtils2.default.getNodeAttributes(domEl);
-        var componentNode = componentProto.node.cloneNode(true);
-        _domUtils2.default.nodeListToArray(componentNode.querySelectorAll('[' + dataTransclusion + ']')).forEach(function (transclNode) {
-            ComponentHelper._runTransclNode(componentProto, domEl, transclNode, transclComponents);
-        });
-        domEl.parentNode.insertBefore(componentNode, domEl);
-
-        var dataStateExpression = domEl.getAttribute('data-state');
-        var dataState = dataStateExpression ? _expressionEngine2.default.executeExpression(dataStateExpression, rootComponent) : {};
-        var component = componentProto.newInstance(componentNode, dataState);
-        domId && (component.domId = domId);
-
-        component.parent = rootComponent;
-        component.parent.addChild(component);
-        if (dataStateExpression) component.stateExpression = dataStateExpression;
-        component.disableParentScopeEvaluation = true; // avoid recursion in Component
-
-        component.run();
-
-        _domUtils2.default.remove(domEl);
-        componentNodes.push({ component: component, componentNode: componentNode, attrs: componentAttrs });
-    };
-
-    ComponentHelper._runComponent = function _runComponent(rootComponent, componentProto) {
-        var transclComponents = [];
-        var domEls = _domUtils2.default.nodeListToArray(rootComponent.node.getElementsByTagName(componentProto.name));
-        if (rootComponent.node.tagName.toLowerCase() == componentProto.name.toLowerCase()) {
-            console.error('\n                   Can not use "data-for" attribute at component directly. Use "data-for" directive at parent node');
-            console.error('component node:', rootComponent.node);
-            throw "Can not use data-for attribute at component";
-        }
-        var componentNodes = [];
-        domEls.forEach(function (domEl) {
-            var hasClosestSameComponent = domEl.parentNode && _domUtils2.default.closest(domEl.parentNode, domEl.tagName.toLowerCase());
-            if (hasClosestSameComponent) return;
-            ComponentHelper._runComponentDomEl(rootComponent, componentProto, domEl, transclComponents, componentNodes);
-        });
-        var hasStateChanged = false;
-        componentNodes.forEach(function (item) {
-            var children = _domUtils2.default.removeParentButNotChildren(item.componentNode);
-            if (children.length == 1) {
-                item.component.modelView.$el = children[0];
-                ComponentHelper._copyAttrs(item.component.modelView.$el, item.attrs);
-            } else {
-                item.component.modelView.$el = children;
-                children.forEach(function (c) {
-                    ComponentHelper._copyAttrs(c, item.attrs);
-                });
-            }
-            hasStateChanged = item.component.setMounted(true) != 'noChanged' || hasStateChanged;
-            hasStateChanged = item.component.setShown(true) != 'noChanged' || hasStateChanged;
-        });
-        hasStateChanged && _component2.default.digestAll();
-        return transclComponents;
-    };
-
-    ComponentHelper._runTransclusionComponent = function _runTransclusionComponent(rootComponent, trnscl) {
-        _domUtils2.default.nodeListToArray(trnscl.rcp.childNodes).forEach(function (n) {
-            trnscl.transclNode.appendChild(n);
-        });
-        var transclComponent = new _scopedDomFragment2.default(trnscl.transclNode, rootComponent.modelView);
-        rootComponent.addChild(transclComponent);
-        transclComponent.parent = rootComponent;
-        _domUtils2.default.setAttribute(trnscl.transclNode, 'data-_processed', '1');
-        transclComponent.run();
-    };
-
-    ComponentHelper.runComponents = function runComponents(rootComponent) {
-        var transclComponents = [];
-        _componentProto2.default.instances.forEach(function (componentProto) {
-            transclComponents = transclComponents.concat(ComponentHelper._runComponent(rootComponent, componentProto));
-        });
-        transclComponents.forEach(function (trnscl) {
-            ComponentHelper._runTransclusionComponent(rootComponent, trnscl);
-        });
-    };
-
-    return ComponentHelper;
-}();
-
-exports.default = ComponentHelper;
+window.clearInterval = function (tid) {
+    return clearIntervalNative(tid);
+};
 
 /***/ }),
 /* 14 */
@@ -2119,163 +2144,17 @@ exports.default = ComponentHelper;
 
 exports.__esModule = true;
 
-var _component = __webpack_require__(0);
-
-var _component2 = _interopRequireDefault(_component);
-
-var _miscUtils = __webpack_require__(1);
-
-var _miscUtils2 = _interopRequireDefault(_miscUtils);
-
-var _domUtils = __webpack_require__(2);
-
-var _domUtils2 = _interopRequireDefault(_domUtils);
-
-var _modelView = __webpack_require__(5);
-
-var _modelView2 = _interopRequireDefault(_modelView);
-
-var _scopedDomFragment = __webpack_require__(4);
-
-var _scopedDomFragment2 = _interopRequireDefault(_scopedDomFragment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ScopedLoopContainer = function (_Component) {
-    _inherits(ScopedLoopContainer, _Component);
-
-    function ScopedLoopContainer(node, modelView) {
-        _classCallCheck(this, ScopedLoopContainer);
-
-        var _this = _possibleConstructorReturn(this, _Component.call(this, null, node, modelView));
-
-        if (_domUtils2.default.getAttribute(node, 'data-for')) throw 'can not use "data-for" attribute at component directly. Use this directive at parent node';
-
-        _this.scopedDomFragments = [];
-        _this.lastFrafmentsLength = 0;
-        _this.node = node;
-        _this.parent = null;
-        return _this;
-    }
-
-    ScopedLoopContainer.prototype._destroyFragment = function _destroyFragment(index) {
-        var removedFragment = this.scopedDomFragments.splice(index, 1)[0];
-        removedFragment.destroy();
-        this.lastFrafmentsLength--;
-    };
-
-    ScopedLoopContainer.prototype.run = function run(eachItemName, indexName, iterableObjectExpr, trackBy) {
-        var _this2 = this;
-
-        this.eachItemName = eachItemName;
-        this.indexName = indexName;
-        this.trackBy = trackBy;
-
-        this.anchor = document.createComment('component-id: ' + this.id + '; loop: ' + eachItemName + ' in ' + iterableObjectExpr);
-        this.node.parentNode.insertBefore(this.anchor, this.node.nextSibling);
-        _domUtils2.default.remove(this.node);
-        this.node = this.node.cloneNode(true);
-
-        this.addWatcher(iterableObjectExpr, function (newArr, oldArr) {
-            _this2._processIterations(newArr, oldArr);
-        }, [], // todo!!!! replace to real array of "if" expressions,
-        'loopWatchers');
-        this.digest();
-    };
-
-    ScopedLoopContainer.prototype._processIterations = function _processIterations() {
-        var _this3 = this;
-
-        var newArr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-
-
-        var currNodeInIteration = this.anchor;
-        if (!newArr.splice) newArr = _miscUtils2.default.objectToArray(newArr);
-
-        if (!newArr.forEach) {
-            console.error(this.node);
-            throw 'can not evaluate loop expression: ' + this.eachItemName + (this.indexName ? ',' + this.indexName : '') + '. Expected object or array, but ' + newArr + ' found.';
-        }
-
-        var index = 0;
-        newArr.forEach(function (iterableItem, i) {
-
-            if (iterableItem['key'] !== undefined && iterableItem['value'] !== undefined) {
-                // if looped object with key and value pairs
-                i = iterableItem.key;
-                iterableItem = iterableItem.value;
-            }
-
-            if (!_this3.scopedDomFragments[index]) {
-
-                var props = {};
-                props[_this3.eachItemName] = iterableItem;
-                if (_this3.indexName) props[_this3.indexName] = i;
-                var localModelView = new _modelView2.default(_this3.indexName, props);
-
-                var node = _this3.node.cloneNode(true);
-                var scopedDomFragment = new _scopedDomFragment2.default(node, localModelView);
-                // todo Cannot read property 'insertBefore' of null
-                currNodeInIteration.parentNode.insertBefore(node, currNodeInIteration.nextSibling);
-                scopedDomFragment.parent = _this3.parent;
-                scopedDomFragment.parent.addChild(scopedDomFragment);
-                scopedDomFragment.scopeLoopContainer = _this3;
-
-                scopedDomFragment.run();
-                currNodeInIteration = node;
-                _this3.scopedDomFragments.push(scopedDomFragment);
-                _this3.lastFrafmentsLength++;
-            } else {
-
-                var _localModelView = _this3.scopedDomFragments[index].modelView;
-                _localModelView[_this3.eachItemName] = iterableItem;
-                if (_this3.indexName) _localModelView[_this3.indexName] = i;
-
-                currNodeInIteration = _this3.scopedDomFragments[index].node;
-                _this3.scopedDomFragments[index].digest();
-            }
-            index++;
-        });
-
-        if (this.lastFrafmentsLength > newArr.length) {
-            var l = this.scopedDomFragments.length;
-            for (var i = 0, max = this.lastFrafmentsLength - newArr.length; i < max; i++) {
-                this._destroyFragment(l - i - 1);
-            }
-        }
-    };
-
-    return ScopedLoopContainer;
-}(_component2.default);
-
-exports.default = ScopedLoopContainer;
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _lexer = __webpack_require__(9);
+var _lexer = __webpack_require__(8);
 
 var _lexer2 = _interopRequireDefault(_lexer);
 
-var _token = __webpack_require__(8);
+var _token = __webpack_require__(9);
 
 var _token2 = _interopRequireDefault(_token);
 
-var _expressionEngine = __webpack_require__(6);
+var _expressionEngine = __webpack_require__(3);
 
 var _expressionEngine2 = _interopRequireDefault(_expressionEngine);
 
@@ -2287,11 +2166,11 @@ var _miscUtils = __webpack_require__(1);
 
 var _miscUtils2 = _interopRequireDefault(_miscUtils);
 
-var _scopedLoopContainer = __webpack_require__(14);
+var _scopedLoopContainer = __webpack_require__(15);
 
 var _scopedLoopContainer2 = _interopRequireDefault(_scopedLoopContainer);
 
-var _componentHelper = __webpack_require__(13);
+var _componentHelper = __webpack_require__(16);
 
 var _componentHelper2 = _interopRequireDefault(_componentHelper);
 
@@ -2299,7 +2178,7 @@ var _component = __webpack_require__(0);
 
 var _component2 = _interopRequireDefault(_component);
 
-var _directive = __webpack_require__(7);
+var _directive = __webpack_require__(10);
 
 var _directive2 = _interopRequireDefault(_directive);
 
@@ -2857,54 +2736,322 @@ DirectiveEngine.ddObjects = {};
 DirectiveEngine.instances = [];
 
 /***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _component = __webpack_require__(0);
+
+var _component2 = _interopRequireDefault(_component);
+
+var _miscUtils = __webpack_require__(1);
+
+var _miscUtils2 = _interopRequireDefault(_miscUtils);
+
+var _domUtils = __webpack_require__(2);
+
+var _domUtils2 = _interopRequireDefault(_domUtils);
+
+var _modelView = __webpack_require__(4);
+
+var _modelView2 = _interopRequireDefault(_modelView);
+
+var _scopedDomFragment = __webpack_require__(5);
+
+var _scopedDomFragment2 = _interopRequireDefault(_scopedDomFragment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ScopedLoopContainer = function (_Component) {
+    _inherits(ScopedLoopContainer, _Component);
+
+    function ScopedLoopContainer(node, modelView) {
+        _classCallCheck(this, ScopedLoopContainer);
+
+        var _this = _possibleConstructorReturn(this, _Component.call(this, null, node, modelView));
+
+        if (_domUtils2.default.getAttribute(node, 'data-for')) throw 'can not use "data-for" attribute at component directly. Use this directive at parent node';
+
+        _this.scopedDomFragments = [];
+        _this.lastFrafmentsLength = 0;
+        _this.node = node;
+        _this.parent = null;
+        return _this;
+    }
+
+    ScopedLoopContainer.prototype._destroyFragment = function _destroyFragment(index) {
+        var removedFragment = this.scopedDomFragments.splice(index, 1)[0];
+        removedFragment.destroy();
+        this.lastFrafmentsLength--;
+    };
+
+    ScopedLoopContainer.prototype.run = function run(eachItemName, indexName, iterableObjectExpr, trackBy) {
+        var _this2 = this;
+
+        this.eachItemName = eachItemName;
+        this.indexName = indexName;
+        this.trackBy = trackBy;
+
+        this.anchor = document.createComment('component-id: ' + this.id + '; loop: ' + eachItemName + ' in ' + iterableObjectExpr);
+        this.node.parentNode.insertBefore(this.anchor, this.node.nextSibling);
+        _domUtils2.default.remove(this.node);
+        this.node = this.node.cloneNode(true);
+
+        this.addWatcher(iterableObjectExpr, function (newArr, oldArr) {
+            _this2._processIterations(newArr, oldArr);
+        }, [], // todo!!!! replace to real array of "if" expressions,
+        'loopWatchers');
+        this.digest();
+    };
+
+    ScopedLoopContainer.prototype._processIterations = function _processIterations() {
+        var _this3 = this;
+
+        var newArr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+
+        var currNodeInIteration = this.anchor;
+        if (!newArr.splice) newArr = _miscUtils2.default.objectToArray(newArr);
+
+        if (!newArr.forEach) {
+            console.error(this.node);
+            throw 'can not evaluate loop expression: ' + this.eachItemName + (this.indexName ? ',' + this.indexName : '') + '. Expected object or array, but ' + newArr + ' found.';
+        }
+
+        var index = 0;
+        newArr.forEach(function (iterableItem, i) {
+
+            if (iterableItem['key'] !== undefined && iterableItem['value'] !== undefined) {
+                // if looped object with key and value pairs
+                i = iterableItem.key;
+                iterableItem = iterableItem.value;
+            }
+
+            if (!_this3.scopedDomFragments[index]) {
+
+                var props = {};
+                props[_this3.eachItemName] = iterableItem;
+                if (_this3.indexName) props[_this3.indexName] = i;
+                var localModelView = new _modelView2.default(_this3.indexName, props);
+
+                var node = _this3.node.cloneNode(true);
+                var scopedDomFragment = new _scopedDomFragment2.default(node, localModelView);
+                // todo Cannot read property 'insertBefore' of null
+                currNodeInIteration.parentNode.insertBefore(node, currNodeInIteration.nextSibling);
+                scopedDomFragment.parent = _this3.parent;
+                scopedDomFragment.parent.addChild(scopedDomFragment);
+                scopedDomFragment.scopeLoopContainer = _this3;
+
+                scopedDomFragment.run();
+                currNodeInIteration = node;
+                _this3.scopedDomFragments.push(scopedDomFragment);
+                _this3.lastFrafmentsLength++;
+            } else {
+
+                var _localModelView = _this3.scopedDomFragments[index].modelView;
+                _localModelView[_this3.eachItemName] = iterableItem;
+                if (_this3.indexName) _localModelView[_this3.indexName] = i;
+
+                currNodeInIteration = _this3.scopedDomFragments[index].node;
+                _this3.scopedDomFragments[index].digest();
+            }
+            index++;
+        });
+
+        if (this.lastFrafmentsLength > newArr.length) {
+            var l = this.scopedDomFragments.length;
+            for (var i = 0, max = this.lastFrafmentsLength - newArr.length; i < max; i++) {
+                this._destroyFragment(l - i - 1);
+            }
+        }
+    };
+
+    return ScopedLoopContainer;
+}(_component2.default);
+
+exports.default = ScopedLoopContainer;
+
+/***/ }),
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var setTimeoutNative = window.setTimeout;
-var setIntervalNative = window.setInterval;
-var clearTimeOutNative = window.clearTimeout;
-var clearIntervalNative = window.clearInterval;
+exports.__esModule = true;
 
-if (window.regeneratorRuntime) {
-    var wrapOrig = window.regeneratorRuntime.wrap;
-    window.regeneratorRuntime.wrap = function (a, b, c, d) {
-        var aWrapped = function aWrapped(ctx) {
-            var stopOrig = ctx.stop;
-            ctx.stop = function () {
-                var res = stopOrig.apply(ctx, arguments);
-                RF.digest();
-                return res;
-            };
-            return a.call(c, ctx);
-        };
-        return wrapOrig.call(window.regeneratorRuntime, aWrapped, b, c, d);
+var _domUtils = __webpack_require__(2);
+
+var _domUtils2 = _interopRequireDefault(_domUtils);
+
+var _componentProto = __webpack_require__(6);
+
+var _componentProto2 = _interopRequireDefault(_componentProto);
+
+var _expressionEngine = __webpack_require__(3);
+
+var _expressionEngine2 = _interopRequireDefault(_expressionEngine);
+
+var _component = __webpack_require__(0);
+
+var _component2 = _interopRequireDefault(_component);
+
+var _scopedDomFragment = __webpack_require__(5);
+
+var _scopedDomFragment2 = _interopRequireDefault(_scopedDomFragment);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var dataTransclusion = 'data-transclusion';
+
+var ComponentHelper = function () {
+    function ComponentHelper() {
+        _classCallCheck(this, ComponentHelper);
+    }
+
+    ComponentHelper._copyAttrs = function _copyAttrs(domEl, attrs) {
+        attrs.forEach(function (attr) {
+            if (attr.name.startsWith('_')) attr.name = attr.name.substr(1);
+            if (['data-component-id', 'data-_processed', 'id', 'data-transclusion', 'data-transclusion-id'].indexOf(attr.name) > -1) return;
+            if (attr.name.startsWith('data-')) {
+                _domUtils2.default.setAttribute(domEl, attr.name, attr.value);
+            }
+        });
     };
-}
 
-window.setTimeout = function (fn, time) {
-    return setTimeoutNative(function () {
-        fn();
-        RF.digest();
-    }, time);
-};
+    ComponentHelper._runTransclNode = function _runTransclNode(componentProto, domEl, transclNode, transclComponents) {
+        var transclusionId = _domUtils2.default.getAttribute(domEl, 'data-transclusion-id') || '';
+        var name = transclNode.getAttribute(dataTransclusion);
+        var nameSpecifiedById = transclusionId ? name += '\\:\\#' + transclusionId : '';
+        if (!name) {
+            console.error(componentProto.node);
+            console.error(transclNode);
+            throw dataTransclusion + ' attribute can not be empty';
+        }
 
-window.setInterval = function (fn, time) {
-    return setIntervalNative(function () {
-        fn();
-        RF.digest();
-    }, time);
-};
+        var recipients = _domUtils2.default.nodeListToArray(domEl.querySelectorAll('[' + dataTransclusion + '="' + name + '"],[' + dataTransclusion + '="' + nameSpecifiedById + '"]')).filter(function (el) {
+            var closestWithSameName = el.parentNode && (el.parentNode.closest('[' + dataTransclusion + '="' + name + '"]') || el.parentNode.closest('[' + dataTransclusion + '="' + nameSpecifiedById + '"]'));
+            if (!!closestWithSameName) {
+                console.error(domEl);
+                console.error(closestWithSameName);
+                throw '\n                            transclusion name conflict:\n                            dont use same transclusion name at different components with parent-child relations.\n                            Conflicted name: "' + name + '"';
+            }
+            return true;
+        });
 
-window.clearTimeout = function (tid) {
-    return clearTimeOutNative(tid);
-};
+        recipients.forEach(function (rcp) {
+            transclNode.innerHTML = '';
+            transclComponents.push({ transclNode: transclNode, rcp: rcp });
+        });
+    };
 
-window.clearInterval = function (tid) {
-    return clearIntervalNative(tid);
-};
+    ComponentHelper._runComponentDomEl = function _runComponentDomEl(rootComponent, componentProto, domEl, transclComponents, componentNodes) {
+        if (_domUtils2.default.getAttribute(domEl, 'data-_processed')) return;
+        _domUtils2.default.setAttribute(domEl, 'data-_processed', '1');
+
+        var hasNotTranscluded = false;
+        _domUtils2.default.nodeListToArray(domEl.childNodes).forEach(function (chdrn) {
+            if (chdrn.hasAttribute && !chdrn.hasAttribute(dataTransclusion)) hasNotTranscluded = true;
+        });
+        if (hasNotTranscluded) {
+            console.warn(domEl);
+            console.warn('children elements of component ' + componentProto.name + ' will be removed');
+        }
+
+        var domId = _domUtils2.default.getAttribute(domEl, 'id');
+        var componentAttrs = _domUtils2.default.getNodeAttributes(domEl);
+        var componentNode = componentProto.node.cloneNode(true);
+        _domUtils2.default.nodeListToArray(componentNode.querySelectorAll('[' + dataTransclusion + ']')).forEach(function (transclNode) {
+            ComponentHelper._runTransclNode(componentProto, domEl, transclNode, transclComponents);
+        });
+        domEl.parentNode.insertBefore(componentNode, domEl);
+
+        var dataStateExpression = domEl.getAttribute('data-state');
+        var dataState = dataStateExpression ? _expressionEngine2.default.executeExpression(dataStateExpression, rootComponent) : {};
+        var component = componentProto.newInstance(componentNode, dataState);
+        domId && (component.domId = domId);
+
+        component.parent = rootComponent;
+        component.parent.addChild(component);
+        if (dataStateExpression) component.stateExpression = dataStateExpression;
+        component.disableParentScopeEvaluation = true; // avoid recursion in Component
+
+        component.run();
+
+        _domUtils2.default.remove(domEl);
+        componentNodes.push({ component: component, componentNode: componentNode, attrs: componentAttrs });
+    };
+
+    ComponentHelper._runComponent = function _runComponent(rootComponent, componentProto) {
+        var transclComponents = [];
+        var domEls = _domUtils2.default.nodeListToArray(rootComponent.node.getElementsByTagName(componentProto.name));
+        if (rootComponent.node.tagName.toLowerCase() == componentProto.name.toLowerCase()) {
+            console.error('\n                   Can not use "data-for" attribute at component directly. Use "data-for" directive at parent node');
+            console.error('component node:', rootComponent.node);
+            throw "Can not use data-for attribute at component";
+        }
+        var componentNodes = [];
+        domEls.forEach(function (domEl) {
+            var hasClosestSameComponent = domEl.parentNode && _domUtils2.default.closest(domEl.parentNode, domEl.tagName.toLowerCase());
+            if (hasClosestSameComponent) return;
+            ComponentHelper._runComponentDomEl(rootComponent, componentProto, domEl, transclComponents, componentNodes);
+        });
+        var hasStateChanged = false;
+        componentNodes.forEach(function (item) {
+            var children = _domUtils2.default.removeParentButNotChildren(item.componentNode);
+            if (children.length == 1) {
+                item.component.modelView.$el = children[0];
+                ComponentHelper._copyAttrs(item.component.modelView.$el, item.attrs);
+            } else {
+                item.component.modelView.$el = children;
+                children.forEach(function (c) {
+                    ComponentHelper._copyAttrs(c, item.attrs);
+                });
+            }
+            hasStateChanged = item.component.setMounted(true) != 'noChanged' || hasStateChanged;
+            hasStateChanged = item.component.setShown(true) != 'noChanged' || hasStateChanged;
+        });
+        hasStateChanged && _component2.default.digestAll();
+        return transclComponents;
+    };
+
+    ComponentHelper._runTransclusionComponent = function _runTransclusionComponent(rootComponent, trnscl) {
+        _domUtils2.default.nodeListToArray(trnscl.rcp.childNodes).forEach(function (n) {
+            trnscl.transclNode.appendChild(n);
+        });
+        var transclComponent = new _scopedDomFragment2.default(trnscl.transclNode, rootComponent.modelView);
+        rootComponent.addChild(transclComponent);
+        transclComponent.parent = rootComponent;
+        _domUtils2.default.setAttribute(trnscl.transclNode, 'data-_processed', '1');
+        transclComponent.run();
+    };
+
+    ComponentHelper.runComponents = function runComponents(rootComponent) {
+        var transclComponents = [];
+        _componentProto2.default.instances.forEach(function (componentProto) {
+            transclComponents = transclComponents.concat(ComponentHelper._runComponent(rootComponent, componentProto));
+        });
+        transclComponents.forEach(function (trnscl) {
+            ComponentHelper._runTransclusionComponent(rootComponent, trnscl);
+        });
+    };
+
+    return ComponentHelper;
+}();
+
+exports.default = ComponentHelper;
 
 /***/ }),
 /* 17 */
@@ -2913,400 +3060,258 @@ window.clearInterval = function (tid) {
 "use strict";
 
 
+exports.__esModule = true;
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-if (!window.console) {
-    window.console = {};
-    window.console.log = window.console.error = window.console.warn = window.console.trace = function (msg) {
-        window.status = msg;
-    };
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-if (!document.querySelectorAll) {
-    document.querySelectorAll = function (selector) {
-        var head = document.documentElement.firstChild;
-        var styleTag = document.createElement("STYLE");
-        head.appendChild(styleTag);
-        document.__qsResult = [];
+var TemplateLoader = function () {
+    function TemplateLoader() {
+        _classCallCheck(this, TemplateLoader);
+    }
 
-        styleTag.styleSheet.cssText = selector + "{x:expression(document.__qsResult.push(this))}";
-        window.scrollBy(0, 0);
-        head.removeChild(styleTag);
-
-        var result = [];
-        for (var i in document.__qsResult) {
-            if (typeof document.__qsResult[i] === 'function') continue;
-            result.push(document.__qsResult[i]);
+    TemplateLoader._getNodeFromDom = function _getNodeFromDom(templateObj, componentName) {
+        if (!templateObj.value) {
+            console.error("can not process template at component " + componentName);
+            throw "template.value must be specified";
         }
-        return result;
+        var node = document.getElementById(templateObj.value);
+        if (!node) throw "can not fing dom element with id " + templateObj.value;
+        return node;
     };
-}
 
-if (!document.querySelector) {
-    document.querySelector = function (selector) {
-        var head = document.documentElement.firstChild;
-        var styleTag = document.createElement("STYLE");
-        head.appendChild(styleTag);
-        document.__qsResult = [];
-
-        styleTag.styleSheet.cssText = selector + "{x:expression(document.__qsResult.push(this))}";
-        window.scrollBy(0, 0);
-        head.removeChild(styleTag);
-
-        return document.__qsResult[0];
+    TemplateLoader._getNodeFromString = function _getNodeFromString(templateObj, componentName) {
+        if (!templateObj.value) throw "template string not provided";
+        if (typeof templateObj.value !== 'string') {
+            console.error("can not process template at component " + componentName);
+            throw "template.value mast be a String, but " + _typeof(templateObj.value) + " found";
+        }
+        var container = document.createElement('div');
+        container.innerHTML = templateObj.value;
+        return container;
     };
-}
 
-if (!window.Element) {
-    window.Element = function () {};
-}
+    TemplateLoader.getNode = function getNode() {
+        var properties = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var componentName = arguments[1];
 
-var ElementPrototype = typeof HTMLElement !== "undefined" ? HTMLElement.prototype : Element.prototype;
-
-if (!ElementPrototype.remove) {
-    ElementPrototype.remove = function () {
-        this.parentNode && this.parentNode.removeChild(this);
-    };
-}
-
-if (!ElementPrototype.matches) {
-    (function (e) {
-        e.matches || (e.matches = e.matchesSelector || function (selector) {
-            var matches = document.querySelectorAll(selector),
-                th = this;
-            return Array.prototype.some.call(matches, function (e) {
-                return e === th;
-            });
-        });
-    })(Element.prototype);
-}
-
-if (!ElementPrototype.closest) {
-    (function (e) {
-        e.closest = e.closest || function (css) {
-            var node = this;
-
-            while (node) {
-                if (node.matches(css)) return node;else node = node.parentElement;
-            }
-            return null;
+        var templateObj = properties.template;
+        if (!templateObj) throw "template not defined. Provide template at your component '" + componentName + "'";
+        if (typeof templateObj === 'string') templateObj = {
+            type: 'string',
+            value: templateObj
         };
-    })(Element.prototype);
-}
-
-if (!ElementPrototype.addEventListener) {
-    ElementPrototype.addEventListener = function (name, fn) {
-        this.attachEvent('on' + name, fn);
-    };
-}
-
-if (!Object.keys) {
-    Object.keys = function (obj) {
-        var keys = [];
-        for (var i in obj) {
-            if (obj.hasOwnProperty(i)) {
-                keys.push(i);
-            }
-        }
-        return keys;
-    };
-}
-
-if (!Array.prototype.reduce) {
-    Array.prototype.reduce = function (callback /*, initialValue*/) {
-        'use strict';
-
-        if (this == null) {
-            throw new TypeError('Array.prototype.reduce called on null or undefined');
-        }
-        if (typeof callback !== 'function') {
-            throw new TypeError(callback + ' is not a function');
-        }
-        var t = Object(this),
-            len = t.length >>> 0,
-            k = 0,
-            value = void 0;
-        if (arguments.length >= 2) {
-            value = arguments[1];
-        } else {
-            while (k < len && !(k in t)) {
-                k++;
-            }
-            if (k >= len) {
-                throw new TypeError('Reduce of empty array with no initial value');
-            }
-            value = t[k++];
-        }
-        for (; k < len; k++) {
-            if (k in t) {
-                value = callback(value, t[k], k, t);
-            }
-        }
-        return value;
-    };
-}
-
-// Production steps of ECMA-262, Edition 5, 15.4.4.17
-// Reference: http://es5.github.io/#x15.4.4.17
-if (!Array.prototype.some) {
-    Array.prototype.some = function (fun /*, thisArg*/) {
-        'use strict';
-
-        if (this == null) {
-            throw new TypeError('Array.prototype.some called on null or undefined');
-        }
-
-        if (typeof fun !== 'function') {
-            throw new TypeError();
-        }
-
-        var t = Object(this);
-        var len = t.length >>> 0;
-
-        var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
-        for (var i = 0; i < len; i++) {
-            if (i in t && fun.call(thisArg, t[i], i, t)) {
-                return true;
-            }
-        }
-
-        return false;
-    };
-}
-
-if (typeof Array.prototype.forEach != 'function') {
-    Array.prototype.forEach = function (callback, thisArg) {
-        if (typeof this.length != 'number') return;
-        if (typeof callback != 'function') return;
-
-        if (_typeof(this) == 'object') {
-            for (var i = 0; i < this.length; i++) {
-                if (i in this) {
-                    callback.call(thisArg || this, this[i], i, this);
-                } else {
-                    return;
-                }
-            }
+        switch (templateObj.type) {
+            case 'dom':
+                return TemplateLoader._getNodeFromDom(templateObj, componentName);
+            case 'string':
+                return TemplateLoader._getNodeFromString(templateObj, componentName);
+            default:
+                console.error("can not process template at component " + componentName);
+                throw "can not load template with type " + templateObj.type + ", only \"dom\" and \"string\" types is supported";
         }
     };
-}
 
-Array.prototype.filter = Array.prototype.filter || // Use the native array filter method, if available.
-function (a, //a function to test each value of the array against. Truthy values will be put into the new array and falsy values will be excluded from the new array
-b, // placeholder
-c, // placeholder
-d, // placeholder
-e // placeholder
-) {
-    c = this; // cache the array
-    d = []; // array to hold the new values which match the expression
-    for (e in c) {
-        // for each value in the array,
-        ~~e + '' == e && e >= 0 && // coerce the array position and if valid,
-        a.call(b, c[e], +e, c) && // pass the current value into the expression and if truthy,
-        d.push(c[e]);
-    } // add it to the new array
+    return TemplateLoader;
+}();
 
-    return d; // give back the new array
-};
-
-Array.prototype.every = Array.prototype.every || // Use the native every method if available, otherwise:
-function (a, // expression to test each element of the array against
-b, // optionally change the 'this' context in the given expression
-c, // placeholder iterator variable
-d // placeholder variable (stores context of original array)
-) {
-    for (c = 0, d = this; c < d.length; c++) {
-        // iterate over all of the array elements
-        if (!a.call(b, d[c], c, d)) // call the given expression, passing in context, value, index, and original array
-            return !1;
-    } // if any expression evaluates false, immediately return since 'every' is false
-    return !0; // otherwise return true since all expressions evaluated to true
-};
-
-if (!Array.prototype.find) {
-    Array.prototype.find = function (predicate) {
-        if (this == null) {
-            throw new TypeError('Array.prototype.find called on null or undefined');
-        }
-        if (typeof predicate !== 'function') {
-            throw new TypeError('predicate must be a function');
-        }
-        var list = Object(this);
-        var length = list.length >>> 0;
-        var thisArg = arguments[1];
-        var value = void 0;
-
-        for (var i = 0; i < length; i++) {
-            value = list[i];
-            if (predicate.call(thisArg, value, i, list)) {
-                return value;
-            }
-        }
-        return undefined;
-    };
-}
-
-if (!Array.prototype.map) {
-    Array.prototype.map = function (fn) {
-        var rv = [];
-        for (var i = 0, l = this.length; i < l; i++) {
-            rv.push(fn(this[i]));
-        }return rv;
-    };
-}
-
-if (!Array.prototype.indexOf) {
-    Array.prototype.indexOf = function (elt /*, from*/) {
-        var len = this.length >>> 0;
-        var from = Number(arguments[1]) || 0;
-        from = from < 0 ? Math.ceil(from) : Math.floor(from);
-        if (from < 0) from += len;
-
-        for (; from < len; from++) {
-            if (from in this && this[from] === elt) return from;
-        }
-        return -1;
-    };
-}
-
-if (!String.prototype.trim) {
-    String.prototype.trim = function () {
-        return this.replace(/^\s+|\s+$/g, '');
-    };
-}
-
-if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function (searchString, position) {
-        position = position || 0;
-        return this.indexOf(searchString, position) === position;
-    };
-}
-if (!String.prototype.endsWith) {
-    String.prototype.endsWith = function (searchString, position) {
-        var subjectString = this.toString();
-        if (position === undefined || position > subjectString.length) {
-            position = subjectString.length;
-        }
-        position -= searchString.length;
-        var lastIndex = subjectString.indexOf(searchString, position);
-        return lastIndex !== -1 && lastIndex === position;
-    };
-}
-
-if (!Object.create) {
-    Object.create = function (o, props) {
-        function F() {}
-        F.prototype = o;
-
-        if ((typeof props === "undefined" ? "undefined" : _typeof(props)) === "object") {
-            for (var prop in props) {
-                if (props.hasOwnProperty(prop)) {
-                    F[prop] = props[prop];
-                }
-            }
-        }
-        return new F();
-    };
-}
-
-if (!window.Node) window.Node = {
-    ELEMENT_NODE: 1,
-    ATTRIBUTE_NODE: 2,
-    TEXT_NODE: 3
-};
-
-(function (undef) {
-
-    var nativeSplit = String.prototype.split,
-        compliantExecNpcg = /()??/.exec("")[1] === undef,
-        // NPCG: nonparticipating capturing group
-    self = void 0;
-
-    self = function self(str, separator, limit) {
-        // If `separator` is not a regex, use `nativeSplit`
-        if (Object.prototype.toString.call(separator) !== "[object RegExp]") {
-            return nativeSplit.call(str, separator, limit);
-        }
-        var output = [],
-            flags = (separator.ignoreCase ? "i" : "") + (separator.multiline ? "m" : "") + (separator.extended ? "x" : "") + ( // Proposed for ES6
-        separator.sticky ? "y" : ""),
-            // Firefox 3+
-        lastLastIndex = 0,
-
-        // Make `global` and avoid `lastIndex` issues by working with a copy
-        separator = new RegExp(separator.source, flags + "g"),
-            separator2,
-            match,
-            lastIndex,
-            lastLength;
-        str += ""; // Type-convert
-        if (!compliantExecNpcg) {
-            // Doesn't need flags gy, but they don't hurt
-            separator2 = new RegExp("^" + separator.source + "$(?!\\s)", flags);
-        }
-        /* Values for `limit`, per the spec:
-         * If undefined: 4294967295 // Math.pow(2, 32) - 1
-         * If 0, Infinity, or NaN: 0
-         * If positive number: limit = Math.floor(limit); if (limit > 4294967295) limit -= 4294967296;
-         * If negative number: 4294967296 - Math.floor(Math.abs(limit))
-         * If other: Type-convert, then use the above rules
-         */
-        limit = limit === undef ? -1 >>> 0 : // Math.pow(2, 32) - 1
-        limit >>> 0; // ToUint32(limit)
-        while (match = separator.exec(str)) {
-            // `separator.lastIndex` is not reliable cross-browser
-            lastIndex = match.index + match[0].length;
-            if (lastIndex > lastLastIndex) {
-                output.push(str.slice(lastLastIndex, match.index));
-                // Fix browsers whose `exec` methods don't consistently return `undefined` for
-                // nonparticipating capturing groups
-                if (!compliantExecNpcg && match.length > 1) {
-                    match[0].replace(separator2, function () {
-                        for (var i = 1; i < arguments.length - 2; i++) {
-                            if (arguments[i] === undef) {
-                                match[i] = undef;
-                            }
-                        }
-                    });
-                }
-                if (match.length > 1 && match.index < str.length) {
-                    Array.prototype.push.apply(output, match.slice(1));
-                }
-                lastLength = match[0].length;
-                lastLastIndex = lastIndex;
-                if (output.length >= limit) {
-                    break;
-                }
-            }
-            if (separator.lastIndex === match.index) {
-                separator.lastIndex++; // Avoid an infinite loop
-            }
-        }
-        if (lastLastIndex === str.length) {
-            if (lastLength || !separator.test("")) {
-                output.push("");
-            }
-        } else {
-            output.push(str.slice(lastLastIndex));
-        }
-        return output.length > limit ? output.slice(0, limit) : output;
-    };
-
-    // For convenience
-    String.prototype.split = function (separator, limit) {
-        return self(this, separator, limit);
-    };
-
-    return self;
-})();
+exports.default = TemplateLoader;
 
 /***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(10);
+"use strict";
 
+
+exports.__esModule = true;
+
+var _domUtils = __webpack_require__(2);
+
+var _domUtils2 = _interopRequireDefault(_domUtils);
+
+var _component = __webpack_require__(0);
+
+var _component2 = _interopRequireDefault(_component);
+
+var _componentProto = __webpack_require__(6);
+
+var _componentProto2 = _interopRequireDefault(_componentProto);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var HashRouterStrategy = function () {
+    function HashRouterStrategy() {
+        _classCallCheck(this, HashRouterStrategy);
+    }
+
+    HashRouterStrategy.navigateTo = function navigateTo(route, params) {
+        location.hash = route;
+    };
+
+    HashRouterStrategy.goBack = function goBack() {
+        if (window.history) history.back();
+    };
+
+    HashRouterStrategy._check = function _check(hash) {
+        var isMatch = false;
+        hash = hash.substr(1);
+        Object.keys(Router._pages).some(function (key) {
+
+            var routeParams = {};
+            var keys = key.match(/:([^\/]+)/g);
+            var match = hash.match(new RegExp(key.replace(/:([^\/]+)/g, "([^\/]*)")));
+            if (match) {
+                match.shift();
+                match.forEach(function (value, i) {
+                    routeParams[keys[i].replace(":", "")] = value;
+                });
+                isMatch = true;
+                __showPage(key, routeParams);
+                return true;
+            }
+        });
+        if (!isMatch) throw 'page with path ' + hash + ' not registered, set up router correctly';
+    };
+
+    HashRouterStrategy.setup = function setup() {
+        location.hash && HashRouterStrategy._check(location.hash);
+        _domUtils2.default.addEventListener(window, 'hashchange', function () {
+            HashRouterStrategy._check(location.hash);
+        });
+    };
+
+    return HashRouterStrategy;
+}();
+
+var ManualRouterStrategy = function () {
+    function ManualRouterStrategy() {
+        _classCallCheck(this, ManualRouterStrategy);
+    }
+
+    ManualRouterStrategy.navigateTo = function navigateTo(route, params) {
+        if (!Router._pages[route]) throw route + ' not registered, set up router correctly';
+        __showPage(route, params);
+        ManualRouterStrategy.history.push({ route: route, params: params });
+    };
+
+    ManualRouterStrategy.setup = function setup() {};
+
+    ManualRouterStrategy.goBack = function goBack() {
+        ManualRouterStrategy.history.pop();
+        var state = ManualRouterStrategy.history[ManualRouterStrategy.history.length - 1];
+        if (state) __showPage(state.route, state.params);
+    };
+
+    return ManualRouterStrategy;
+}();
+
+ManualRouterStrategy.history = [];
+
+var RouterStrategyProvider = function () {
+    function RouterStrategyProvider() {
+        _classCallCheck(this, RouterStrategyProvider);
+    }
+
+    RouterStrategyProvider.getRouterStrategy = function getRouterStrategy(strategyName) {
+        switch (strategyName) {
+            case Router.STRATEGY.MANUAL:
+                return ManualRouterStrategy;
+            case Router.STRATEGY.HASH:
+                return HashRouterStrategy;
+            default:
+                throw 'cat not find strategy with strategyName ' + strategyName;
+        }
+    };
+
+    return RouterStrategyProvider;
+}();
+
+var routeNode = null;
+var lastPageItem = void 0;
+var __showPage = function __showPage(pageName, params) {
+
+    if (lastPageItem) {
+        lastPageItem.component.setShown(false);
+        _domUtils2.default.nodeListToArray(routeNode.childNodes).forEach(function (el) {
+            lastPageItem.component.node.appendChild(el);
+        });
+        lastPageItem.component.setMounted(false);
+    }
+    lastPageItem = Router._pages[pageName];
+    if (!lastPageItem) throw 'no page with name ' + pageName + ' registered';
+    if (!lastPageItem.component) {
+        var componentNode = lastPageItem.componentProto.node.cloneNode(true);
+        lastPageItem.component = lastPageItem.componentProto.newInstance(componentNode, {});
+        lastPageItem.component.run();
+        delete lastPageItem.componentProto;
+    }
+    _domUtils2.default.nodeListToArray(lastPageItem.component.node.childNodes).forEach(function (el) {
+        routeNode.appendChild(el);
+    });
+    lastPageItem.component.setMounted(true, params);
+    lastPageItem.component.setShown(true, params);
+    _component2.default.digestAll();
+};
+
+var Router = function () {
+    function Router() {
+        _classCallCheck(this, Router);
+    }
+
+    Router.setup = function setup(keyValues) {
+        var strategyName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Router.STRATEGY.MANUAL;
+
+        Router._strategy = RouterStrategyProvider.getRouterStrategy(strategyName);
+        var routePlaceholderNode = _domUtils2.default.getElementByAttribute(document, 'data-route');
+        if (!routePlaceholderNode) throw 'can not run Route: element with data-route attribute not found';
+        routePlaceholderNode.innerHTML = '';
+        routeNode = routePlaceholderNode;
+        Object.keys(keyValues).forEach(function (key) {
+            var ComponentClass = void 0;
+            if (keyValues[key].node) {
+                // if component defined as sinple old js object
+                ComponentClass = keyValues[key];
+            } else {
+                // if component defined as class or function
+                ComponentClass = _componentProto2.default.getByComponentClass(keyValues[key]);
+                if (!ComponentClass) {
+                    console.error(keyValues[key]);
+                    throw 'router component error: can not found component for rote ' + key;
+                }
+            }
+            Router._pages[key] = {
+                componentProto: ComponentClass,
+                component: null
+            };
+        });
+        Router._strategy.setup();
+    };
+
+    Router.navigateTo = function navigateTo(pageName, params) {
+        Router._strategy.navigateTo(pageName, params);
+    };
+
+    Router.goBack = function goBack() {
+        Router._strategy.goBack();
+    };
+
+    return Router;
+}();
+
+exports.default = Router;
+
+
+Router._pages = {};
+Router._strategy = null;
+
+Router.STRATEGY = {
+    MANUAL: 0,
+    HASH: 1
+};
 
 /***/ })
 /******/ ]);

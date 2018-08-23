@@ -13,7 +13,7 @@ import {DebugError} from "../../debugError";
 declare const DEBUG:boolean;
 
 interface Clazz<T> { // todo extract to separate file
-    new() : T;
+    new(game: Game) : T;
 }
 
 
@@ -33,11 +33,11 @@ export  class AudioPlayer {
         } else {
             this.contextClass = FakeAudioContext;
         }
-        this.audioNodeSet = new AudioNodeSet(this.contextClass,6);
+        this.audioNodeSet = new AudioNodeSet(game,this.contextClass,6);
     }
 
     loadSound(url:string, progress:Function, callback:Function) {
-        new this.contextClass().load(url,progress,callback); //todo
+        new this.contextClass(this.game).load(url,progress,callback); //todo
     }
 
     play(soundName:string,loop:boolean = false){

@@ -271,6 +271,36 @@
                 "height": 0
             },
             "id": 11
+        },
+        {
+            "id": 29,
+            "name": "boardCardSheet",
+            "width": 200,
+            "height": 300,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "resourceMap": {
+                "main": "resources/boardCardSheet.png"
+            },
+            "type": "SpriteSheet",
+            "numOfFramesH": 2,
+            "numOfFramesV": 3,
+            "frameRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+            }
         }
     ],
     "GameObjectProto": [
@@ -303,6 +333,33 @@
                 "y": 0
             },
             "id": 6
+        },
+        {
+            "name": "boardCardSheet",
+            "width": 100,
+            "height": 100,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 29,
+                "type": "SpriteSheet"
+            },
+            "velocity": {
+                "x": 0,
+                "y": 0
+            },
+            "id": 30
         }
     ],
     "GameObject": [
@@ -321,6 +378,24 @@
             "type": "GameObject",
             "gameObjectProto": {
                 "id": 6,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 32,
+            "name": "boardCardSheet",
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 30,
                 "type": "GameObjectProto"
             }
         }

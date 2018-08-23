@@ -1207,6 +1207,11 @@ var ExpressApp = (function () {
         if (typeof responseObj == 'object')
             res.setHeader('Content-Type', 'application/json');
     };
+    ExpressApp.prototype.sendError = function (response, error) {
+        response.statusCode = 500;
+        response.send(error && (error.message || error.toString()) || 'internal server error');
+        return false;
+    };
     ExpressApp.prototype.createResponse = function (opts, response, params) {
         var _this = this;
         var callback = function (result) {
@@ -1220,17 +1225,19 @@ var ExpressApp = (function () {
                 response.send(result);
             }
         };
-        var codeResult = opts.ctrl[opts.methodName](params, response);
+        var codeResult;
+        try {
+            codeResult = opts.ctrl[opts.methodName](params, response);
+        }
+        catch (error) {
+            return this.sendError(response, error);
+        }
         if (codeResult && codeResult.then) {
             codeResult.then(function (data) {
                 callback(data);
             }).catch(function (error) {
-                console.error('catch method promise error', error);
-                response.statusCode = 500;
-                response.end(error);
+                _this.sendError(response, error);
             });
-        }
-        else if (typeof codeResult === 'function') {
         }
         else {
             callback(codeResult);
@@ -4230,10 +4237,8 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 /* 24 */
 /***/ (function(module, exports) {
 
-var toString = {}.toString;
-
 module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
+  return Object.prototype.toString.call(arr) == '[object Array]';
 };
 
 

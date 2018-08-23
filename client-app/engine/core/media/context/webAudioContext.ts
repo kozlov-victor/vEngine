@@ -2,6 +2,7 @@ import {DebugError} from "../../../debugError";
 import {IAudioContext} from "./iAudioContext";
 import {LoaderUtil} from "../../loaderUtil";
 import {AudioPlayer} from "../audioPlayer";
+import {Game} from "../../game";
 
 declare const EMBED_RESOURCES:boolean;
 declare const DEBUG:boolean;
@@ -45,12 +46,15 @@ const base64ToArrayBuffer = (base64:string):ArrayBuffer=> {
 export class WebAudioContext implements IAudioContext {
 
     static isAcceptable() {
-        return !!(window && CtxHolder.getCtx());
+        return false;//!!(window && CtxHolder.getCtx());
     }
 
     load(url:string, progress:Function, callBack:Function) {
         if (EMBED_RESOURCES) {
-            let buffer:ArrayBuffer = base64ToArrayBuffer(url);
+            let base64Url = this.game.repository.embeddedResources[url];
+            if (DEBUG && !base64Url) throw new DebugError(`no embedded resource provided by url ${url}`);
+            base64Url = base64Url.split(',')[1];
+            let buffer:ArrayBuffer = base64ToArrayBuffer(base64Url);
             decode(buffer, (decoded)=>{
                 AudioPlayer.cache[url] = decoded;
                 callBack();
@@ -66,7 +70,7 @@ export class WebAudioContext implements IAudioContext {
 
     }
 
-    constructor() {
+    constructor(private game:Game) {
         this._ctx = CtxHolder.getCtx();
         this._gainNode = this._ctx.createGain();
         this._gainNode.connect(this._ctx.destination);

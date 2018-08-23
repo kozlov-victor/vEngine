@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 71);
+/******/ 	return __webpack_require__(__webpack_require__.s = 72);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -304,13 +304,31 @@ function __importDefault(mod) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var utils_1 = __webpack_require__(21);
+var tslib_1 = __webpack_require__(0);
+var DebugError = (function (_super) {
+    tslib_1.__extends(DebugError, _super);
+    function DebugError(message) {
+        return _super.call(this, message) || this;
+    }
+    return DebugError;
+}(Error));
+exports.DebugError = DebugError;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var utils_1 = __webpack_require__(22);
 var editData_1 = __webpack_require__(9);
-var restProject_1 = __webpack_require__(70);
-var restFileSystem_1 = __webpack_require__(68);
-var restResource_1 = __webpack_require__(44);
-var resourceHelper_1 = __webpack_require__(69);
-var i18n_1 = __webpack_require__(14);
+var restProject_1 = __webpack_require__(71);
+var restFileSystem_1 = __webpack_require__(69);
+var restResource_1 = __webpack_require__(45);
+var resourceHelper_1 = __webpack_require__(70);
+var i18n_1 = __webpack_require__(13);
 var httpClient_1 = __webpack_require__(30);
 var BaseComponent = (function () {
     function BaseComponent() {
@@ -331,24 +349,6 @@ exports.BaseComponent = BaseComponent;
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var DebugError = (function (_super) {
-    tslib_1.__extends(DebugError, _super);
-    function DebugError(message) {
-        return _super.call(this, message) || this;
-    }
-    return DebugError;
-}(Error));
-exports.DebugError = DebugError;
-
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -356,11 +356,11 @@ exports.DebugError = DebugError;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var size_1 = __webpack_require__(22);
+var size_1 = __webpack_require__(23);
 var point2d_1 = __webpack_require__(5);
-var objectPool_1 = __webpack_require__(16);
+var objectPool_1 = __webpack_require__(15);
 var global_1 = __webpack_require__(7);
-var observableEntity_1 = __webpack_require__(48);
+var observableEntity_1 = __webpack_require__(49);
 var Rect = (function (_super) {
     tslib_1.__extends(Rect, _super);
     function Rect(x, y, width, height, onChangedFn) {
@@ -469,7 +469,7 @@ global_1._global['Rect'] = Rect;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var mat4 = __webpack_require__(15);
+var mat4 = __webpack_require__(14);
 var point2d_1 = __webpack_require__(5);
 exports.isPointInRect = function (point, rect, angle) {
     return point.x > rect.x &&
@@ -737,8 +737,8 @@ exports.easeInOutBounce = function (t, b, c, d) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var objectPool_1 = __webpack_require__(16);
-var observableEntity_1 = __webpack_require__(48);
+var objectPool_1 = __webpack_require__(15);
+var observableEntity_1 = __webpack_require__(49);
 var global_1 = __webpack_require__(7);
 var Point2d = (function (_super) {
     tslib_1.__extends(Point2d, _super);
@@ -899,7 +899,7 @@ exports._global = {};
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var shaderProgramUtils_1 = __webpack_require__(10);
 var ShaderProgram = (function () {
     function ShaderProgram(gl, vertexSource, fragmentSource) {
@@ -963,15 +963,15 @@ exports.ShaderProgram = ShaderProgram;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var gameObjectProto_1 = __webpack_require__(17);
+var gameObjectProto_1 = __webpack_require__(16);
 var spriteSheet_1 = __webpack_require__(26);
-var frameAnimation_1 = __webpack_require__(32);
-var scene_1 = __webpack_require__(33);
+var frameAnimation_1 = __webpack_require__(33);
+var scene_1 = __webpack_require__(34);
 var layer_1 = __webpack_require__(27);
-var font_1 = __webpack_require__(35);
-var sound_1 = __webpack_require__(36);
-var particleSystem_1 = __webpack_require__(37);
-var game_1 = __webpack_require__(91);
+var font_1 = __webpack_require__(36);
+var sound_1 = __webpack_require__(37);
+var particleSystem_1 = __webpack_require__(38);
+var game_1 = __webpack_require__(92);
 var gameObject_1 = __webpack_require__(29);
 var EditData = (function () {
     function EditData() {
@@ -1039,7 +1039,7 @@ window.editData = exports.editData;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 exports.compileShader = function (gl, shaderSource, shaderType) {
     if (true) {
         if (!shaderSource)
@@ -1334,98 +1334,6 @@ exports.getUniformSetter = function (size, type) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var tslib_1 = __webpack_require__(0);
-var timer_1 = __webpack_require__(88);
-var commonObject_1 = __webpack_require__(24);
-var tween_1 = __webpack_require__(51);
-var eventEmitter_1 = __webpack_require__(52);
-var decorators_1 = __webpack_require__(25);
-var rect_1 = __webpack_require__(3);
-var point2d_1 = __webpack_require__(5);
-var debugError_1 = __webpack_require__(2);
-var BaseModel = (function (_super) {
-    tslib_1.__extends(BaseModel, _super);
-    function BaseModel(game) {
-        var _this = _super.call(this) || this;
-        _this.width = 0;
-        _this.height = 0;
-        _this.pos = new point2d_1.Point2d(0, 0, function () { return _this._dirty = true; });
-        _this.scale = new point2d_1.Point2d(1, 1);
-        _this.anchor = new point2d_1.Point2d(0, 0);
-        _this.angle = 0;
-        _this.alpha = 1;
-        _this.filters = [];
-        _this.blendMode = null;
-        _this.acceptLight = false;
-        _this.layerId = null;
-        _this.fixedToCamera = false;
-        _this.rigid = false;
-        _this._tweens = [];
-        _this._dirty = true;
-        _this._timers = [];
-        _this._rect = new rect_1.Rect(0, 0);
-        if (true && !game)
-            throw new debugError_1.DebugError("can not create model '" + _this.type + "': game instance not passed to model constructor");
-        _this.game = game;
-        _this._emitter = new eventEmitter_1.EventEmitter();
-        return _this;
-    }
-    BaseModel.prototype.setIndividualBehaviour = function (instance) { };
-    BaseModel.prototype.setCommonBehaviour = function () { };
-    BaseModel.prototype.onShow = function () { };
-    BaseModel.prototype.getRect = function () {
-        this._rect.setXYWH(this.pos.x - this.anchor.x, this.pos.y - this.anchor.y, this.width, this.height);
-        return this._rect;
-    };
-    BaseModel.prototype.setAnchorToCenter = function () {
-        this.anchor.setXY(this.width / 2, this.height / 2);
-    };
-    BaseModel.prototype.setTimer = function (callback, interval) {
-        this._timers.push(new timer_1.Timer(callback, interval));
-    };
-    BaseModel.prototype.tween = function (desc) {
-        var t = new tween_1.Tween(desc);
-        this._tweens.push(t);
-    };
-    BaseModel.prototype.update = function (time, delta) {
-        var _this = this;
-        this._tweens.forEach(function (t, index) {
-            t.update(time);
-            if (t.isCompleted())
-                _this._tweens.splice(index, 1);
-        });
-        this._timers.forEach(function (t) {
-            t.onUpdate(time);
-        });
-    };
-    BaseModel.prototype.on = function (eventName, callBack) {
-        this._emitter.on(eventName, callBack);
-        return callBack;
-    };
-    BaseModel.prototype.off = function (eventName, callBack) {
-        this._emitter.off(eventName, callBack);
-    };
-    BaseModel.prototype.trigger = function (eventName, data) {
-        this._emitter.trigger(eventName, data);
-    };
-    BaseModel = tslib_1.__decorate([
-        decorators_1.Transient({
-            game: true,
-            rigidBody: true
-        })
-    ], BaseModel);
-    return BaseModel;
-}(commonObject_1.CommonObject));
-exports.BaseModel = BaseModel;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 var isEqual = function (a, b) {
     if (a === undefined)
         return false;
@@ -1488,7 +1396,7 @@ exports.AbstractDrawer = AbstractDrawer;
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1497,8 +1405,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var rect_1 = __webpack_require__(3);
 var mouse_1 = __webpack_require__(61);
-var renderableModel_1 = __webpack_require__(50);
-var debugError_1 = __webpack_require__(2);
+var renderableModel_1 = __webpack_require__(51);
+var debugError_1 = __webpack_require__(1);
 var OVERFLOW;
 (function (OVERFLOW) {
     OVERFLOW[OVERFLOW["HIDDEN"] = 0] = "HIDDEN";
@@ -1681,7 +1589,7 @@ exports.Container = Container;
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1814,13 +1722,13 @@ exports.I18n = I18n;
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 exports.makeIdentity = function () {
     return [
         1, 0, 0, 0,
@@ -1995,13 +1903,13 @@ exports.IDENTITY = exports.makeIdentity();
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var ObjectPool = (function () {
     function ObjectPool(Class, numberOfInstances) {
         if (numberOfInstances === void 0) { numberOfInstances = 16; }
@@ -2022,7 +1930,7 @@ exports.ObjectPool = ObjectPool;
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2031,8 +1939,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var point2d_1 = __webpack_require__(5);
 var rect_1 = __webpack_require__(3);
-var shaderMaterial_1 = __webpack_require__(49);
-var renderableModel_1 = __webpack_require__(50);
+var shaderMaterial_1 = __webpack_require__(50);
+var renderableModel_1 = __webpack_require__(51);
 var global_1 = __webpack_require__(7);
 var cloneId = 0;
 var GameObjectProto = (function (_super) {
@@ -2147,15 +2055,296 @@ global_1._global['GameObjectProto'] = GameObjectProto;
 
 
 /***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var timer_1 = __webpack_require__(89);
+var commonObject_1 = __webpack_require__(18);
+var tween_1 = __webpack_require__(32);
+var eventEmitter_1 = __webpack_require__(52);
+var decorators_1 = __webpack_require__(25);
+var rect_1 = __webpack_require__(3);
+var point2d_1 = __webpack_require__(5);
+var debugError_1 = __webpack_require__(1);
+var BaseModel = (function (_super) {
+    tslib_1.__extends(BaseModel, _super);
+    function BaseModel(game) {
+        var _this = _super.call(this) || this;
+        _this.width = 0;
+        _this.height = 0;
+        _this.pos = new point2d_1.Point2d(0, 0, function () { return _this._dirty = true; });
+        _this.scale = new point2d_1.Point2d(1, 1);
+        _this.anchor = new point2d_1.Point2d(0, 0);
+        _this.angle = 0;
+        _this.alpha = 1;
+        _this.filters = [];
+        _this.blendMode = null;
+        _this.acceptLight = false;
+        _this.layerId = null;
+        _this.fixedToCamera = false;
+        _this.rigid = false;
+        _this._tweens = [];
+        _this._dirty = true;
+        _this._timers = [];
+        _this._rect = new rect_1.Rect(0, 0);
+        if (true && !game)
+            throw new debugError_1.DebugError("can not create model '" + _this.type + "': game instance not passed to model constructor");
+        _this.game = game;
+        _this._emitter = new eventEmitter_1.EventEmitter();
+        return _this;
+    }
+    BaseModel.prototype.setIndividualBehaviour = function (instance) { };
+    BaseModel.prototype.setCommonBehaviour = function () { };
+    BaseModel.prototype.onShow = function () { };
+    BaseModel.prototype.getRect = function () {
+        this._rect.setXYWH(this.pos.x - this.anchor.x, this.pos.y - this.anchor.y, this.width, this.height);
+        return this._rect;
+    };
+    BaseModel.prototype.setAnchorToCenter = function () {
+        this.anchor.setXY(this.width / 2, this.height / 2);
+    };
+    BaseModel.prototype.setTimer = function (callback, interval) {
+        this._timers.push(new timer_1.Timer(callback, interval));
+    };
+    BaseModel.prototype.tween = function (desc) {
+        var t = new tween_1.Tween(desc);
+        this._tweens.push(t);
+    };
+    BaseModel.prototype.update = function (time, delta) {
+        var _this = this;
+        this._tweens.forEach(function (t, index) {
+            t.update(time);
+            if (t.isCompleted())
+                _this._tweens.splice(index, 1);
+        });
+        this._timers.forEach(function (t) {
+            t.onUpdate(time);
+        });
+    };
+    BaseModel.prototype.on = function (eventName, callBack) {
+        this._emitter.on(eventName, callBack);
+        return callBack;
+    };
+    BaseModel.prototype.off = function (eventName, callBack) {
+        this._emitter.off(eventName, callBack);
+    };
+    BaseModel.prototype.trigger = function (eventName, data) {
+        this._emitter.trigger(eventName, data);
+    };
+    BaseModel = tslib_1.__decorate([
+        decorators_1.Transient({
+            game: true,
+            rigidBody: true
+        })
+    ], BaseModel);
+    return BaseModel;
+}(commonObject_1.CommonObject));
+exports.BaseModel = BaseModel;
+
+
+/***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
-var vertexBuffer_1 = __webpack_require__(95);
-var indexBuffer_1 = __webpack_require__(96);
+var debugError_1 = __webpack_require__(1);
+var isPropNotFit = function (key, val, opts) {
+    if (!key)
+        return true;
+    if (key.indexOf('_') === 0)
+        return true;
+    if (val && val.call)
+        return true;
+    if (typeof val === 'string')
+        return false;
+    if (typeof val === 'number')
+        return false;
+    if (typeof val === 'boolean')
+        return false;
+    return (val == null && !opts.preserveNull);
+};
+var isPrimitive = function (val) {
+    return typeof val === 'string' || typeof val === 'number';
+};
+var deepCopy = function (obj, _clonedObjects) {
+    if (_clonedObjects === void 0) { _clonedObjects = []; }
+    if (obj === undefined)
+        return undefined;
+    else if (obj === null)
+        return null;
+    else if (typeof window !== 'undefined' && obj === window)
+        return undefined;
+    else if (_clonedObjects.indexOf(obj) > -1)
+        return obj;
+    else if (obj.fromJSON) {
+        obj.fromJSON(obj.toJSON());
+        return obj;
+    }
+    if (Object.prototype.toString.call(obj) === '[object Array]') {
+        var out = [], i = 0, len = obj.length;
+        for (; i < len; i++) {
+            var clonedObject = void 0;
+            if (_clonedObjects.indexOf(obj[i]) > -1) {
+                clonedObject = obj[i];
+            }
+            else {
+                _clonedObjects.push(obj);
+                clonedObject = deepCopy(obj[i], _clonedObjects);
+                _clonedObjects.push(obj[i]);
+            }
+            out[i] = clonedObject;
+        }
+        return out;
+    }
+    else if (typeof obj === 'object') {
+        var out = {};
+        for (var i in obj) {
+            if (!obj.hasOwnProperty(i))
+                continue;
+            var clonedObject = void 0;
+            if (_clonedObjects.indexOf(obj[i]) > -1) {
+                clonedObject = obj[i];
+            }
+            else {
+                _clonedObjects.push(obj);
+                clonedObject = deepCopy(obj[i], _clonedObjects);
+                _clonedObjects.push(obj[i]);
+            }
+            out[i] = clonedObject;
+        }
+        return out;
+    }
+    else
+        return obj;
+};
+var CommonObject = (function () {
+    function CommonObject() {
+        this.id = null;
+        this.name = null;
+    }
+    CommonObject.prototype.fromJSON = function (params, forceNew) {
+        var _this = this;
+        if (params === void 0) { params = {}; }
+        Object.keys(params).forEach(function (key) {
+            var _a;
+            if (key === 'type')
+                return;
+            if (!(key in _this)) {
+                console.error(_this);
+                throw new debugError_1.DebugError("::fromJSON(): class " + _this.constructor["name"] + " has no property " + key);
+            }
+            if (params[key] && params[key].id && params[key].type)
+                _this[key] = _this.game.repository.getObject(params[key].id, params[key].type, forceNew);
+            else if (params[key] && params[key].forEach) {
+                _this[key] = [];
+                params[key].forEach(function (item) {
+                    if (item && item.type && item.id) {
+                        _this[key].push(_this.game.repository.getObject(item.id, item.type, forceNew));
+                    }
+                    else {
+                        _this[key].push(item);
+                    }
+                });
+            }
+            else if (_this[key] && _this[key].fromJSON) {
+                _this[key].fromJSON(params[key]);
+            }
+            else if (_this[key] && _this[key].call) {
+                (_a = _this[key]).call.apply(_a, [_this].concat(params[key]));
+            }
+            else {
+                _this[key] = params[key];
+            }
+        });
+        this.revalidate();
+        return this;
+    };
+    CommonObject.prototype.toJSON = function (opts) {
+        if (opts === void 0) { opts = { preserveNull: false }; }
+        var res = {};
+        var _loop_1 = function (key) {
+            if (isPropNotFit(key, this_1[key], opts)) {
+                return "continue";
+            }
+            if (this_1.constructor['transient'] && this_1.constructor['transient'][key]) {
+                return "continue";
+            }
+            if (this_1[key] != null && this_1[key]['type'] && this_1[key]['id']) {
+                res[key] = {
+                    id: this_1[key]['id'],
+                    type: this_1[key]['type']
+                };
+            }
+            else if (this_1[key] != null && this_1[key]['splice']) {
+                var col = this_1[key];
+                var arr_1 = [];
+                col.forEach(function (el) {
+                    if (el && el.type && el.id) {
+                        arr_1.push({ type: el.type, id: el.id });
+                    }
+                    else {
+                        if (isPrimitive(el))
+                            arr_1.push(deepCopy(el));
+                    }
+                });
+                res[key] = arr_1;
+            }
+            else if (this_1[key] && this_1[key]['toJSON']) {
+                res[key] = this_1[key]['toJSON']();
+            }
+            else {
+                var possiblePrimitive = deepCopy(this_1[key]);
+                if (possiblePrimitive && possiblePrimitive.splice && !possiblePrimitive.length)
+                    return "continue";
+                else if (possiblePrimitive != null && typeof possiblePrimitive === 'object' && !Object.keys(possiblePrimitive).length)
+                    return "continue";
+                res[key] = possiblePrimitive;
+            }
+        };
+        var this_1 = this;
+        for (var key in this) {
+            _loop_1(key);
+        }
+        return res;
+    };
+    CommonObject.prototype.revalidate = function () { };
+    CommonObject.prototype.clone = function (opts) {
+        var Clazz = this.constructor;
+        var obj = new Clazz(this.game);
+        obj._cloner = this;
+        return obj.fromJSON(this.toJSON(opts), true);
+    };
+    CommonObject.prototype.updateCloner = function (opts) {
+        if (false)
+            {}
+        var cloner = this._cloner;
+        if (!cloner)
+            return;
+        cloner.fromJSON(this.toJSON(opts));
+        cloner.updateCloner(opts);
+        delete this._cloner;
+    };
+    return CommonObject;
+}());
+exports.CommonObject = CommonObject;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var debugError_1 = __webpack_require__(1);
+var vertexBuffer_1 = __webpack_require__(96);
+var indexBuffer_1 = __webpack_require__(97);
 var BufferInfo = (function () {
     function BufferInfo(gl, description) {
         this.posVertexBuffer = null;
@@ -2232,7 +2421,7 @@ exports.BufferInfo = BufferInfo;
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2263,16 +2452,16 @@ exports.TexShaderGenerator = TexShaderGenerator;
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var container_1 = __webpack_require__(13);
+var container_1 = __webpack_require__(12);
 var rect_1 = __webpack_require__(3);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var TEXT_ALIGN;
 (function (TEXT_ALIGN) {
     TEXT_ALIGN[TEXT_ALIGN["LEFT"] = 0] = "LEFT";
@@ -2523,7 +2712,7 @@ exports.TextField = TextField;
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2533,10 +2722,10 @@ var tslib_1 = __webpack_require__(0);
 var userDefinedFns_1 = __webpack_require__(6);
 var mathEx = __webpack_require__(4);
 var editData_1 = __webpack_require__(9);
-var restResource_1 = __webpack_require__(44);
-var restFileSystem_1 = __webpack_require__(68);
-var i18n_1 = __webpack_require__(14);
-var gameObjectProto_1 = __webpack_require__(17);
+var restResource_1 = __webpack_require__(45);
+var restFileSystem_1 = __webpack_require__(69);
+var i18n_1 = __webpack_require__(13);
+var gameObjectProto_1 = __webpack_require__(16);
 var point2d_1 = __webpack_require__(5);
 var Utils = (function () {
     function Utils() {
@@ -2825,13 +3014,13 @@ exports.Utils = Utils;
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(16);
+var objectPool_1 = __webpack_require__(15);
 var Size = (function () {
     function Size(width, height) {
         if (width === void 0) { width = 0; }
@@ -2862,13 +3051,13 @@ exports.Size = Size;
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(16);
+var objectPool_1 = __webpack_require__(15);
 var global_1 = __webpack_require__(7);
 var Color = (function () {
     function Color(r, g, b, a) {
@@ -2954,196 +3143,6 @@ global_1._global['Color'] = Color;
 
 
 /***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
-var isPropNotFit = function (key, val, opts) {
-    if (!key)
-        return true;
-    if (key.indexOf('_') === 0)
-        return true;
-    if (val && val.call)
-        return true;
-    if (typeof val === 'string')
-        return false;
-    if (typeof val === 'number')
-        return false;
-    if (typeof val === 'boolean')
-        return false;
-    return (val == null && !opts.preserveNull);
-};
-var isPrimitive = function (val) {
-    return typeof val === 'string' || typeof val === 'number';
-};
-var deepCopy = function (obj, _clonedObjects) {
-    if (_clonedObjects === void 0) { _clonedObjects = []; }
-    if (obj === undefined)
-        return undefined;
-    else if (obj === null)
-        return null;
-    else if (typeof window !== 'undefined' && obj === window)
-        return undefined;
-    else if (_clonedObjects.indexOf(obj) > -1)
-        return obj;
-    else if (obj.fromJSON) {
-        obj.fromJSON(obj.toJSON());
-        return obj;
-    }
-    ;
-    if (Object.prototype.toString.call(obj) === '[object Array]') {
-        var out = [], i = 0, len = obj.length;
-        for (; i < len; i++) {
-            var clonedObject = void 0;
-            if (_clonedObjects.indexOf(obj[i]) > -1) {
-                clonedObject = obj[i];
-            }
-            else {
-                _clonedObjects.push(obj);
-                clonedObject = deepCopy(obj[i], _clonedObjects);
-                _clonedObjects.push(obj[i]);
-            }
-            out[i] = clonedObject;
-        }
-        return out;
-    }
-    else if (typeof obj === 'object') {
-        var out = {};
-        for (var i in obj) {
-            if (!obj.hasOwnProperty(i))
-                continue;
-            var clonedObject = void 0;
-            if (_clonedObjects.indexOf(obj[i]) > -1) {
-                clonedObject = obj[i];
-            }
-            else {
-                _clonedObjects.push(obj);
-                clonedObject = deepCopy(obj[i], _clonedObjects);
-                _clonedObjects.push(obj[i]);
-            }
-            out[i] = clonedObject;
-        }
-        return out;
-    }
-    else
-        return obj;
-};
-var CommonObject = (function () {
-    function CommonObject() {
-        this.id = null;
-        this.name = null;
-    }
-    CommonObject.prototype.fromJSON = function (params, forceNew) {
-        var _this = this;
-        if (params === void 0) { params = {}; }
-        Object.keys(params).forEach(function (key) {
-            var _a;
-            if (key === 'type')
-                return;
-            if (!(key in _this)) {
-                console.error(_this);
-                throw new debugError_1.DebugError("::fromJSON(): class " + _this.constructor["name"] + " has no property " + key);
-            }
-            if (params[key] && params[key].id && params[key].type)
-                _this[key] = _this.game.repository.getObject(params[key].id, params[key].type, forceNew);
-            else if (params[key] && params[key].forEach) {
-                _this[key] = [];
-                params[key].forEach(function (item) {
-                    if (item && item.type && item.id) {
-                        _this[key].push(_this.game.repository.getObject(item.id, item.type, forceNew));
-                    }
-                    else {
-                        _this[key].push(item);
-                    }
-                });
-            }
-            else if (_this[key] && _this[key].fromJSON) {
-                _this[key].fromJSON(params[key]);
-            }
-            else if (_this[key] && _this[key].call) {
-                (_a = _this[key]).call.apply(_a, [_this].concat(params[key]));
-            }
-            else {
-                _this[key] = params[key];
-            }
-        });
-        this.revalidate();
-        return this;
-    };
-    CommonObject.prototype.toJSON = function (opts) {
-        if (opts === void 0) { opts = { preserveNull: false }; }
-        var res = {};
-        var _loop_1 = function (key) {
-            if (isPropNotFit(key, this_1[key], opts)) {
-                return "continue";
-            }
-            if (this_1.constructor['transient'] && this_1.constructor['transient'][key]) {
-                return "continue";
-            }
-            if (this_1[key] != null && this_1[key]['type'] && this_1[key]['id']) {
-                res[key] = {
-                    id: this_1[key]['id'],
-                    type: this_1[key]['type']
-                };
-            }
-            else if (this_1[key] != null && this_1[key]['splice']) {
-                var col = this_1[key];
-                var arr_1 = [];
-                col.forEach(function (el) {
-                    if (el && el.type && el.id) {
-                        arr_1.push({ type: el.type, id: el.id });
-                    }
-                    else {
-                        if (isPrimitive(el))
-                            arr_1.push(deepCopy(el));
-                    }
-                });
-                res[key] = arr_1;
-            }
-            else if (this_1[key] && this_1[key]['toJSON']) {
-                res[key] = this_1[key]['toJSON']();
-            }
-            else {
-                var possiblePrimitive = deepCopy(this_1[key]);
-                if (possiblePrimitive && possiblePrimitive.splice && !possiblePrimitive.length)
-                    return "continue";
-                else if (possiblePrimitive != null && typeof possiblePrimitive === 'object' && !Object.keys(possiblePrimitive).length)
-                    return "continue";
-                res[key] = possiblePrimitive;
-            }
-        };
-        var this_1 = this;
-        for (var key in this) {
-            _loop_1(key);
-        }
-        return res;
-    };
-    CommonObject.prototype.revalidate = function () { };
-    CommonObject.prototype.clone = function (opts) {
-        var Clazz = this.constructor;
-        var obj = new Clazz(this.game);
-        obj._cloner = this;
-        return obj.fromJSON(this.toJSON(opts), true);
-    };
-    CommonObject.prototype.updateCloner = function (opts) {
-        if (false)
-            {}
-        var cloner = this._cloner;
-        if (!cloner)
-            return;
-        cloner.fromJSON(this.toJSON(opts));
-        cloner.updateCloner(opts);
-        delete this._cloner;
-    };
-    return CommonObject;
-}());
-exports.CommonObject = CommonObject;
-
-
-/***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3213,7 +3212,7 @@ exports.SpriteSheet = SpriteSheet;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseModel_1 = __webpack_require__(11);
+var baseModel_1 = __webpack_require__(17);
 var Layer = (function (_super) {
     tslib_1.__extends(Layer, _super);
     function Layer(game) {
@@ -3270,11 +3269,11 @@ exports.Layer = Layer;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var plane_1 = __webpack_require__(39);
+var plane_1 = __webpack_require__(40);
 var shaderProgram_1 = __webpack_require__(8);
-var abstractDrawer_1 = __webpack_require__(12);
-var bufferInfo_1 = __webpack_require__(18);
-var texShaderGenerator_1 = __webpack_require__(19);
+var abstractDrawer_1 = __webpack_require__(11);
+var bufferInfo_1 = __webpack_require__(19);
+var texShaderGenerator_1 = __webpack_require__(20);
 var SpriteRectDrawer = (function (_super) {
     tslib_1.__extends(SpriteRectDrawer, _super);
     function SpriteRectDrawer(gl, program) {
@@ -3303,11 +3302,11 @@ exports.SpriteRectDrawer = SpriteRectDrawer;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var gameObjectProto_1 = __webpack_require__(17);
-var commonBehaviours = __webpack_require__(115);
+var gameObjectProto_1 = __webpack_require__(16);
+var commonBehaviours = __webpack_require__(116);
 var global_1 = __webpack_require__(7);
 var noop_1 = __webpack_require__(53);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var GameObject = (function (_super) {
     tslib_1.__extends(GameObject, _super);
     function GameObject(game) {
@@ -3521,7 +3520,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseModel_1 = __webpack_require__(11);
+var baseModel_1 = __webpack_require__(17);
 var Resource = (function (_super) {
     tslib_1.__extends(Resource, _super);
     function Resource() {
@@ -3563,8 +3562,135 @@ exports.Resource = Resource;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var mathEx = __webpack_require__(4);
+var global_1 = __webpack_require__(7);
+var accessByPath = function (obj, path) {
+    var pathArr = path.split('.');
+    if (pathArr.length === 1)
+        return { targetObj: obj, targetKey: path };
+    var lastPath = pathArr.pop();
+    pathArr.forEach(function (p) {
+        obj = obj[p];
+    });
+    return { targetObj: obj, targetKey: lastPath };
+};
+var setValByPath = function (obj, path, val) {
+    var _a = accessByPath(obj, path), targetObj = _a.targetObj, targetKey = _a.targetKey;
+    targetObj[targetKey] = val;
+};
+var getValByPath = function (obj, path) {
+    var _a = accessByPath(obj, path), targetObj = _a.targetObj, targetKey = _a.targetKey;
+    return targetObj[targetKey];
+};
+var Tween = (function () {
+    function Tween(tweenDesc) {
+        this.propsToChange = [];
+        this.startedTime = 0;
+        this.currTime = 0;
+        this.completed = false;
+        this.target = tweenDesc.target;
+        this.progressFn = tweenDesc.progress;
+        this.completeFn = tweenDesc.complete;
+        this.easeFnName = tweenDesc.ease || 'linear';
+        this.tweenTime = tweenDesc.time || 1000;
+        this.desc = this.normalizeDesc(tweenDesc);
+    }
+    Tween.prototype.reuse = function (newTweenDesc) {
+        var _this = this;
+        this.startedTime = this.currTime;
+        this.completed = false;
+        Object.keys(newTweenDesc).forEach(function (key) {
+            _this.desc[key] = newTweenDesc[key];
+        });
+        this.desc = this.normalizeDesc(newTweenDesc);
+    };
+    Tween.prototype.normalizeDesc = function (tweenDesc) {
+        var _this = this;
+        tweenDesc.from = tweenDesc.from || {};
+        tweenDesc.to = tweenDesc.to || {};
+        var allPropsMap = {};
+        Object.keys(tweenDesc.from).forEach(function (keyFrom) {
+            allPropsMap[keyFrom] = true;
+        });
+        Object.keys(tweenDesc.to).forEach(function (keyTo) {
+            allPropsMap[keyTo] = true;
+        });
+        this.propsToChange = Object.keys(allPropsMap);
+        this.propsToChange.forEach(function (prp) {
+            if (tweenDesc.from[prp] === undefined)
+                tweenDesc.from[prp] = getValByPath(_this.target, prp);
+            if (tweenDesc.to[prp] === undefined)
+                tweenDesc.to[prp] = getValByPath(_this.target, prp);
+        });
+        return tweenDesc;
+    };
+    ;
+    Tween.prototype.update = function (time) {
+        if (this.completed)
+            return;
+        this.currTime = time;
+        if (!this.startedTime)
+            this.startedTime = time;
+        var curTweenTime = time - this.startedTime;
+        if (curTweenTime > this.tweenTime) {
+            this._complete();
+            return;
+        }
+        var l = this.propsToChange.length;
+        while (l--) {
+            var prp = this.propsToChange[l];
+            var valFrom = this.desc.from[prp];
+            var valTo = this.desc.to[prp];
+            var valCurr = mathEx[this.easeFnName](curTweenTime, valFrom, valTo - valFrom, this.tweenTime);
+            setValByPath(this.target, prp, valCurr);
+        }
+        this.progressFn && this.progressFn(this.target);
+    };
+    ;
+    Tween.prototype.progress = function (_progressFn) {
+        this.progressFn = _progressFn;
+    };
+    ;
+    Tween.prototype.reset = function () {
+        this.startedTime = null;
+        this.completed = false;
+    };
+    ;
+    Tween.prototype._complete = function () {
+        if (this.completed)
+            return;
+        var l = this.propsToChange.length;
+        while (l--) {
+            var prp = this.propsToChange[l];
+            var valCurr = this.desc.to[prp];
+            setValByPath(this.target, prp, valCurr);
+        }
+        this.progressFn && this.progressFn(this.target);
+        this.completeFn && this.completeFn(this.target);
+        this.completed = true;
+    };
+    ;
+    Tween.prototype.isCompleted = function () {
+        return this.completed;
+    };
+    Tween.prototype.getTarget = function () {
+        return this.target;
+    };
+    return Tween;
+}());
+exports.Tween = Tween;
+global_1._global['Tween'] = Tween;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var commonObject_1 = __webpack_require__(24);
+var commonObject_1 = __webpack_require__(18);
 var decorators_1 = __webpack_require__(25);
 var eventEmitter_1 = __webpack_require__(52);
 var FrameAnimation = (function (_super) {
@@ -3650,7 +3776,7 @@ exports.FrameAnimation = FrameAnimation;
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3658,12 +3784,12 @@ exports.FrameAnimation = FrameAnimation;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var noop_1 = __webpack_require__(53);
-var baseModel_1 = __webpack_require__(11);
-var loadingQueue_1 = __webpack_require__(89);
-var tileMap_1 = __webpack_require__(34);
+var baseModel_1 = __webpack_require__(17);
+var loadingQueue_1 = __webpack_require__(90);
+var tileMap_1 = __webpack_require__(35);
 var layer_1 = __webpack_require__(27);
-var ambientLight_1 = __webpack_require__(90);
-var color_1 = __webpack_require__(23);
+var ambientLight_1 = __webpack_require__(91);
+var color_1 = __webpack_require__(24);
 var camera_1 = __webpack_require__(56);
 var Scene = (function (_super) {
     tslib_1.__extends(Scene, _super);
@@ -3746,6 +3872,15 @@ var Scene = (function (_super) {
                 id++;
             });
         });
+        this.game.repository.getArray('Sound').map(function (it) { return it.resourcePath; }).forEach(function (url) {
+            var id = 1000;
+            (function (id) {
+                q.addTask(function () {
+                    _this.game.audioPlayer.loadSound(url, null, function () { return q.resolveTask(id); });
+                }, id);
+            })(id);
+            id++;
+        });
         q.start();
     };
     Scene.prototype.onShow = function () {
@@ -3787,6 +3922,8 @@ var Scene = (function (_super) {
         });
     };
     Scene.prototype.render = function () {
+        if (!this.prepared)
+            return;
         var renderer = this.game.renderer;
         renderer.beginFrameBuffer();
         if (this.useBG)
@@ -3827,7 +3964,7 @@ exports.Scene = Scene;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3836,9 +3973,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var rect_1 = __webpack_require__(3);
 var rigidShapes_1 = __webpack_require__(54);
-var commonObject_1 = __webpack_require__(24);
+var commonObject_1 = __webpack_require__(18);
 var decorators_1 = __webpack_require__(25);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var TileMap = (function (_super) {
     tslib_1.__extends(TileMap, _super);
     function TileMap(game) {
@@ -3977,14 +4114,14 @@ exports.TileMap = TileMap;
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var rect_1 = __webpack_require__(3);
 var resource_1 = __webpack_require__(31);
 var FontContext = (function () {
@@ -4030,19 +4167,20 @@ exports.Font = Font;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseModel_1 = __webpack_require__(11);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
+var commonObject_1 = __webpack_require__(18);
 var Sound = (function (_super) {
     tslib_1.__extends(Sound, _super);
     function Sound(game) {
-        var _this = _super.call(this, game) || this;
+        var _this = _super.call(this) || this;
+        _this.game = game;
         _this.type = 'Sound';
         _this.resourcePath = '';
         _this._gain = 1;
@@ -4061,19 +4199,19 @@ var Sound = (function (_super) {
     Sound.prototype.setGain = function (val, time, easeFnName) {
     };
     return Sound;
-}(baseModel_1.BaseModel));
+}(commonObject_1.CommonObject));
 exports.Sound = Sound;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseModel_1 = __webpack_require__(11);
+var baseModel_1 = __webpack_require__(17);
 var mathEx = __webpack_require__(4);
 var r = function (obj) { return mathEx.random(obj.from, obj.to); };
 var ParticleSystem = (function (_super) {
@@ -4146,13 +4284,13 @@ exports.ParticleSystem = ParticleSystem;
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var BaseAbstractBehaviour = (function () {
     function BaseAbstractBehaviour(game) {
         this.game = game;
@@ -4177,14 +4315,14 @@ exports.BaseAbstractBehaviour = BaseAbstractBehaviour;
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractPrimitive_1 = __webpack_require__(40);
+var abstractPrimitive_1 = __webpack_require__(41);
 var Plane = (function (_super) {
     tslib_1.__extends(Plane, _super);
     function Plane() {
@@ -4210,7 +4348,7 @@ exports.Plane = Plane;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4225,7 +4363,7 @@ exports.AbstractPrimitive = AbstractPrimitive;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4252,7 +4390,7 @@ exports.ColorShaderGenerator = ColorShaderGenerator;
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4267,42 +4405,42 @@ var SCALE_STRATEGY;
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var frameAnimation_1 = __webpack_require__(32);
+var frameAnimation_1 = __webpack_require__(33);
 exports.FrameAnimation = frameAnimation_1.FrameAnimation;
 var spriteSheet_1 = __webpack_require__(26);
 exports.SpriteSheet = spriteSheet_1.SpriteSheet;
-var gameObjectProto_1 = __webpack_require__(17);
+var gameObjectProto_1 = __webpack_require__(16);
 exports.GameObjectProto = gameObjectProto_1.GameObjectProto;
 var gameObject_1 = __webpack_require__(29);
 exports.GameObject = gameObject_1.GameObject;
 var commonBehaviour_1 = __webpack_require__(67);
 exports.CommonBehaviour = commonBehaviour_1.CommonBehaviour;
-var particleSystem_1 = __webpack_require__(37);
+var particleSystem_1 = __webpack_require__(38);
 exports.ParticleSystem = particleSystem_1.ParticleSystem;
-var scene_1 = __webpack_require__(33);
+var scene_1 = __webpack_require__(34);
 exports.Scene = scene_1.Scene;
-var sound_1 = __webpack_require__(36);
+var sound_1 = __webpack_require__(37);
 exports.Sound = sound_1.Sound;
-var font_1 = __webpack_require__(35);
+var font_1 = __webpack_require__(36);
 exports.Font = font_1.Font;
 var layer_1 = __webpack_require__(27);
 exports.Layer = layer_1.Layer;
-var textField_1 = __webpack_require__(20);
+var textField_1 = __webpack_require__(21);
 exports.TextField = textField_1.TextField;
 var button_1 = __webpack_require__(63);
 exports.Button = button_1.Button;
-var tileMap_1 = __webpack_require__(34);
+var tileMap_1 = __webpack_require__(35);
 exports.TileMap = tileMap_1.TileMap;
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4310,8 +4448,8 @@ exports.TileMap = tileMap_1.TileMap;
 Object.defineProperty(exports, "__esModule", { value: true });
 var httpClient_1 = __webpack_require__(30);
 var editData_1 = __webpack_require__(9);
-var allModels = __webpack_require__(43);
-var utils_1 = __webpack_require__(21);
+var allModels = __webpack_require__(44);
+var utils_1 = __webpack_require__(22);
 var RestResource = (function () {
     function RestResource() {
     }
@@ -4354,7 +4492,7 @@ exports.RestResource = RestResource;
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4369,7 +4507,7 @@ exports.getLibCodeScript = function (name) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 Array.prototype['remove'] = function (callback) {
@@ -4414,7 +4552,7 @@ if (!Array.prototype['find']) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4986,7 +5124,7 @@ if (!Array.prototype['find']) {
 }).call(window);
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5043,13 +5181,13 @@ exports.ObservableEntity = ObservableEntity;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(23);
+var color_1 = __webpack_require__(24);
 var ShaderMaterial = (function () {
     function ShaderMaterial() {
         this.ambient = color_1.Color.BLACK.clone();
@@ -5070,7 +5208,7 @@ exports.ShaderMaterial = ShaderMaterial;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5128,140 +5266,13 @@ exports.RenderableModel = RenderableModel;
 
 
 /***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var mathEx = __webpack_require__(4);
-var global_1 = __webpack_require__(7);
-var accessByPath = function (obj, path) {
-    var pathArr = path.split('.');
-    if (pathArr.length === 1)
-        return { targetObj: obj, targetKey: path };
-    var lastPath = pathArr.pop();
-    pathArr.forEach(function (p) {
-        obj = obj[p];
-    });
-    return { targetObj: obj, targetKey: lastPath };
-};
-var setValByPath = function (obj, path, val) {
-    var _a = accessByPath(obj, path), targetObj = _a.targetObj, targetKey = _a.targetKey;
-    targetObj[targetKey] = val;
-};
-var getValByPath = function (obj, path) {
-    var _a = accessByPath(obj, path), targetObj = _a.targetObj, targetKey = _a.targetKey;
-    return targetObj[targetKey];
-};
-var Tween = (function () {
-    function Tween(tweenDesc) {
-        this.propsToChange = [];
-        this.startedTime = 0;
-        this.currTime = 0;
-        this.completed = false;
-        this.target = tweenDesc.target;
-        this.progressFn = tweenDesc.progress;
-        this.completeFn = tweenDesc.complete;
-        this.easeFnName = tweenDesc.ease || 'linear';
-        this.tweenTime = tweenDesc.time || 1000;
-        this.desc = this.normalizeDesc(tweenDesc);
-    }
-    Tween.prototype.reuse = function (newTweenDesc) {
-        var _this = this;
-        this.startedTime = this.currTime;
-        this.completed = false;
-        Object.keys(newTweenDesc).forEach(function (key) {
-            _this.desc[key] = newTweenDesc[key];
-        });
-        this.desc = this.normalizeDesc(newTweenDesc);
-    };
-    Tween.prototype.normalizeDesc = function (tweenDesc) {
-        var _this = this;
-        tweenDesc.from = tweenDesc.from || {};
-        tweenDesc.to = tweenDesc.to || {};
-        var allPropsMap = {};
-        Object.keys(tweenDesc.from).forEach(function (keyFrom) {
-            allPropsMap[keyFrom] = true;
-        });
-        Object.keys(tweenDesc.to).forEach(function (keyTo) {
-            allPropsMap[keyTo] = true;
-        });
-        this.propsToChange = Object.keys(allPropsMap);
-        this.propsToChange.forEach(function (prp) {
-            if (tweenDesc.from[prp] === undefined)
-                tweenDesc.from[prp] = getValByPath(_this.target, prp);
-            if (tweenDesc.to[prp] === undefined)
-                tweenDesc.to[prp] = getValByPath(_this.target, prp);
-        });
-        return tweenDesc;
-    };
-    ;
-    Tween.prototype.update = function (time) {
-        if (this.completed)
-            return;
-        this.currTime = time;
-        if (!this.startedTime)
-            this.startedTime = time;
-        var curTweenTime = time - this.startedTime;
-        if (curTweenTime > this.tweenTime) {
-            this._complete();
-            return;
-        }
-        var l = this.propsToChange.length;
-        while (l--) {
-            var prp = this.propsToChange[l];
-            var valFrom = this.desc.from[prp];
-            var valTo = this.desc.to[prp];
-            var valCurr = mathEx[this.easeFnName](curTweenTime, valFrom, valTo - valFrom, this.tweenTime);
-            setValByPath(this.target, prp, valCurr);
-        }
-        this.progressFn && this.progressFn(this.target);
-    };
-    ;
-    Tween.prototype.progress = function (_progressFn) {
-        this.progressFn = _progressFn;
-    };
-    ;
-    Tween.prototype.reset = function () {
-        this.startedTime = null;
-        this.completed = false;
-    };
-    ;
-    Tween.prototype._complete = function () {
-        if (this.completed)
-            return;
-        var l = this.propsToChange.length;
-        while (l--) {
-            var prp = this.propsToChange[l];
-            var valCurr = this.desc.to[prp];
-            setValByPath(this.target, prp, valCurr);
-        }
-        this.progressFn && this.progressFn(this.target);
-        this.completeFn && this.completeFn(this.target);
-        this.completed = true;
-    };
-    ;
-    Tween.prototype.isCompleted = function () {
-        return this.completed;
-    };
-    Tween.prototype.getTarget = function () {
-        return this.target;
-    };
-    return Tween;
-}());
-exports.Tween = Tween;
-global_1._global['Tween'] = Tween;
-
-
-/***/ }),
 /* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var EventEmitter = (function () {
     function EventEmitter() {
         this.events = {};
@@ -5327,7 +5338,7 @@ exports.noop = function () { };
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var Vec2 = (function () {
     function Vec2(x, y) {
         this.x = x;
@@ -5780,8 +5791,8 @@ exports.RigidRectangle = RigidRectangle;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
-var color_1 = __webpack_require__(23);
+var debugError_1 = __webpack_require__(1);
+var color_1 = __webpack_require__(24);
 var AbstractLight = (function () {
     function AbstractLight(game) {
         this.color = color_1.Color.WHITE;
@@ -5802,9 +5813,9 @@ exports.AbstractLight = AbstractLight;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
-var tween_1 = __webpack_require__(51);
-var mat4 = __webpack_require__(15);
+var debugError_1 = __webpack_require__(1);
+var tween_1 = __webpack_require__(32);
+var mat4 = __webpack_require__(14);
 var mathEx = __webpack_require__(4);
 var rect_1 = __webpack_require__(3);
 var point2d_1 = __webpack_require__(5);
@@ -6037,8 +6048,8 @@ exports.ShaderGenerator = ShaderGenerator;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
-var pointLight_1 = __webpack_require__(97);
+var debugError_1 = __webpack_require__(1);
+var pointLight_1 = __webpack_require__(98);
 var LightArray = (function () {
     function LightArray(game) {
         if (true && !game)
@@ -6070,7 +6081,7 @@ exports.LightArray = LightArray;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var texture_1 = __webpack_require__(60);
 var FrameBuffer = (function () {
     function FrameBuffer(gl, width, height) {
@@ -6134,9 +6145,9 @@ exports.FrameBuffer = FrameBuffer;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var frameBuffer_1 = __webpack_require__(59);
-var size_1 = __webpack_require__(22);
+var size_1 = __webpack_require__(23);
 var isPowerOf2 = function (value) {
     return (value & (value - 1)) === 0;
 };
@@ -6303,7 +6314,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var mathEx = __webpack_require__(4);
 var point2d_1 = __webpack_require__(5);
-var objectPool_1 = __webpack_require__(16);
+var objectPool_1 = __webpack_require__(15);
 var rect_1 = __webpack_require__(3);
 var MousePoint = (function (_super) {
     tslib_1.__extends(MousePoint, _super);
@@ -6518,15 +6529,15 @@ exports.Mouse = Mouse;
 Object.defineProperty(exports, "__esModule", { value: true });
 var button_1 = __webpack_require__(63);
 exports.Button = button_1.Button;
-var textField_1 = __webpack_require__(20);
+var textField_1 = __webpack_require__(21);
 exports.TextField = textField_1.TextField;
-var container_1 = __webpack_require__(13);
+var container_1 = __webpack_require__(12);
 exports.Container = container_1.Container;
 var image_1 = __webpack_require__(64);
 exports.Image = image_1.Image;
-var rectangle_1 = __webpack_require__(111);
+var rectangle_1 = __webpack_require__(112);
 exports.Rectangle = rectangle_1.Rectangle;
-var ninePatchImage_1 = __webpack_require__(112);
+var ninePatchImage_1 = __webpack_require__(113);
 exports.NinePatchImage = ninePatchImage_1.NinePatchImage;
 var absoluteLayout_1 = __webpack_require__(65);
 exports.AbsoluteLayout = absoluteLayout_1.AbsoluteLayout;
@@ -6540,10 +6551,10 @@ exports.AbsoluteLayout = absoluteLayout_1.AbsoluteLayout;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var container_1 = __webpack_require__(13);
-var textField_1 = __webpack_require__(20);
+var container_1 = __webpack_require__(12);
+var textField_1 = __webpack_require__(21);
 var mathEx_1 = __webpack_require__(4);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var Button = (function (_super) {
     tslib_1.__extends(Button, _super);
     function Button(game) {
@@ -6607,8 +6618,8 @@ exports.Button = Button;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var rect_1 = __webpack_require__(3);
-var container_1 = __webpack_require__(13);
-var debugError_1 = __webpack_require__(2);
+var container_1 = __webpack_require__(12);
+var debugError_1 = __webpack_require__(1);
 var Image = (function (_super) {
     tslib_1.__extends(Image, _super);
     function Image(game) {
@@ -6648,7 +6659,7 @@ exports.Image = Image;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var container_1 = __webpack_require__(13);
+var container_1 = __webpack_require__(12);
 var AbsoluteLayout = (function (_super) {
     tslib_1.__extends(AbsoluteLayout, _super);
     function AbsoluteLayout(game) {
@@ -6712,7 +6723,7 @@ exports.AbsoluteLayout = AbsoluteLayout;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseAbstractBehaviour_1 = __webpack_require__(38);
+var baseAbstractBehaviour_1 = __webpack_require__(39);
 var Moveable = (function (_super) {
     tslib_1.__extends(Moveable, _super);
     function Moveable(game) {
@@ -6761,7 +6772,7 @@ exports.Moveable = Moveable;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseModel_1 = __webpack_require__(11);
+var baseModel_1 = __webpack_require__(17);
 var CommonBehaviour = (function (_super) {
     tslib_1.__extends(CommonBehaviour, _super);
     function CommonBehaviour(game) {
@@ -6778,6 +6789,101 @@ exports.CommonBehaviour = CommonBehaviour;
 
 /***/ }),
 /* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var webAudioContext_1 = __webpack_require__(126);
+var htmlAudioContext_1 = __webpack_require__(128);
+var fakeAudioContext_1 = __webpack_require__(129);
+var audioNodeSet_1 = __webpack_require__(130);
+var tween_1 = __webpack_require__(32);
+var debugError_1 = __webpack_require__(1);
+var AudioPlayer = (function () {
+    function AudioPlayer(game) {
+        this.game = game;
+        this.tweens = [];
+        if (webAudioContext_1.WebAudioContext.isAcceptable()) {
+            this.contextClass = webAudioContext_1.WebAudioContext;
+        }
+        else if (htmlAudioContext_1.HtmlAudioContext.isAcceptable()) {
+            this.contextClass = htmlAudioContext_1.HtmlAudioContext;
+        }
+        else {
+            this.contextClass = fakeAudioContext_1.FakeAudioContext;
+        }
+        this.audioNodeSet = new audioNodeSet_1.AudioNodeSet(this.contextClass, 6);
+    }
+    AudioPlayer.prototype.loadSound = function (url, progress, callback) {
+        new this.contextClass().load(url, progress, callback);
+    };
+    AudioPlayer.prototype.play = function (soundName, loop) {
+        if (loop === void 0) { loop = false; }
+        var node = this.audioNodeSet.getFreeNode();
+        if (true && !node) {
+            console.log('no free node to play sound');
+        }
+        if (!node)
+            return;
+        var sound = this.game.repository.getArray('Sound').find(function (it) { return it.name == soundName; });
+        if (true && !sound)
+            throw new debugError_1.DebugError("can not find sound with name " + soundName);
+        node.play(sound.resourcePath, loop);
+    };
+    AudioPlayer.prototype.stop = function (sound) {
+        var node = this.audioNodeSet.getNodeBySound(sound);
+        if (!node)
+            return;
+        node.stop();
+    };
+    AudioPlayer.prototype.stopAll = function () {
+        this.audioNodeSet.stopAll();
+    };
+    AudioPlayer.prototype.pauseAll = function () {
+        this.audioNodeSet.pauseAll();
+    };
+    AudioPlayer.prototype.resumeAll = function () {
+        this.audioNodeSet.resumeAll();
+    };
+    AudioPlayer.prototype.setGain = function (sound, val, time) {
+        var _this = this;
+        if (time === void 0) { time = 0; }
+        var node = this.audioNodeSet.getNodeBySound(sound);
+        if (!node)
+            return;
+        if (time) {
+            var tween_2 = new tween_1.Tween({
+                target: sound,
+                to: { _gain: val },
+                time: time,
+                progress: function (progressObj) {
+                    node.setGain(progressObj._gain);
+                },
+                complete: function () {
+                    _this.tweens.remove(tween_2);
+                }
+            });
+            this.tweens.push(tween_2);
+        }
+        else {
+            sound._gain = val;
+            node.setGain(sound._gain);
+        }
+    };
+    AudioPlayer.prototype.update = function (time, delta) {
+        this.tweens.forEach(function (t) {
+            t.update(time);
+        });
+    };
+    AudioPlayer.cache = {};
+    return AudioPlayer;
+}());
+exports.AudioPlayer = AudioPlayer;
+
+
+/***/ }),
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6824,7 +6930,7 @@ exports.RestFileSystem = RestFileSystem;
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6832,10 +6938,10 @@ exports.RestFileSystem = RestFileSystem;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var editData_1 = __webpack_require__(9);
-var restResource_1 = __webpack_require__(44);
-var restProject_1 = __webpack_require__(70);
+var restResource_1 = __webpack_require__(45);
+var restProject_1 = __webpack_require__(71);
 var commonBehaviour_1 = __webpack_require__(67);
-var textField_1 = __webpack_require__(20);
+var textField_1 = __webpack_require__(21);
 var cnt = 0;
 var ResourceHelper = (function () {
     function ResourceHelper() {
@@ -6894,7 +7000,7 @@ exports.ResourceHelper = ResourceHelper;
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6919,68 +7025,69 @@ exports.RestProject = RestProject;
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(72);
+module.exports = __webpack_require__(73);
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(46);
-__webpack_require__(73);
 __webpack_require__(47);
 __webpack_require__(74);
-var modal_1 = __webpack_require__(75);
-var collapsible_1 = __webpack_require__(77);
-var alertDialog_1 = __webpack_require__(79);
-var confirmDialog_1 = __webpack_require__(81);
-var inputFile_1 = __webpack_require__(83);
-var colorPicker_1 = __webpack_require__(85);
-var colorPickerDialog_1 = __webpack_require__(87);
-var anglePicker_1 = __webpack_require__(126);
-var draggableDirective_1 = __webpack_require__(128);
-var resourceHelper_1 = __webpack_require__(69);
-var explorer_1 = __webpack_require__(130);
-var editor_1 = __webpack_require__(132);
-var projectDialog_1 = __webpack_require__(134);
-var gameProps_1 = __webpack_require__(136);
-var particleSystems_1 = __webpack_require__(138);
-var sounds_1 = __webpack_require__(140);
-var fonts_1 = __webpack_require__(142);
-var spriteSheets_1 = __webpack_require__(144);
-var scripts_1 = __webpack_require__(146);
-var gameObjects_1 = __webpack_require__(148);
-var scenes_1 = __webpack_require__(150);
-var userInterface_1 = __webpack_require__(152);
-var topPanel_1 = __webpack_require__(154);
-var popupBlocked_1 = __webpack_require__(157);
-var scriptEditor_1 = __webpack_require__(158);
-var sceneCentralPanel_1 = __webpack_require__(160);
-var sceneCursor_1 = __webpack_require__(162);
-var sceneRightPanel_1 = __webpack_require__(164);
-var gameObjectRightPanel_1 = __webpack_require__(166);
-var gameObjectRow_1 = __webpack_require__(168);
-var dialogs_1 = __webpack_require__(170);
-var particleSystemDialog_1 = __webpack_require__(172);
-var soundDialog_1 = __webpack_require__(174);
-var fontDialog_1 = __webpack_require__(176);
-var spriteSheetDialog_1 = __webpack_require__(179);
-var gameObjectDialog_1 = __webpack_require__(181);
-var sceneDialog_1 = __webpack_require__(183);
-var layerDialog_1 = __webpack_require__(185);
-var particleSystemPreviewDialog_1 = __webpack_require__(187);
-var frameAnimationDialog_1 = __webpack_require__(189);
-var commonBehaviourDialog_1 = __webpack_require__(191);
-var buildDialog_1 = __webpack_require__(193);
-__webpack_require__(212);
-var scriptDialog_1 = __webpack_require__(195);
-var editableArray_1 = __webpack_require__(197);
+__webpack_require__(48);
+__webpack_require__(75);
+var modal_1 = __webpack_require__(76);
+var collapsible_1 = __webpack_require__(78);
+var alertDialog_1 = __webpack_require__(80);
+var confirmDialog_1 = __webpack_require__(82);
+var inputFile_1 = __webpack_require__(84);
+var colorPicker_1 = __webpack_require__(86);
+var colorPickerDialog_1 = __webpack_require__(88);
+var anglePicker_1 = __webpack_require__(133);
+var draggableDirective_1 = __webpack_require__(135);
+var resourceHelper_1 = __webpack_require__(70);
+var explorer_1 = __webpack_require__(137);
+var editor_1 = __webpack_require__(139);
+var projectDialog_1 = __webpack_require__(141);
+var gameProps_1 = __webpack_require__(143);
+var particleSystems_1 = __webpack_require__(145);
+var sounds_1 = __webpack_require__(147);
+var fonts_1 = __webpack_require__(149);
+var spriteSheets_1 = __webpack_require__(151);
+var scripts_1 = __webpack_require__(153);
+var gameObjects_1 = __webpack_require__(155);
+var scenes_1 = __webpack_require__(157);
+var userInterface_1 = __webpack_require__(159);
+var topPanel_1 = __webpack_require__(161);
+var popupBlocked_1 = __webpack_require__(164);
+var scriptEditor_1 = __webpack_require__(165);
+var sceneCentralPanel_1 = __webpack_require__(167);
+var sceneCursor_1 = __webpack_require__(169);
+var sceneRightPanel_1 = __webpack_require__(171);
+var gameObjectRightPanel_1 = __webpack_require__(173);
+var gameObjectRow_1 = __webpack_require__(175);
+var dialogs_1 = __webpack_require__(177);
+var particleSystemDialog_1 = __webpack_require__(179);
+var soundDialog_1 = __webpack_require__(181);
+var fontDialog_1 = __webpack_require__(183);
+var spriteSheetDialog_1 = __webpack_require__(186);
+var gameObjectDialog_1 = __webpack_require__(188);
+var sceneDialog_1 = __webpack_require__(190);
+var layerDialog_1 = __webpack_require__(192);
+var particleSystemPreviewDialog_1 = __webpack_require__(194);
+var frameAnimationDialog_1 = __webpack_require__(196);
+var commonBehaviourDialog_1 = __webpack_require__(198);
+var buildDialog_1 = __webpack_require__(200);
+__webpack_require__(221);
+var scriptDialog_1 = __webpack_require__(202);
+var editableArray_1 = __webpack_require__(204);
+var bottomPanel_1 = __webpack_require__(206);
 RF.registerDirectives([
     draggableDirective_1.DraggableDirective
 ]);
@@ -6992,7 +7099,7 @@ RF.registerComponents([
     scriptDialog_1.ScriptDialog, editableArray_1.EditableArray,
     particleSystems_1.ParticleSystems, sounds_1.Sounds, fonts_1.Fonts, scripts_1.Scripts,
     spriteSheets_1.SpriteSheets, gameObjects_1.GameObjects, scenes_1.Scenes,
-    userInterface_1.UserInterface, topPanel_1.TopPanel, popupBlocked_1.PopupBlocked, scriptEditor_1.ScriptEditor,
+    userInterface_1.UserInterface, topPanel_1.TopPanel, bottomPanel_1.BottomPanel, popupBlocked_1.PopupBlocked, scriptEditor_1.ScriptEditor,
     sceneCentralPanel_1.SceneCentralPanel, sceneRightPanel_1.SceneRightPanel, gameObjectRightPanel_1.GameObjectRightPanel,
     dialogs_1.Dialogs, particleSystemDialog_1.ParticleSystemDialog, gameObjectRow_1.GameObjectRow,
     soundDialog_1.SoundDialog, fontDialog_1.FontDialog, spriteSheetDialog_1.SpriteSheetDialog,
@@ -7013,7 +7120,7 @@ else
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports) {
 
 
@@ -7030,7 +7137,7 @@ if (!Array.prototype.includes) {
 }
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports) {
 
 /******/ (function(modules) { // webpackBootstrap
@@ -10347,14 +10454,14 @@ module.exports = __webpack_require__(10);
 /******/ ]);
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-__webpack_require__(200);
+__webpack_require__(209);
 var AppModal = (function () {
     function AppModal() {
         this.opened = false;
@@ -10368,7 +10475,7 @@ var AppModal = (function () {
     AppModal = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-modal',
-            template: __webpack_require__(76)
+            template: __webpack_require__(77)
         })
     ], AppModal);
     return AppModal;
@@ -10377,20 +10484,20 @@ exports.AppModal = AppModal;
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\"><div class=\"fullscreen shadow\"></div><div class=\"dialog\"><div class=\"dialogContent\"><div class=\"dialogClose\"><span data-click=\"close()\" class=\"pointer\">X</span></div><div class=\"withPadding\"><div data-transclusion=\"content\"></div></div></div></div></div>";
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-__webpack_require__(202);
+__webpack_require__(211);
 var Collapsible = (function () {
     function Collapsible() {
         this.title = 'default_title';
@@ -10406,7 +10513,7 @@ var Collapsible = (function () {
     Collapsible = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-collapsible',
-            template: __webpack_require__(78)
+            template: __webpack_require__(79)
         })
     ], Collapsible);
     return Collapsible;
@@ -10415,20 +10522,20 @@ exports.Collapsible = Collapsible;
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><div class=\"collapsible_header bold noSelect\"><div class=\"table width100\"><div class=\"row\"><div class=\"cell width1\"><span class=\"collapsible_point noBrake\" data-click=\"toggle()\" data-class=\"{rotated:opened}\">▷</span></div><div class=\"cell\"><span data-click=\"toggle()\">&nbsp;{{title}}</span></div><div class=\"cell width1\"><div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div></div></div></div></div><div class=\"collapsible_content\" data-class=\"{opened:opened}\"><div data-transclusion=\"content\"></div></div></div>";
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var i18n_1 = __webpack_require__(14);
+var i18n_1 = __webpack_require__(13);
 var AlertDialog = (function () {
     function AlertDialog() {
         this.message = '';
@@ -10445,7 +10552,7 @@ var AlertDialog = (function () {
     AlertDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-alert-dialog',
-            template: __webpack_require__(80)
+            template: __webpack_require__(81)
         })
     ], AlertDialog);
     return AlertDialog;
@@ -10454,21 +10561,21 @@ exports.AlertDialog = AlertDialog;
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"alertModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"close()\">{{i18n.get('ok')}}</button></div></div></div></app-modal>";
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var i18n_1 = __webpack_require__(14);
-__webpack_require__(203);
+var i18n_1 = __webpack_require__(13);
+__webpack_require__(212);
 var ConfirmDialog = (function () {
     function ConfirmDialog() {
         this.message = 'default message';
@@ -10490,7 +10597,7 @@ var ConfirmDialog = (function () {
     ConfirmDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-confirm-dialog',
-            template: __webpack_require__(82)
+            template: __webpack_require__(83)
         })
     ], ConfirmDialog);
     return ConfirmDialog;
@@ -10499,20 +10606,20 @@ exports.ConfirmDialog = ConfirmDialog;
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"confirmModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"confirmAndClose()\">{{i18n.get('confirm')}}</button><button data-click=\"close()\">{{i18n.get('cancel')}}</button></div></div></div></app-modal>";
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-__webpack_require__(204);
+__webpack_require__(213);
 var InputFile = (function () {
     function InputFile() {
         this.title = '';
@@ -10543,7 +10650,7 @@ var InputFile = (function () {
     InputFile = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-input-file',
-            template: __webpack_require__(84)
+            template: __webpack_require__(85)
         })
     ], InputFile);
     return InputFile;
@@ -10552,13 +10659,13 @@ exports.InputFile = InputFile;
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><button>{{title}}</button><input required accept=\"{{accept}}\" type=\"file\"></div>";
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10577,7 +10684,7 @@ var ColorPicker = (function () {
     ColorPicker = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-color-picker',
-            template: __webpack_require__(86)
+            template: __webpack_require__(87)
         })
     ], ColorPicker);
     return ColorPicker;
@@ -10586,21 +10693,21 @@ exports.ColorPicker = ColorPicker;
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"inlineBlock\"><div data-style=\"{ cursor: 'pointer', width: 24 + 'px', height:24 + 'px', backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')') }\" data-click=\"click()\"></div></div>";
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var utils_1 = __webpack_require__(21);
-var i18n_1 = __webpack_require__(14);
+var utils_1 = __webpack_require__(22);
+var i18n_1 = __webpack_require__(13);
 var defaultColor = { r: 0, g: 0, b: 0 };
 var ColorPickerDialog = (function () {
     function ColorPickerDialog() {
@@ -10650,7 +10757,7 @@ var ColorPickerDialog = (function () {
     ColorPickerDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-color-picker-dialog',
-            template: __webpack_require__(125)
+            template: __webpack_require__(132)
         })
     ], ColorPickerDialog);
     return ColorPickerDialog;
@@ -10659,7 +10766,7 @@ exports.ColorPickerDialog = ColorPickerDialog;
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10686,7 +10793,7 @@ exports.Timer = Timer;
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10745,7 +10852,7 @@ exports.Queue = Queue;
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10770,31 +10877,32 @@ exports.AmbientLight = AmbientLight;
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-__webpack_require__(46);
-var baseAbstractBehaviour_1 = __webpack_require__(38);
-var rendererFactory_1 = __webpack_require__(92);
-var repository_1 = __webpack_require__(114);
+__webpack_require__(47);
+var baseAbstractBehaviour_1 = __webpack_require__(39);
+var rendererFactory_1 = __webpack_require__(93);
+var repository_1 = __webpack_require__(115);
 var mouse_1 = __webpack_require__(61);
-var keyboard_1 = __webpack_require__(121);
-var gamePad_1 = __webpack_require__(122);
+var keyboard_1 = __webpack_require__(122);
+var gamePad_1 = __webpack_require__(123);
 var decorators_1 = __webpack_require__(25);
-var commonObject_1 = __webpack_require__(24);
+var commonObject_1 = __webpack_require__(18);
 var camera_1 = __webpack_require__(56);
-var consts_1 = __webpack_require__(42);
+var consts_1 = __webpack_require__(43);
 var point2d_1 = __webpack_require__(5);
 var lightArray_1 = __webpack_require__(58);
-var uiBuilder_1 = __webpack_require__(123);
-var colliderEngine_1 = __webpack_require__(124);
+var uiBuilder_1 = __webpack_require__(124);
+var colliderEngine_1 = __webpack_require__(125);
 var MathEx = __webpack_require__(4);
 var global_1 = __webpack_require__(7);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
+var audioPlayer_1 = __webpack_require__(68);
 var Game = (function (_super) {
     tslib_1.__extends(Game, _super);
     function Game() {
@@ -10828,6 +10936,7 @@ var Game = (function (_super) {
         _this.camera = new camera_1.Camera(_this);
         _this.lightArray = new lightArray_1.LightArray(_this);
         _this.uiBuilder = new uiBuilder_1.UIBuilder(_this);
+        _this.audioPlayer = new audioPlayer_1.AudioPlayer(_this);
         if (true)
             window['game'] = _this;
         _this.__global__['MathEx'] = MathEx;
@@ -10861,17 +10970,16 @@ var Game = (function (_super) {
     };
     Game.prototype.runScene = function (scene) {
         var _this = this;
+        this._currentScene = scene;
         if (true && !this._revalidated)
             throw new debugError_1.DebugError("game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly");
         if (scene.prepared) {
-            this._currentScene = scene;
             return;
         }
         if (false) { var BhClass, sceneBhScriptName, allScripts_1; }
         scene.preload(function () {
             scene.onShow();
             scene.prepared = true;
-            _this._currentScene = scene;
             if (!_this._running) {
                 _this.update();
                 _this._running = true;
@@ -10907,9 +11015,10 @@ var Game = (function (_super) {
         do {
             this._currentScene && this._currentScene.update(currTime, dTime);
             this.collider.collisionArcade();
-            currTime += Game_1.UPDATE_TIME_RATE;
             this.keyboard.update();
             this.gamePad.update();
+            this.audioPlayer.update(currTime, dTime);
+            currTime += Game_1.UPDATE_TIME_RATE;
             loopCnt++;
             if (loopCnt > 10) {
                 this._lastTime = this._currTime = currTimeCopy;
@@ -10954,7 +11063,8 @@ var Game = (function (_super) {
             lightArray: true,
             uiBuilder: true,
             scale: true,
-            pos: true
+            pos: true,
+            audioPlayer: true
         })
     ], Game);
     return Game;
@@ -10963,14 +11073,14 @@ exports.Game = Game;
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var webGlRenderer_1 = __webpack_require__(93);
-var debugError_1 = __webpack_require__(2);
+var webGlRenderer_1 = __webpack_require__(94);
+var debugError_1 = __webpack_require__(1);
 var RendererFactory = (function () {
     function RendererFactory() {
     }
@@ -10985,31 +11095,31 @@ exports.RendererFactory = RendererFactory;
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var debugError_1 = __webpack_require__(2);
-var spriteRectLightDrawer_1 = __webpack_require__(94);
+var debugError_1 = __webpack_require__(1);
+var spriteRectLightDrawer_1 = __webpack_require__(95);
 var spriteRectDrawer_1 = __webpack_require__(28);
-var tiledSpriteRectDrawer_1 = __webpack_require__(98);
-var colorRectDrawer_1 = __webpack_require__(99);
-var abstractDrawer_1 = __webpack_require__(12);
-var lineDrawer_1 = __webpack_require__(100);
-var circleDrawer_1 = __webpack_require__(102);
+var tiledSpriteRectDrawer_1 = __webpack_require__(99);
+var colorRectDrawer_1 = __webpack_require__(100);
+var abstractDrawer_1 = __webpack_require__(11);
+var lineDrawer_1 = __webpack_require__(101);
+var circleDrawer_1 = __webpack_require__(103);
 var frameBuffer_1 = __webpack_require__(59);
-var matrixStack_1 = __webpack_require__(104);
-var mat4 = __webpack_require__(15);
+var matrixStack_1 = __webpack_require__(105);
+var mat4 = __webpack_require__(14);
 var matEx = __webpack_require__(4);
 var texture_1 = __webpack_require__(60);
-var addBlendDrawer_1 = __webpack_require__(105);
+var addBlendDrawer_1 = __webpack_require__(106);
 var rect_1 = __webpack_require__(3);
-var abstractCanvasRenderer_1 = __webpack_require__(109);
-var shaderMaterial_1 = __webpack_require__(49);
-var size_1 = __webpack_require__(22);
+var abstractCanvasRenderer_1 = __webpack_require__(110);
+var shaderMaterial_1 = __webpack_require__(50);
+var size_1 = __webpack_require__(23);
 var getCtx = function (el) {
     return (el.getContext("webgl", { alpha: false }) ||
         el.getContext('experimental-webgl', { alpha: false }) ||
@@ -11328,7 +11438,7 @@ exports.WebGlRenderer = WebGlRenderer;
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11336,7 +11446,7 @@ exports.WebGlRenderer = WebGlRenderer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var spriteRectDrawer_1 = __webpack_require__(28);
-var texShaderGenerator_1 = __webpack_require__(19);
+var texShaderGenerator_1 = __webpack_require__(20);
 var shaderProgram_1 = __webpack_require__(8);
 var shaderProgramUtils_1 = __webpack_require__(10);
 var lightArray_1 = __webpack_require__(58);
@@ -11362,13 +11472,13 @@ exports.SpriteRectLightDrawer = SpriteRectLightDrawer;
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var VertexBuffer = (function () {
     function VertexBuffer(gl) {
         this.bufferItemSize = 0;
@@ -11432,13 +11542,13 @@ exports.VertexBuffer = VertexBuffer;
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var IndexBuffer = (function () {
     function IndexBuffer(gl) {
         if (true && !gl)
@@ -11481,7 +11591,7 @@ exports.IndexBuffer = IndexBuffer;
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11521,19 +11631,19 @@ exports.PointLight = PointLight;
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var plane_1 = __webpack_require__(39);
+var plane_1 = __webpack_require__(40);
 var shaderProgram_1 = __webpack_require__(8);
-var bufferInfo_1 = __webpack_require__(18);
-var abstractDrawer_1 = __webpack_require__(12);
+var bufferInfo_1 = __webpack_require__(19);
+var abstractDrawer_1 = __webpack_require__(11);
 var shaderProgramUtils_1 = __webpack_require__(10);
-var texShaderGenerator_1 = __webpack_require__(19);
+var texShaderGenerator_1 = __webpack_require__(20);
 var TiledSpriteRectDrawer = (function (_super) {
     tslib_1.__extends(TiledSpriteRectDrawer, _super);
     function TiledSpriteRectDrawer(gl) {
@@ -11558,18 +11668,18 @@ exports.TiledSpriteRectDrawer = TiledSpriteRectDrawer;
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var plane_1 = __webpack_require__(39);
+var plane_1 = __webpack_require__(40);
 var shaderProgram_1 = __webpack_require__(8);
-var bufferInfo_1 = __webpack_require__(18);
-var abstractDrawer_1 = __webpack_require__(12);
-var colorShaderGenerator_1 = __webpack_require__(41);
+var bufferInfo_1 = __webpack_require__(19);
+var abstractDrawer_1 = __webpack_require__(11);
+var colorShaderGenerator_1 = __webpack_require__(42);
 var ColorRectDrawer = (function (_super) {
     tslib_1.__extends(ColorRectDrawer, _super);
     function ColorRectDrawer(gl) {
@@ -11590,18 +11700,18 @@ exports.ColorRectDrawer = ColorRectDrawer;
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var line_1 = __webpack_require__(101);
+var line_1 = __webpack_require__(102);
 var shaderProgram_1 = __webpack_require__(8);
-var bufferInfo_1 = __webpack_require__(18);
-var abstractDrawer_1 = __webpack_require__(12);
-var colorShaderGenerator_1 = __webpack_require__(41);
+var bufferInfo_1 = __webpack_require__(19);
+var abstractDrawer_1 = __webpack_require__(11);
+var colorShaderGenerator_1 = __webpack_require__(42);
 var LineDrawer = (function (_super) {
     tslib_1.__extends(LineDrawer, _super);
     function LineDrawer(gl) {
@@ -11621,14 +11731,14 @@ exports.LineDrawer = LineDrawer;
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractPrimitive_1 = __webpack_require__(40);
+var abstractPrimitive_1 = __webpack_require__(41);
 var Line = (function (_super) {
     tslib_1.__extends(Line, _super);
     function Line() {
@@ -11646,18 +11756,18 @@ exports.Line = Line;
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(103);
+var circle_1 = __webpack_require__(104);
 var shaderProgram_1 = __webpack_require__(8);
-var abstractDrawer_1 = __webpack_require__(12);
-var bufferInfo_1 = __webpack_require__(18);
-var colorShaderGenerator_1 = __webpack_require__(41);
+var abstractDrawer_1 = __webpack_require__(11);
+var bufferInfo_1 = __webpack_require__(19);
+var colorShaderGenerator_1 = __webpack_require__(42);
 var CircleDrawer = (function (_super) {
     tslib_1.__extends(CircleDrawer, _super);
     function CircleDrawer(gl) {
@@ -11677,14 +11787,14 @@ exports.CircleDrawer = CircleDrawer;
 
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractPrimitive_1 = __webpack_require__(40);
+var abstractPrimitive_1 = __webpack_require__(41);
 var Circle = (function (_super) {
     tslib_1.__extends(Circle, _super);
     function Circle() {
@@ -11707,13 +11817,13 @@ exports.Circle = Circle;
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var mat4 = __webpack_require__(15);
+var mat4 = __webpack_require__(14);
 var MatrixStack = (function () {
     function MatrixStack() {
         this.stack = [];
@@ -11775,14 +11885,14 @@ exports.MatrixStack = MatrixStack;
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractBlendDrawer_1 = __webpack_require__(106);
+var abstractBlendDrawer_1 = __webpack_require__(107);
 var AddBlendDrawer = (function (_super) {
     tslib_1.__extends(AddBlendDrawer, _super);
     function AddBlendDrawer(gl) {
@@ -11797,7 +11907,7 @@ exports.AddBlendDrawer = AddBlendDrawer;
 
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11805,9 +11915,9 @@ exports.AddBlendDrawer = AddBlendDrawer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var spriteRectDrawer_1 = __webpack_require__(28);
 var shaderProgramUtils_1 = __webpack_require__(10);
-var texShaderGenerator_1 = __webpack_require__(19);
+var texShaderGenerator_1 = __webpack_require__(20);
 var shaderProgram_1 = __webpack_require__(8);
-var simpleCopyFilter_1 = __webpack_require__(107);
+var simpleCopyFilter_1 = __webpack_require__(108);
 var AbstractBlendDrawer = (function () {
     function AbstractBlendDrawer(gl) {
         this.gl = gl;
@@ -11835,14 +11945,14 @@ exports.AbstractBlendDrawer = AbstractBlendDrawer;
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractFilter_1 = __webpack_require__(108);
+var abstractFilter_1 = __webpack_require__(109);
 var shaderProgramUtils_1 = __webpack_require__(10);
 var SimpleCopyFilter = (function (_super) {
     tslib_1.__extends(SimpleCopyFilter, _super);
@@ -11859,7 +11969,7 @@ exports.SimpleCopyFilter = SimpleCopyFilter;
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11867,9 +11977,9 @@ exports.SimpleCopyFilter = SimpleCopyFilter;
 Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgram_1 = __webpack_require__(8);
 var spriteRectDrawer_1 = __webpack_require__(28);
-var mat4 = __webpack_require__(15);
-var texShaderGenerator_1 = __webpack_require__(19);
-var debugError_1 = __webpack_require__(2);
+var mat4 = __webpack_require__(14);
+var texShaderGenerator_1 = __webpack_require__(20);
+var debugError_1 = __webpack_require__(1);
 var makePositionMatrix = function (dstX, dstY, dstWidth, dstHeight) {
     var projectionMatrix = mat4.ortho(0, dstWidth, 0, dstHeight, -1, 1);
     var scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
@@ -11911,15 +12021,15 @@ exports.AbstractFilter = AbstractFilter;
 
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var abstractRenderer_1 = __webpack_require__(110);
-var consts_1 = __webpack_require__(42);
+var abstractRenderer_1 = __webpack_require__(111);
+var consts_1 = __webpack_require__(43);
 var rect_1 = __webpack_require__(3);
 var AbstractCanvasRenderer = (function (_super) {
     tslib_1.__extends(AbstractCanvasRenderer, _super);
@@ -11998,16 +12108,16 @@ exports.AbstractCanvasRenderer = AbstractCanvasRenderer;
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var textField_1 = __webpack_require__(20);
-var device_1 = __webpack_require__(113);
-var size_1 = __webpack_require__(22);
-var debugError_1 = __webpack_require__(2);
+var textField_1 = __webpack_require__(21);
+var device_1 = __webpack_require__(114);
+var size_1 = __webpack_require__(23);
+var debugError_1 = __webpack_require__(1);
 var AbstractRenderer = (function () {
     function AbstractRenderer(game) {
         this.renderableCache = {};
@@ -12132,16 +12242,16 @@ exports.AbstractRenderer = AbstractRenderer;
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var color_1 = __webpack_require__(23);
+var color_1 = __webpack_require__(24);
 var global_1 = __webpack_require__(7);
-var container_1 = __webpack_require__(13);
+var container_1 = __webpack_require__(12);
 var Rectangle = (function (_super) {
     tslib_1.__extends(Rectangle, _super);
     function Rectangle(game) {
@@ -12169,7 +12279,7 @@ global_1._global['Rectangle'] = Rectangle;
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12219,7 +12329,7 @@ exports.NinePatchImage = NinePatchImage;
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12238,14 +12348,14 @@ exports.Device = Device;
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(2);
-var models = __webpack_require__(43);
+var debugError_1 = __webpack_require__(1);
+var models = __webpack_require__(44);
 var Repository = (function () {
     function Repository(game) {
         this._game = game;
@@ -12352,29 +12462,29 @@ exports.Repository = Repository;
 
 
 /***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var draggable_1 = __webpack_require__(116);
-exports.Draggable = draggable_1.DraggableBehaviour;
-var control4Dir_1 = __webpack_require__(117);
-exports.Control4Dir = control4Dir_1.Control4Dir;
-var control2Dir_1 = __webpack_require__(119);
-exports.Control2Dir = control2Dir_1.Control2Dir;
-
-
-/***/ }),
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var draggable_1 = __webpack_require__(117);
+exports.Draggable = draggable_1.DraggableBehaviour;
+var control4Dir_1 = __webpack_require__(118);
+exports.Control4Dir = control4Dir_1.Control4Dir;
+var control2Dir_1 = __webpack_require__(120);
+exports.Control2Dir = control2Dir_1.Control2Dir;
+
+
+/***/ }),
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseAbstractBehaviour_1 = __webpack_require__(38);
+var baseAbstractBehaviour_1 = __webpack_require__(39);
 var DraggableBehaviour = (function (_super) {
     tslib_1.__extends(DraggableBehaviour, _super);
     function DraggableBehaviour(game) {
@@ -12457,14 +12567,14 @@ exports.DraggableBehaviour = DraggableBehaviour;
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var move4Dir_1 = __webpack_require__(118);
+var move4Dir_1 = __webpack_require__(119);
 var Parameters = (function () {
     function Parameters() {
         this.velocity = 100;
@@ -12527,7 +12637,7 @@ exports.Control4Dir = Control4Dir;
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12556,14 +12666,14 @@ exports.Move4Dir = Move4Dir;
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var move2Dir_1 = __webpack_require__(120);
+var move2Dir_1 = __webpack_require__(121);
 var Parameters = (function () {
     function Parameters() {
         this.velocity = 100;
@@ -12608,7 +12718,7 @@ exports.Control2Dir = Control2Dir;
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12637,7 +12747,7 @@ exports.Move2Dir = Move2Dir;
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12760,7 +12870,7 @@ exports.Keyboard = Keyboard;
 
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12838,7 +12948,7 @@ exports.GamePad = GamePad;
 
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12846,7 +12956,7 @@ exports.GamePad = GamePad;
 Object.defineProperty(exports, "__esModule", { value: true });
 var allUIClasses = __webpack_require__(62);
 var absoluteLayout_1 = __webpack_require__(65);
-var debugError_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(1);
 var UIBuilder = (function () {
     function UIBuilder(game) {
         this.game = game;
@@ -12935,7 +13045,7 @@ exports.UIBuilder = UIBuilder;
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13088,13 +13198,328 @@ exports.ColliderEngine = ColliderEngine;
 
 
 /***/ }),
-/* 125 */
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var debugError_1 = __webpack_require__(1);
+var loaderUtil_1 = __webpack_require__(127);
+var audioPlayer_1 = __webpack_require__(68);
+var CtxHolder = (function () {
+    function CtxHolder() {
+    }
+    CtxHolder.getCtx = function () {
+        if (CtxHolder.ctx && !CtxHolder.res)
+            CtxHolder.res = new CtxHolder.ctx();
+        return CtxHolder.res;
+    };
+    CtxHolder.ctx = window.AudioContext;
+    CtxHolder.res = null;
+    return CtxHolder;
+}());
+var decode = function (buffer, callback) {
+    CtxHolder.getCtx().decodeAudioData(buffer, function (decoded) {
+        callback(decoded);
+    }, function (err) {
+        if (true)
+            throw new debugError_1.DebugError(err.message);
+    });
+};
+var base64ToArrayBuffer = function (base64) {
+    var binary_string = window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+};
+var WebAudioContext = (function () {
+    function WebAudioContext() {
+        this.type = 'webAudioContext';
+        this._ctx = null;
+        this._currSource = null;
+        this._gainNode = null;
+        this._free = true;
+        this._ctx = CtxHolder.getCtx();
+        this._gainNode = this._ctx.createGain();
+        this._gainNode.connect(this._ctx.destination);
+    }
+    WebAudioContext.isAcceptable = function () {
+        return !!(window && CtxHolder.getCtx());
+    };
+    WebAudioContext.prototype.load = function (url, progress, callBack) {
+        if (false) { var buffer; }
+        else {
+            loaderUtil_1.LoaderUtil.loadBinary(url, progress, function (buffer) {
+                decode(buffer, function (decoded) {
+                    audioPlayer_1.AudioPlayer.cache[url] = decoded;
+                    callBack();
+                });
+            });
+        }
+    };
+    WebAudioContext.prototype.isFree = function () {
+        return this._free;
+    };
+    WebAudioContext.prototype.play = function (resourcePath, loop) {
+        var _this = this;
+        this._free = false;
+        var currSource = this._ctx.createBufferSource();
+        currSource.buffer = audioPlayer_1.AudioPlayer.cache[resourcePath];
+        currSource.loop = loop;
+        currSource.connect(this._gainNode);
+        currSource.start(0);
+        currSource.onended = function () {
+            _this.stop();
+        };
+        this._currSource = currSource;
+    };
+    WebAudioContext.prototype.stop = function () {
+        var currSource = this._currSource;
+        if (currSource) {
+            currSource.stop();
+            currSource.disconnect(this._gainNode);
+        }
+        this._currSource = null;
+        this._free = true;
+    };
+    WebAudioContext.prototype.setGain = function (val) {
+        this._gainNode.gain.value = val;
+    };
+    WebAudioContext.prototype.pause = function () {
+        this._ctx.suspend();
+    };
+    WebAudioContext.prototype.resume = function () {
+        this._ctx.resume();
+    };
+    return WebAudioContext;
+}());
+exports.WebAudioContext = WebAudioContext;
+
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var LoaderUtil = (function () {
+    function LoaderUtil() {
+    }
+    LoaderUtil.loadBinary = function (url, progress, callBack) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
+        request.setRequestHeader('Accept-Ranges', 'bytes');
+        request.setRequestHeader('Content-Range', 'bytes');
+        request.onload = function () {
+            callBack(request.response);
+        };
+        request.onprogress = function (e) {
+            if (progress)
+                progress(url, e.loaded / e.total);
+        };
+        if (true) {
+            request.onerror = function (e) { throw 'can not load sound with url ' + url; };
+        }
+        request.send();
+    };
+    ;
+    return LoaderUtil;
+}());
+exports.LoaderUtil = LoaderUtil;
+
+
+/***/ }),
+/* 128 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var CtxHolder = (function () {
+    function CtxHolder() {
+    }
+    CtxHolder.getCtx = function () {
+        var Ctx = window && window.Audio;
+        return new Ctx();
+    };
+    ;
+    return CtxHolder;
+}());
+var HtmlAudioContext = (function () {
+    function HtmlAudioContext() {
+        this.type = 'htmlAudioContext';
+        this.free = true;
+        this._ctx = CtxHolder.getCtx();
+    }
+    HtmlAudioContext.isAcceptable = function () {
+        return false;
+    };
+    HtmlAudioContext.prototype.load = function (url, progress, callBack) {
+        callBack();
+    };
+    HtmlAudioContext.prototype.isFree = function () {
+        return this.free;
+    };
+    HtmlAudioContext.prototype.play = function (resourcePath, loop) {
+        var _this = this;
+        this.free = false;
+        this._ctx.src = resourcePath;
+        this._ctx.play();
+        this._ctx.loop = loop;
+        this._ctx.onended = function () {
+            _this.stop();
+        };
+    };
+    HtmlAudioContext.prototype.stop = function () {
+        this.free = true;
+    };
+    HtmlAudioContext.prototype.setGain = function (val) {
+        this._ctx.volume = val;
+    };
+    HtmlAudioContext.prototype.pause = function () {
+        this._ctx.pause();
+    };
+    HtmlAudioContext.prototype.resume = function () {
+        if (true)
+            throw "not implemented for now";
+    };
+    return HtmlAudioContext;
+}());
+exports.HtmlAudioContext = HtmlAudioContext;
+
+
+/***/ }),
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var FakeAudioContext = (function () {
+    function FakeAudioContext() {
+        this.type = 'fakeAudioContext';
+        true && console.log('audio not supported');
+    }
+    FakeAudioContext.isAcceptable = function () { return true; };
+    FakeAudioContext.prototype.play = function (resourcePath, loop) { };
+    FakeAudioContext.prototype.stop = function () { };
+    FakeAudioContext.prototype.isFree = function () { return false; };
+    FakeAudioContext.prototype.setGain = function (val) { };
+    FakeAudioContext.prototype.pause = function () { };
+    FakeAudioContext.prototype.resume = function () { };
+    FakeAudioContext.prototype.load = function (url, progress, callBack) {
+        callBack();
+    };
+    return FakeAudioContext;
+}());
+exports.FakeAudioContext = FakeAudioContext;
+
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var audioNode_1 = __webpack_require__(131);
+var AudioNodeSet = (function () {
+    function AudioNodeSet(ContextClass, numOfNodes) {
+        this.ContextClass = ContextClass;
+        this.numOfNodes = numOfNodes;
+        this.nodes = [];
+        for (var i = 0; i < numOfNodes; i++) {
+            this.nodes.push(new audioNode_1.AudioNode(new ContextClass()));
+        }
+    }
+    AudioNodeSet.prototype.getFreeNode = function () {
+        for (var i = 0; i < this.numOfNodes; i++) {
+            if (this.nodes[i].isFree())
+                return this.nodes[i];
+        }
+        return null;
+    };
+    AudioNodeSet.prototype.stopAll = function () {
+        for (var i = 0; i < this.numOfNodes; i++) {
+            this.nodes[i].stop();
+        }
+    };
+    AudioNodeSet.prototype.pauseAll = function () {
+        for (var i = 0; i < this.numOfNodes; i++) {
+            this.nodes[i].pause();
+        }
+    };
+    AudioNodeSet.prototype.resumeAll = function () {
+        for (var i = 0; i < this.numOfNodes; i++) {
+            this.nodes[i].resume();
+        }
+    };
+    AudioNodeSet.prototype.getNodeBySound = function (sound) {
+        for (var i = 0; i < this.numOfNodes; i++) {
+            if (this.nodes[i].getCurrSound() == sound)
+                return this.nodes[i];
+        }
+        return null;
+    };
+    return AudioNodeSet;
+}());
+exports.AudioNodeSet = AudioNodeSet;
+
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AudioNode = (function () {
+    function AudioNode(context) {
+        this.context = context;
+        this.currSound = null;
+    }
+    AudioNode.prototype.play = function (resourcePath, loop) {
+        if (loop === void 0) { loop = false; }
+        this.context.play(resourcePath, loop);
+    };
+    AudioNode.prototype.stop = function () {
+        this.context.stop();
+        this.currSound = null;
+    };
+    AudioNode.prototype.setGain = function (val) {
+        this.context.setGain(val);
+    };
+    AudioNode.prototype.pause = function () {
+        this.context.pause();
+    };
+    AudioNode.prototype.resume = function () {
+        this.context.resume();
+    };
+    AudioNode.prototype.isFree = function () {
+        return this.context.isFree();
+    };
+    AudioNode.prototype.getCurrSound = function () {
+        return this.currSound;
+    };
+    return AudioNode;
+}());
+exports.AudioNode = AudioNode;
+
+
+/***/ }),
+/* 132 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"colorPickerModal\" data-transclusion-id=\"colorPicker\"><div data-transclusion=\"content:#colorPicker\"><table><tr><td><input type=\"color\" data-model=\"currentColor.hex\" data-change=\"hexChanged()\"></td><td><input type=\"text\" data-model=\"currentColor.hex\" data-keyup=\"hexChanged()\"></td><td></td></tr><table class=\"width100\"><tr data-for=\"item in colorEnums\"><td data-style=\"{ color: item.left }\">{{item.left}}</td><td class=\"centerText\"><input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" data-model=\"currentColor.RGB[item.key]\" data-input=\"rgbChanged()\" data-change=\"rgbChanged()\"><br><input class=\"small vAlign\" data-model=\"currentColor.RGB[item.key]\" data-change=\"rgbChanged()\"><hr></td><td data-style=\"{ color: item.right }\">{{item.right}}</td><td><div data-style=\"{ width: '5px', height: '5px', backgroundColor: getRawColor(currentColor.RGB,item.key) }\"></div></td></tr></table></table><button data-click=\"applyColor()\">{{i18n.get('edit')}}</button></div></app-modal>";
 
 /***/ }),
-/* 126 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13135,7 +13560,7 @@ var AnglePicker = (function () {
     AnglePicker = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-angle-picker',
-            template: __webpack_require__(127)
+            template: __webpack_require__(134)
         })
     ], AnglePicker);
     return AnglePicker;
@@ -13144,20 +13569,20 @@ exports.AnglePicker = AnglePicker;
 
 
 /***/ }),
-/* 127 */
+/* 134 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"inlineBlock\" data-click=\"click($event)\" data-mousemove=\"mouseMove($event)\"><div data-container class=\"inlineBlock\"><svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle><line id=\"line\" x1=\"100\" y1=\"100\" x2=\"200\" y2=\"100\" stroke=\"black\" stroke-width=\"2\" data-attributes=\"{transform:'rotate('+angleInDeg()+',100,100)'}\"></line></svg></div><div class=\"smallXX\" data-attributes=\"{title: object && (object[value]+' rad')}\">{{angleInDeg()}}&deg;</div></div>";
 
 /***/ }),
-/* 128 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var draggable_js_1 = __webpack_require__(129);
+var draggable_js_1 = __webpack_require__(136);
 var DraggableDirective = (function () {
     function DraggableDirective() {
     }
@@ -13175,7 +13600,7 @@ exports.DraggableDirective = DraggableDirective;
 
 
 /***/ }),
-/* 129 */
+/* 136 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13232,15 +13657,15 @@ const draggable = (el,objVal)=>{
 };
 
 /***/ }),
-/* 130 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-__webpack_require__(205);
+var baseComponent_1 = __webpack_require__(2);
+__webpack_require__(214);
 var userDefinedFns_1 = __webpack_require__(6);
 var Explorer = (function (_super) {
     tslib_1.__extends(Explorer, _super);
@@ -13315,7 +13740,7 @@ var Explorer = (function (_super) {
     Explorer = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'explorer',
-            template: __webpack_require__(131)
+            template: __webpack_require__(138)
         })
     ], Explorer);
     return Explorer;
@@ -13324,22 +13749,22 @@ exports.Explorer = Explorer;
 
 
 /***/ }),
-/* 131 */
+/* 138 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><div class=\"width50 marginAuto\"><h3 class=\"centerText\">{{i18n.get('projects')}}</h3><div class=\"table width100\"><div data-for=\"p in editData.projects\" class=\"row hoverOnProjectRow\"><div class=\"cell width100\"><div data-click=\"openProject(p)\" class=\"withPadding pointer\">{{p.name}}</div></div><div class=\"cell rightAlign\"><div class=\"edit\" data-click=\"editProject(p)\"></div></div><div class=\"cell rightAlign\"><div data-click=\"deleteProject(p)\" class=\"delete\"></div></div></div><div class=\"row\"><div class=\"cell\"><div class=\"withPadding\"><div class=\"add\" data-click=\"createProject()\"></div></div></div></div></div></div><app-project-dialog></app-project-dialog></div>";
 
 /***/ }),
-/* 132 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-__webpack_require__(206);
-var Split = __webpack_require__(47);
+var baseComponent_1 = __webpack_require__(2);
+__webpack_require__(215);
+var Split = __webpack_require__(48);
 var Editor = (function (_super) {
     tslib_1.__extends(Editor, _super);
     function Editor() {
@@ -13377,7 +13802,7 @@ var Editor = (function (_super) {
     Editor = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'editor',
-            template: __webpack_require__(133)
+            template: __webpack_require__(140)
         })
     ], Editor);
     return Editor;
@@ -13386,20 +13811,20 @@ exports.Editor = Editor;
 
 
 /***/ }),
-/* 133 */
+/* 140 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"template\"><div class=\"absolute\"><app-top-panel id=\"topPanel\"></app-top-panel></div><div id=\"c\" class=\"split\"><div id=\"a\" class=\"split split-horizontal content\"><app-game-props></app-game-props><app-scenes></app-scenes><app-game-objects></app-game-objects><app-sprite-sheets></app-sprite-sheets><app-scripts></app-scripts><app-user-interface></app-user-interface><app-fonts></app-fonts><app-sounds></app-sounds><app-particle-systems></app-particle-systems></div><div id=\"b\" class=\"split split-horizontal content relative\"><app-script-editor></app-script-editor><div data-if=\"!editData.scriptEditorUrl\" class=\"table width100 height100\"><div class=\"row\"><div class=\"cell height100 vAlign\"><div data-style=\"{ width: editData.game.width + 'px', height: editData.game.height + 'px', overflow: 'auto', border: '1px solid green', margin: '0 auto' }\"><app-scene-central-panel></app-scene-central-panel></div></div></div></div></div><div id=\"e\" class=\"split split-horizontal content\"><app-scene-right-panel></app-scene-right-panel><app-game-object-right-panel></app-game-object-right-panel></div></div><div id=\"d\" class=\"split content\"></div><app-dialogs></app-dialogs></div>";
+module.exports = "<div class=\"template\"><div class=\"absolute\"><app-top-panel id=\"topPanel\"></app-top-panel></div><div id=\"c\" class=\"split\"><div id=\"a\" class=\"split split-horizontal content\"><app-game-props></app-game-props><app-scenes></app-scenes><app-game-objects></app-game-objects><app-sprite-sheets></app-sprite-sheets><app-scripts></app-scripts><app-user-interface></app-user-interface><app-fonts></app-fonts><app-sounds></app-sounds><app-particle-systems></app-particle-systems></div><div id=\"b\" class=\"split split-horizontal content relative\"><app-script-editor></app-script-editor><div data-if=\"!editData.scriptEditorUrl\" class=\"table width100 height100\"><div class=\"row\"><div class=\"cell height100 vAlign\"><div data-style=\"{ width: editData.game.width + 'px', height: editData.game.height + 'px', overflow: 'auto', border: '1px solid green', margin: '0 auto' }\"><app-scene-central-panel></app-scene-central-panel></div></div></div></div></div><div id=\"e\" class=\"split split-horizontal content\"><app-scene-right-panel></app-scene-right-panel><app-game-object-right-panel></app-game-object-right-panel></div></div><div id=\"d\" class=\"split content\"><app-bottom-panel></app-bottom-panel></div><app-dialogs></app-dialogs></div>";
 
 /***/ }),
-/* 134 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var ProjectDialog = (function (_super) {
     tslib_1.__extends(ProjectDialog, _super);
     function ProjectDialog() {
@@ -13440,7 +13865,7 @@ var ProjectDialog = (function (_super) {
     ProjectDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-project-dialog',
-            template: __webpack_require__(135)
+            template: __webpack_require__(142)
         })
     ], ProjectDialog);
     return ProjectDialog;
@@ -13449,21 +13874,21 @@ exports.ProjectDialog = ProjectDialog;
 
 
 /***/ }),
-/* 135 */
+/* 142 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"projectDialog\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditProject(editData.currProjectInEdit)\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currProjectInEdit.name\"></td></tr></table><button>{{editData.currProjectInEdit.oldName?i18n.get('edit'):i18n.get('create')}}</button></form></div></app-modal>";
 
 /***/ }),
-/* 136 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var consts_1 = __webpack_require__(42);
+var baseComponent_1 = __webpack_require__(2);
+var consts_1 = __webpack_require__(43);
 var GameProps = (function (_super) {
     tslib_1.__extends(GameProps, _super);
     function GameProps() {
@@ -13482,7 +13907,7 @@ var GameProps = (function (_super) {
     GameProps = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-game-props',
-            template: __webpack_require__(137)
+            template: __webpack_require__(144)
         })
     ], GameProps);
     return GameProps;
@@ -13491,21 +13916,21 @@ exports.GameProps = GameProps;
 
 
 /***/ }),
-/* 137 */
+/* 144 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{title:i18n.get('game')}\"><div data-transclusion=\"content\"><form class=\"table width100\"><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.width\" type=\"number\" min=\"1\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.height\" type=\"number\" min=\"1\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\" tille=\"{{i18n.get('gravityConstantTitle')}}\">{{i18n.get('gravityConstant')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.gravityConstant\" type=\"number\" min=\"0\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('scaleStrategy')}}</div><div class=\"cell\"><select data-model=\"editData.game.scaleStrategy\" data-change=\"form.valid() && saveGameProps()\"><option data-value=\"value\" data-for=\"value,key in scales\">{{key}}</option></select></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('preloadingScene')}}</div><div class=\"cell\"><select data-model=\"editData.game.preloadingSceneId\" data-change=\"form.valid() && saveGameProps()\"><option value>--</option><option data-disabled=\"item.id==editData.gameProps.startSceneId\" data-value=\"item.id\" data-for=\"item in editData.game.repository.getArray('Scene')\">{{item.name}}</option></select></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('startScene')}}</div><div class=\"cell\"><select data-model=\"editData.game.startSceneId\" data-change=\"form.valid() && saveGameProps()\"><option data-disabled=\"item.id==editData.gameProps.preloadingSceneId\" data-value=\"item.id\" data-for=\"item in editData.game.repository.getArray('Scene')\">{{item.name}}</option></select></div></div></form></div></app-collapsible>";
 
 /***/ }),
-/* 138 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var particleSystem_1 = __webpack_require__(37);
+var baseComponent_1 = __webpack_require__(2);
+var particleSystem_1 = __webpack_require__(38);
 var userDefinedFns_1 = __webpack_require__(6);
 var ParticleSystems = (function (_super) {
     tslib_1.__extends(ParticleSystems, _super);
@@ -13541,7 +13966,7 @@ var ParticleSystems = (function (_super) {
     ParticleSystems = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-particle-systems',
-            template: __webpack_require__(139)
+            template: __webpack_require__(146)
         })
     ], ParticleSystems);
     return ParticleSystems;
@@ -13550,21 +13975,21 @@ exports.ParticleSystems = ParticleSystems;
 
 
 /***/ }),
-/* 139 */
+/* 146 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ crud:{ create:createParticleSystem }, title:i18n.get('particleSystems') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"ps in editData.game.repository.getArray('ParticleSystem')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ps.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editParticleSystem(ps)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteParticleSystem(ps)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 140 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var sound_1 = __webpack_require__(36);
+var baseComponent_1 = __webpack_require__(2);
+var sound_1 = __webpack_require__(37);
 var Sounds = (function (_super) {
     tslib_1.__extends(Sounds, _super);
     function Sounds() {
@@ -13597,7 +14022,7 @@ var Sounds = (function (_super) {
     Sounds = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-sounds',
-            template: __webpack_require__(141)
+            template: __webpack_require__(148)
         })
     ], Sounds);
     return Sounds;
@@ -13606,21 +14031,21 @@ exports.Sounds = Sounds;
 
 
 /***/ }),
-/* 141 */
+/* 148 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ crud:{ create:createSound }, title:i18n.get('sounds') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"sound in editData.game.repository.getArray('Sound')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{sound.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editSound(sound)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteSound(sound)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 142 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var font_1 = __webpack_require__(35);
+var baseComponent_1 = __webpack_require__(2);
+var font_1 = __webpack_require__(36);
 var Fonts = (function (_super) {
     tslib_1.__extends(Fonts, _super);
     function Fonts() {
@@ -13653,7 +14078,7 @@ var Fonts = (function (_super) {
     Fonts = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-fonts',
-            template: __webpack_require__(143)
+            template: __webpack_require__(150)
         })
     ], Fonts);
     return Fonts;
@@ -13662,21 +14087,21 @@ exports.Fonts = Fonts;
 
 
 /***/ }),
-/* 143 */
+/* 150 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ crud: {create:createFont}, title:i18n.get('fonts') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"font in editData.game.repository.getArray('Font')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{font.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editFont(font)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteFont(font)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 144 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-__webpack_require__(207);
+var baseComponent_1 = __webpack_require__(2);
+__webpack_require__(216);
 var spriteSheet_1 = __webpack_require__(26);
 var userDefinedFns_1 = __webpack_require__(6);
 var SpriteSheets = (function (_super) {
@@ -13717,7 +14142,7 @@ var SpriteSheets = (function (_super) {
     SpriteSheets = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-sprite-sheets',
-            template: __webpack_require__(145)
+            template: __webpack_require__(152)
         })
     ], SpriteSheets);
     return SpriteSheets;
@@ -13726,20 +14151,20 @@ exports.SpriteSheets = SpriteSheets;
 
 
 /***/ }),
-/* 145 */
+/* 152 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ title: i18n.get('spriteSheets'), crud: { create:createSpriteSheet } }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"spriteSheet in editData.game.repository.getArray('SpriteSheet')\"><div class=\"cell\"><img class=\"spriteSheetThumb\" data-attributes=\"{ src: editData.projectName+'/'+spriteSheet.getDefaultResourcePath() + '?lastRevalidated=' + spriteSheet._lastRevalidated, width: spriteSheet.width, height: spriteSheet.height }\"></div><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{spriteSheet.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editSpriteSheet(spriteSheet)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteSpriteSheet(spriteSheet)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 146 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var userDefinedFns_1 = __webpack_require__(6);
 var editData_1 = __webpack_require__(9);
 var Scripts = (function (_super) {
@@ -13783,7 +14208,7 @@ var Scripts = (function (_super) {
     Scripts = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-scripts',
-            template: __webpack_require__(147)
+            template: __webpack_require__(154)
         })
     ], Scripts);
     return Scripts;
@@ -13792,21 +14217,21 @@ exports.Scripts = Scripts;
 
 
 /***/ }),
-/* 147 */
+/* 154 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ crud: { create:createScript }, title: i18n.get('scripts') }\"><div data-transclusion=\"content\"><div>./custom</div><div class=\"withPadding\"><div class=\"table width100\"><div class=\"row\" data-for=\"script,i in editData.customScripts\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{script.name}}</span></div><div class=\"cell width1\"><div class=\"script\" data-click=\"editScript(script)\"></div></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editScriptName(script,i)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteScript(script)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 148 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var all_1 = __webpack_require__(43);
+var baseComponent_1 = __webpack_require__(2);
+var all_1 = __webpack_require__(44);
 var userDefinedFns_1 = __webpack_require__(6);
 var GameObjects = (function (_super) {
     tslib_1.__extends(GameObjects, _super);
@@ -13857,7 +14282,7 @@ var GameObjects = (function (_super) {
     GameObjects = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-game-objects',
-            template: __webpack_require__(149)
+            template: __webpack_require__(156)
         })
     ], GameObjects);
     return GameObjects;
@@ -13866,24 +14291,24 @@ exports.GameObjects = GameObjects;
 
 
 /***/ }),
-/* 149 */
+/* 156 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ title: i18n.get('gameObjects'), crud: { create:createGameObject } }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"gameObject in editData.game.repository.getArray('GameObjectProto')\"><app-game-object-row data-state=\"{ crud: { edit: editGameObject, editScript: editGameObjectScript, delete: deleteGameObject }, gameObject: gameObject || {}, draggable: true }\"></app-game-object-row></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 150 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-__webpack_require__(208);
+var baseComponent_1 = __webpack_require__(2);
+__webpack_require__(217);
 var userDefinedFns_1 = __webpack_require__(6);
 var layer_1 = __webpack_require__(27);
-var scene_1 = __webpack_require__(33);
+var scene_1 = __webpack_require__(34);
 var Scenes = (function (_super) {
     tslib_1.__extends(Scenes, _super);
     function Scenes() {
@@ -13994,7 +14419,7 @@ var Scenes = (function (_super) {
     Scenes = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-scenes',
-            template: __webpack_require__(151)
+            template: __webpack_require__(158)
         })
     ], Scenes);
     return Scenes;
@@ -14003,20 +14428,20 @@ exports.Scenes = Scenes;
 
 
 /***/ }),
-/* 151 */
+/* 158 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-transclusion-id=\"scenes\" data-state=\"{ crud: { create:createScene }, title: i18n.get('scenes') }\"><div data-transclusion=\"content:#scenes\"><div class=\"withPaddingLeft\" data-class=\"{ currScene:editData.currSceneInEdit==scene }\" data-for=\"scene in editData.game.repository.getArray('Scene')\" data-click=\"setCurrentScene(scene)\"><app-collapsible data-transclusion-id=\"currScene\" data-state=\"{ crud: { edit:editScene, delete:deleteScene, editScript: editScript }, object: scene, title: scene.name }\"><div data-transclusion=\"content:#currScene\"><div class=\"withPaddingLeft\"><app-collapsible data-transclusion-id=\"layers\" data-state=\"{ title: i18n.get('layers'), meta: scene, crud: { create: createLayer } }\"><div data-transclusion=\"content:#layers\"><div data-click=\"setCurrLayer(layer)\" data-for=\"layer in scene.layers\" class=\"withPaddingLeft\"><app-collapsible data-transclusion-id=\"currLayer\" data-state=\"{ object: layer, meta: scene, crud: { edit:editLayer, delete:deleteLayer }, title: layer.name }\"><div data-transclusion=\"content:#currLayer\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div data-class=\"{ currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject }\" data-click=\"setCurrSceneGameObjectInEdit(gameObject)\" data-for=\"gameObject in layer.children\"><app-game-object-row data-state=\"{ gameObject: gameObject, crud: { delete: deleteGameObject }, }\"></app-game-object-row></div></div></div></div></app-collapsible></div></div></app-collapsible></div></div></app-collapsible></div></div></app-collapsible>";
 
 /***/ }),
-/* 152 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var UserInterface = (function (_super) {
     tslib_1.__extends(UserInterface, _super);
     function UserInterface() {
@@ -14025,7 +14450,7 @@ var UserInterface = (function (_super) {
     UserInterface = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-user-interface',
-            template: __webpack_require__(153)
+            template: __webpack_require__(160)
         })
     ], UserInterface);
     return UserInterface;
@@ -14034,21 +14459,21 @@ exports.UserInterface = UserInterface;
 
 
 /***/ }),
-/* 153 */
+/* 160 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ title: i18n.get('userInterface') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div data-draggable=\"{obj:uiObject,src: 'leftPanel'}\" class=\"row\" data-for=\"uiObject in editData.ui\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{uiObject.type}}</span></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 154 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var wsClient_1 = __webpack_require__(155);
+var baseComponent_1 = __webpack_require__(2);
+var wsClient_1 = __webpack_require__(162);
 var TopPanel = (function (_super) {
     tslib_1.__extends(TopPanel, _super);
     function TopPanel() {
@@ -14123,7 +14548,7 @@ var TopPanel = (function (_super) {
     TopPanel = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-top-panel',
-            template: __webpack_require__(156)
+            template: __webpack_require__(163)
         })
     ], TopPanel);
     return TopPanel;
@@ -14132,7 +14557,7 @@ exports.TopPanel = TopPanel;
 
 
 /***/ }),
-/* 155 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14176,20 +14601,20 @@ exports.WsClient = WsClient;
 
 
 /***/ }),
-/* 156 */
+/* 163 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"panel withPadding pointer\"><div class=\"inlineBlock withPadding\" data-click=\"showBuildDialog()\">{{i18n.get('build')}}</div><div class=\"inlineBlock withPadding\" data-click=\"run()\">{{i18n.get('run')}}</div><div class=\"inlineBlock withPadding\" data-click=\"toExplorer()\">{{i18n.get('explorer')}}</div></div><app-popup-blocked></app-popup-blocked>";
 
 /***/ }),
-/* 157 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var PopupBlocked = (function (_super) {
     tslib_1.__extends(PopupBlocked, _super);
     function PopupBlocked() {
@@ -14211,15 +14636,15 @@ exports.PopupBlocked = PopupBlocked;
 
 
 /***/ }),
-/* 158 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-__webpack_require__(209);
+var baseComponent_1 = __webpack_require__(2);
+__webpack_require__(218);
 var ScriptEditor = (function (_super) {
     tslib_1.__extends(ScriptEditor, _super);
     function ScriptEditor() {
@@ -14231,7 +14656,7 @@ var ScriptEditor = (function (_super) {
     ScriptEditor = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-script-editor',
-            template: __webpack_require__(159)
+            template: __webpack_require__(166)
         })
     ], ScriptEditor);
     return ScriptEditor;
@@ -14240,23 +14665,23 @@ exports.ScriptEditor = ScriptEditor;
 
 
 /***/ }),
-/* 159 */
+/* 166 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"height100 relative\" data-if=\"editData.scriptEditorUrl\"><div class=\"scriptEditorClose\" data-click=\"close()\">X</div><div style=\"height:10px;font-size: 10px;\">{{editData.scriptEditorUrl}}</div><div id=\"scriptEditor\" style=\"height:calc(100% - 10px)\"><iframe id=\"scriptEditorFrame\" frameborder=\"0\" class=\"block width100 height100 noOverFlow\" src=\"/editor\"></div></div>";
 
 /***/ }),
-/* 160 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-__webpack_require__(210);
+__webpack_require__(219);
 var userDefinedFns_1 = __webpack_require__(6);
-var baseComponent_1 = __webpack_require__(1);
-var gameObjectProto_1 = __webpack_require__(17);
+var baseComponent_1 = __webpack_require__(2);
+var gameObjectProto_1 = __webpack_require__(16);
 var gameObject_1 = __webpack_require__(29);
 var point2d_1 = __webpack_require__(5);
 var SceneCentralPanel = (function (_super) {
@@ -14411,7 +14836,7 @@ var SceneCentralPanel = (function (_super) {
     SceneCentralPanel = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-scene-central-panel',
-            template: __webpack_require__(161)
+            template: __webpack_require__(168)
         })
     ], SceneCentralPanel);
     return SceneCentralPanel;
@@ -14420,20 +14845,20 @@ exports.SceneCentralPanel = SceneCentralPanel;
 
 
 /***/ }),
-/* 161 */
+/* 168 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"height100 relative noOverFlow\" data-droppable=\"onDropFromLeftPanel\" data-click=\"onCentralSceneClick($event)\" data-style=\"{ backgroundColor: editData.currSceneInEdit.useBG?utils.rgbToCss(editData.currSceneInEdit.colorBG):'white' }\" data-draggable-container id=\"sceneDiv\"><div data-for=\"item in editData.currLayerInEdit.children\"><div data-if=\"item.type=='GameObject'\" app-draggable=\"{ target: item, onDragEnd: onDropFromCentralPanel }\" data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left: item.fixedToCamera?(item.pos.x+'px'): item.pos.x - utils.tileFrameWidth() * editData.tileMapPosX + 'px', top: item.fixedToCamera?(item.pos.y+'px'): item.pos.y - utils.tileFrameHeight() * editData.tileMapPosY + 'px', } )\" data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"></div><div data-if=\"item.type=='TextField'\" app-draggable=\"{ target: item, onDragEnd: onDropFromCentralPanel }\" data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left: item.pos.x - item.width * editData.tileMapPosX + 'px', top: item.pos.y - item.height * editData.tileMapPosY + 'px', backgroundColor:'rgb(0,222,0.1)', height:item.height+'px', width:item.width?item.width+'px':'10px', backgroundColor:item.width?'':'#ddd', backgroundImage:'none' } )\" data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"><div style=\"position: relative;left:0;top:0;z-index:10\"><span data-style=\"getCharCss(item,ch)\" data-for=\"ch in item._chars\"></span></div></div></div></div>";
 
 /***/ }),
-/* 162 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var SceneCursor = (function (_super) {
     tslib_1.__extends(SceneCursor, _super);
     function SceneCursor() {
@@ -14454,7 +14879,7 @@ var SceneCursor = (function (_super) {
     SceneCursor = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-scene-cursor',
-            template: __webpack_require__(163)
+            template: __webpack_require__(170)
         })
     ], SceneCursor);
     return SceneCursor;
@@ -14463,22 +14888,22 @@ exports.SceneCursor = SceneCursor;
 
 
 /***/ }),
-/* 163 */
+/* 170 */
 /***/ (function(module, exports) {
 
 module.exports = "<table><tr><td></td><td><button data-click=\"onKeyUp()\">&uarr;</button></td><td></td></tr><tr><td><button data-click=\"onKeyLeft()\">&larr;</button></td><td></td><td><button data-click=\"onKeyRight()\">&rarr;</button></td></tr><tr><td></td><td><button data-click=\"onKeyDown()\">&darr;</button></td><td></td></tr></table>";
 
 /***/ }),
-/* 164 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-__webpack_require__(211);
-var tileMap_1 = __webpack_require__(34);
+var baseComponent_1 = __webpack_require__(2);
+__webpack_require__(220);
+var tileMap_1 = __webpack_require__(35);
 var SceneRightPanel = (function (_super) {
     tslib_1.__extends(SceneRightPanel, _super);
     function SceneRightPanel() {
@@ -14573,7 +14998,7 @@ var SceneRightPanel = (function (_super) {
     SceneRightPanel = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-scene-right-panel',
-            template: __webpack_require__(165)
+            template: __webpack_require__(172)
         })
     ], SceneRightPanel);
     return SceneRightPanel;
@@ -14582,20 +15007,20 @@ exports.SceneRightPanel = SceneRightPanel;
 
 
 /***/ }),
-/* 165 */
+/* 172 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{title:i18n.get('currScene')}\"><div data-transclusion=\"content\"><div data-if=\"!editData.currSceneInEdit.id\">{{i18n.get('notSelected')}}</div><div class=\"withPadding\" data-if=\"editData.currSceneInEdit.id\"><b class=\"centerText\">{{i18n.get('scene')}} : {{editData.currSceneInEdit.name}}</b><div class=\"table width100\"><div class=\"row\"><div class=\"cell\"><label for=\"editData.currSceneInEdit.useBG\">{{i18n.get('useBG')}}</label></div><div class=\"cell\"><input type=\"checkbox\" id=\"editData.currSceneInEdit.useBG\" data-model=\"editData.currSceneInEdit.useBG\" data-change=\"editScene()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input type=\"number\" data-model=\"editData.currSceneInEdit.width\" data-change=\"editScene()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input type=\"number\" data-model=\"editData.currSceneInEdit.height\" data-change=\"editScene()\"></div></div><div class=\"row\" data-if=\"editData.currSceneInEdit.useBG\"><div class=\"cell\">{{i18n.get('colorBG')}}</div><div class=\"cell\"><app-color-picker data-state=\"{ model:editData.currSceneInEdit, field: 'colorBG', onChange: editScene }\"></app-color-picker></div></div><div class=\"row\"><div class=\"cell\"><hr></div><div class=\"cell\"><hr></div></div><div class=\"row\"><div class=\"cell valign bold\">{{i18n.get('tileMap')}}</div><div class=\"cell\"><div data-click=\"createTileMap()\" data-if=\"!editData.currSceneInEdit.tileMap.id\" class=\"add\"></div><div data-if=\"editData.currSceneInEdit.tileMap.id\" class=\"delete\"></div></div></div></div><div data-if=\"editData.currSceneInEdit.tileMap.id\" class=\"table width100\"><div class=\"row\"><div class=\"cell valign\">tileMap.width</div><div class=\"cell\"><input type=\"number\" min=\"0\" maxlength=\"3\" data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.width\"></div></div><div class=\"row\"><div class=\"cell valign\">tileMap.height</div><div class=\"cell\"><input type=\"number\" min=\"0\" maxlength=\"3\" data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.height\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('selected')}}</div><div class=\"cell\"><div data-class=\"{ inlineBlock:1, hoverOutline:1 }\" data-style=\"{ width:utils.tileFrameWidth()+'px', verticalAlign:'middle', height:utils.tileFrameHeight()+'px', backgroundImage: utils.tileResourcePath({strict:true}), backgroundPositionX: -utils.tileFramePosX(editData.currTileIndexInEdit)+'px', backgroundPositionY: -utils.tileFramePosY(editData.currTileIndexInEdit)+'px', backgroundRepeat: 'no-repeat' }\"></div><button data-if=\"editData.currTileIndexInEdit!=null\" data-click=\"utils.assign(editData,'currTileIndexInEdit',null)\">{{i18n.get('unset')}}</button></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('spriteSheets')}}</div><div class=\"cell\"><select data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.spriteSheet\"><option value>--</option><option data-for=\"item in editData.game.repository.getArray('SpriteSheet') track by id\" data-value=\"item\">{{item.name}}</option></select></div></div></div><div class=\"row\"><div data-click=\"toggleEditMode()\" data-class=\"{ editModeOn:editData.editTileMapModeOn, edit:1 }\"></div><span class=\"small\">(shift)</span></div><div data-style=\"{ width: utils.tileFrameWidth()*utils.tileNumOfFramesH()+'px', overflowX: 'auto', padding: '2px' }\"><div data-class=\"{ inlineBlock:true, selected:i==editData.currTileIndexInEdit, hoverOutline:1 }\" data-style=\"{ width:utils.tileFrameWidth()+'px', verticalAlign:'middle', height:utils.tileFrameHeight()+'px', backgroundImage: utils.tileResourcePath(), backgroundPositionX: -utils.tileFramePosX(i)+'px', backgroundPositionY: -utils.tileFramePosY(i)+'px', backgroundRepeat: 'no-repeat' }\" data-title=\"i\" data-click=\"setCurrSelectedTile(i)\" data-for=\"v,i in utils.getArray(numOfFramesForSceneSpriteSheet())\"></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 166 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var GameObjectRightPanel = (function (_super) {
     tslib_1.__extends(GameObjectRightPanel, _super);
     function GameObjectRightPanel() {
@@ -14613,7 +15038,7 @@ var GameObjectRightPanel = (function (_super) {
     GameObjectRightPanel = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-game-object-right-panel',
-            template: __webpack_require__(167)
+            template: __webpack_require__(174)
         })
     ], GameObjectRightPanel);
     return GameObjectRightPanel;
@@ -14622,20 +15047,20 @@ exports.GameObjectRightPanel = GameObjectRightPanel;
 
 
 /***/ }),
-/* 167 */
+/* 174 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ title: i18n.get('currGameObject') }\"><div data-transclusion=\"content\"><div data-if=\"!editData.currSceneGameObjectInEdit.id\">{{i18n.get('notSelected')}}</div><div class=\"withPadding\" data-if=\"editData.currSceneGameObjectInEdit.id\"><h3 class=\"centerText\">{{editData.currSceneGameObjectInEdit.type}}</h3><div class=\"table width100\"><div class=\"row\"><div class=\"cell\">id</div><div class=\"cell\">{{editData.currSceneGameObjectInEdit.id}}</div></div><div class=\"row\"><div class=\"cell\">name</div><div class=\"cell\"><input required data-change=\"editGameObject()\" class=\"width100\" data-model=\"editData.currSceneGameObjectInEdit.name\"></div></div><div class=\"row\"><div class=\"cell\">pos.x</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.pos.x\"></div></div><div class=\"row\"><div class=\"cell\">pos.y</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.pos.y\"></div></div><div class=\"row\"><div class=\"cell\">scale.x</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" step=\"0.1\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.scale.x\"></div></div><div class=\"row\"><div class=\"cell\">scale.y</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" step=\"0.1\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.scale.y\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"1\" required data-model=\"editData.currSceneGameObjectInEdit.width\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"1\" required data-model=\"editData.currSceneGameObjectInEdit.height\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('angle')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"0.1\" required data-model=\"editData.currSceneGameObjectInEdit.angle\"></div></div><div class=\"row\"><div class=\"cell\">alpha</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"0.1\" required min=\"0\" max=\"1\" data-model=\"editData.currSceneGameObjectInEdit.alpha\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('fixedToCamera')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"checkbox\" data-model=\"editData.currSceneGameObjectInEdit.fixedToCamera\" /></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('rigid')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"checkbox\" data-model=\"editData.currSceneGameObjectInEdit.rigid\" /></div></div><div class=\"row\" data-if=\"editData.currSceneGameObjectInEdit.type=='TextField'\"><div class=\"cell\">{{i18n.get('text')}}</div><div class=\"cell\"><textarea data-model=\"editData.currSceneGameObjectInEdit.text\" data-change=\"setTextFieldText($event) || editGameObject()\"></textarea></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 168 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var GameObjectRow = (function (_super) {
     tslib_1.__extends(GameObjectRow, _super);
     function GameObjectRow() {
@@ -14648,7 +15073,7 @@ var GameObjectRow = (function (_super) {
     GameObjectRow = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-game-object-row',
-            template: __webpack_require__(169)
+            template: __webpack_require__(176)
         })
     ], GameObjectRow);
     return GameObjectRow;
@@ -14657,20 +15082,20 @@ exports.GameObjectRow = GameObjectRow;
 
 
 /***/ }),
-/* 169 */
+/* 176 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><div class=\"cell width100\"><div data-style=\"utils.merge( utils.getGameObjectCss(gameObject), { zoom:utils.calcZoom(gameObject), transform: 'scale(1, 1) rotateZ(0deg)', opacity:1 } )\" data-draggable=\"draggable && {obj:gameObject,src: 'leftPanel'}\"></div></div><div class=\"cell\"><span class=\"inlineBlock withPaddingRight\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{gameObject.name}}</span></span></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(gameObject)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(gameObject)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" data-click=\"crud.delete(gameObject)\" class=\"delete\"></div></div></div>";
 
 /***/ }),
-/* 170 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var Dialogs = (function (_super) {
     tslib_1.__extends(Dialogs, _super);
     function Dialogs() {
@@ -14679,7 +15104,7 @@ var Dialogs = (function (_super) {
     Dialogs = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-dialogs',
-            template: __webpack_require__(171)
+            template: __webpack_require__(178)
         })
     ], Dialogs);
     return Dialogs;
@@ -14688,20 +15113,20 @@ exports.Dialogs = Dialogs;
 
 
 /***/ }),
-/* 171 */
+/* 178 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><app-sound-dialog id=\"soundDialog\"></app-sound-dialog><app-particle-system-dialog></app-particle-system-dialog><app-font-dialog id=\"fontDialog\"></app-font-dialog><app-sprite-sheet-dialog id=\"spriteSheetDialog\"></app-sprite-sheet-dialog><app-game-object-dialog id=\"gameObjectDialog\"></app-game-object-dialog><app-scene-dialog></app-scene-dialog><app-layer-dialog></app-layer-dialog><app-build-dialog></app-build-dialog><app-script-dialog></app-script-dialog></div><app-color-picker-dialog id=\"colorPickerDialog\"></app-color-picker-dialog>";
 
 /***/ }),
-/* 172 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var ParticleSystemDialog = (function (_super) {
     tslib_1.__extends(ParticleSystemDialog, _super);
     function ParticleSystemDialog() {
@@ -14740,7 +15165,7 @@ var ParticleSystemDialog = (function (_super) {
     ParticleSystemDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-particle-system-dialog',
-            template: __webpack_require__(173)
+            template: __webpack_require__(180)
         })
     ], ParticleSystemDialog);
     return ParticleSystemDialog;
@@ -14749,20 +15174,20 @@ exports.ParticleSystemDialog = ParticleSystemDialog;
 
 
 /***/ }),
-/* 173 */
+/* 180 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"particleSystemModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td></td><td><input required data-model=\"editData.currParticleSystemInEdit.name\"></td></tr><tr><td rowspan=\"2\">numOfParticlesToEmit</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"></td></tr><tr><td rowspan=\"2\">particleVelocity</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"></td></tr><tr><td rowspan=\"2\">particleLiveTime</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"></td></tr><tr><td>emissionRadius</td><td></td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.emissionRadius\"></td></tr><tr><td>particleAngle</td><td>from / to</td><td><app-angle-picker data-state=\"{ object:editData.currParticleSystemInEdit.particleAngle, value:'from' }\"></app-angle-picker><app-angle-picker data-state=\"{ object:editData.currParticleSystemInEdit.particleAngle, value:'to' }\"></app-angle-picker></td></tr><tr><td></td><td>{{i18n.get('gameObject')}}</td><td><table><tr><td><select required data-change=\"onGameObjectSelected(editData.currParticleSystemInEdit.gameObjectProto)\" data-model=\"editData.currParticleSystemInEdit.gameObjectProto\"><option>--</option><option data-value=\"item\" data-for=\"item in editData.game.repository.getArray('GameObjectProto') track by id\">{{item.name}}</option></select></td><td><div data-style=\"utils.merge( utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObjectProto), { zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObjectProto) } )\"></div></td></tr></table></td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">{{editData.currParticleSystemInEdit.id?i18n.get('edit'):i18n.get('create')}}</button><button data-disabled=\"!form.valid()\" data-click=\"showPreview()\">{{i18n.get('preview')}}</button></div></app-modal><app-particle-system-preview-dialog id=\"particleSystemPreviewDialog\"></app-particle-system-preview-dialog>";
 
 /***/ }),
-/* 174 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var SoundDialog = (function (_super) {
     tslib_1.__extends(SoundDialog, _super);
     function SoundDialog() {
@@ -14828,7 +15253,7 @@ var SoundDialog = (function (_super) {
     SoundDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-sound-dialog',
-            template: __webpack_require__(175)
+            template: __webpack_require__(182)
         })
     ], SoundDialog);
     return SoundDialog;
@@ -14837,21 +15262,21 @@ exports.SoundDialog = SoundDialog;
 
 
 /***/ }),
-/* 175 */
+/* 182 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"soundModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td></tr><tr><td><input required data-model=\"editData.currSoundInEdit.name\"></td></tr><tr><td><app-input-file data-state=\"{ onFilePicked: onFilePicked, title: i18n.get('loadSound'), accept: 'audio/*' }\"></app-input-file></td></tr><tr><td><audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio></td></tr></table><button data-disabled=\"!(form.valid() && soundUrl)\" data-click=\"createOrEditSound(editData.currSoundInEdit)\">{{editData.currSoundInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
 
 /***/ }),
-/* 176 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var chrome = __webpack_require__(177);
+var baseComponent_1 = __webpack_require__(2);
+var chrome = __webpack_require__(184);
 var SYMBOL_PADDING = 4;
 var fontSample = 'Test me! Text here';
 var SAFE_FONTS = [{ displayName: 'serif' }, { displayName: 'sans-serif' }, { displayName: 'monospace' }];
@@ -14969,7 +15394,7 @@ var FontDialog = (function (_super) {
     FontDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-font-dialog',
-            template: __webpack_require__(178)
+            template: __webpack_require__(185)
         })
     ], FontDialog);
     return FontDialog;
@@ -14978,7 +15403,7 @@ exports.FontDialog = FontDialog;
 
 
 /***/ }),
-/* 177 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15005,20 +15430,20 @@ exports.requestToApi = function (params, callBack) {
 
 
 /***/ }),
-/* 178 */
+/* 185 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"fontModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('selectFont')}}</td><td><select data-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\"><option data-value=\"fnt.displayName\" data-for=\"fnt in systemFontList\">{{fnt.displayName}}</option></select></td></tr><tr><td>{{i18n.get('name')}}</td><td><input data-model=\"editData.currFontInEdit.name\" class=\"width100\"></td></tr><tr><td>{{i18n.get('fontSize')}}</td><td><input type=\"number\" min=\"1\" max=\"1000\" data-model=\"editData.currFontInEdit.fontSize\" class=\"width100\"></td></tr><tr><td>{{i18n.get('fontColor')}}</td><td><app-color-picker data-state=\"{ model:editData.currFontInEdit, field:'fontColor' }\"></app-color-picker></td></tr><tr><td colspan=\"2\"><input data-model=\"fontSample\" class=\"width100\"></td></tr><tr><td colspan=\"2\"><div data-style=\"{ fontFamily:editData.currFontInEdit.fontFamily, fontSize:editData.currFontInEdit.fontSize+'px', color:utils.rgbToHex(editData.currFontInEdit.fontColor) }\">{{fontSample}}</div></td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditFont(editData.currFontInEdit)\">{{editData.currFontInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
 
 /***/ }),
-/* 179 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var SpriteSheetDialog = (function (_super) {
     tslib_1.__extends(SpriteSheetDialog, _super);
     function SpriteSheetDialog() {
@@ -15116,7 +15541,7 @@ var SpriteSheetDialog = (function (_super) {
     SpriteSheetDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-sprite-sheet-dialog',
-            template: __webpack_require__(180)
+            template: __webpack_require__(187)
         })
     ], SpriteSheetDialog);
     return SpriteSheetDialog;
@@ -15125,23 +15550,23 @@ exports.SpriteSheetDialog = SpriteSheetDialog;
 
 
 /***/ }),
-/* 180 */
+/* 187 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"spriteSheetModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input data-model=\"editData.currSpriteSheetInEdit.name\"></td><td rowspan=\"6\"><div style=\"max-width:60vw;overflow: auto;padding:5px;\"><div class=\"relative\" data-style=\"{ 'background-image': 'url('+spriteSheetUrl+')', 'background-size': editData.currSpriteSheetInEdit.width+'px '+editData.currSpriteSheetInEdit.height+'px', 'width': editData.currSpriteSheetInEdit.width+'px', 'height': editData.currSpriteSheetInEdit.height+'px', }\"><div data-attributes=\"{title:i}\" data-for=\"i in utils.range(0,numOfSpriteSheetCells-1)\" data-style=\"{ 'display': 'inline-block', 'left': editData.currSpriteSheetInEdit.getFramePosX(i)+'px', 'top': editData.currSpriteSheetInEdit.getFramePosY(i)+'px', 'position': 'absolute', 'text-align': 'left', 'outline': '1px solid red', 'width': editData.currSpriteSheetInEdit._frameWidth+'px', 'height': editData.currSpriteSheetInEdit._frameHeight+'px' }\">{{i}}</div></div></div></td></tr><tr><td>{{i18n.get('image')}}</td><td><app-input-file data-state=\"{ onFilePicked: onFilePicked, title: i18n.get('loadImage'), accept: 'image/*' }\"></app-input-file></td></tr><tr><td>{{i18n.get('width')}}</td><td><input type=\"number\" min=\"1\" data-change=\"revalidate()\" data-model=\"editData.currSpriteSheetInEdit.width\"></td></tr><tr><td>{{i18n.get('height')}}</td><td><input type=\"number\" min=\"1\" data-change=\"revalidate()\" data-model=\"editData.currSpriteSheetInEdit.height\"></td></tr><tr><td>{{i18n.get('numOfFramesH')}}</td><td><input required min=\"1\" max=\"100\" type=\"number\" data-change=\"refreshNumOfCells()\" data-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"></td></tr><tr><td>{{i18n.get('numOfFramesV')}}</td><td><input required min=\"1\" max=\"100\" type=\"number\" data-change=\"refreshNumOfCells()\" data-input=\"refreshNumOfCells()\" data-keyup=\"refreshNumOfCells()\" data-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"></td></tr></table><button data-click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\" data-disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.getDefaultResourcePath())\">{{editData.currSpriteSheetInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
 
 /***/ }),
-/* 181 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var frameAnimation_1 = __webpack_require__(32);
+var baseComponent_1 = __webpack_require__(2);
+var frameAnimation_1 = __webpack_require__(33);
 var userDefinedFns_1 = __webpack_require__(6);
-var codeTemplates_1 = __webpack_require__(45);
+var codeTemplates_1 = __webpack_require__(46);
 var GameObjectDialog = (function (_super) {
     tslib_1.__extends(GameObjectDialog, _super);
     function GameObjectDialog() {
@@ -15273,7 +15698,7 @@ var GameObjectDialog = (function (_super) {
     GameObjectDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-game-object-dialog',
-            template: __webpack_require__(182)
+            template: __webpack_require__(189)
         })
     ], GameObjectDialog);
     return GameObjectDialog;
@@ -15282,21 +15707,21 @@ exports.GameObjectDialog = GameObjectDialog;
 
 
 /***/ }),
-/* 182 */
+/* 189 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"gameObjectModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currGameObjectInEdit.name\"></td><td></td><td rowspan=\"5\"><div class=\"relative\" style=\"display: inline-block; overflow: auto; max-width:60vw; max-height:60vh;\"><div data-style=\"utils.merge( utils.getGameObjectCss(editData.currGameObjectInEdit), { 'border':'1px solid blue', 'opacity':editData.currGameObjectInEdit.alpha } )\"></div></div></td></tr><tr><td>{{i18n.get('spriteSheet')}}</td><td><select data-change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet)\" required data-model=\"editData.currGameObjectInEdit.spriteSheet\"><option>--</option><option data-value=\"item\" data-for=\"item in editData.game.repository.getArray('SpriteSheet') track by id\">{{item.name}}</option></select></td><td></td></tr><tr><td>{{i18n.get('groupName')}}</td><td><app-editable-array data-state=\"{ array: editData.currGameObjectInEdit.groupNames }\"></app-editable-array></td><td></td></tr><tr><td>{{i18n.get('collideWith')}}</td><td><app-editable-array data-state=\"{ array: editData.currGameObjectInEdit.collideWith }\"></app-editable-array></td><td></td></tr><tr><td>{{i18n.get('rigid')}}</td><td><input type=\"checkbox\" data-model=\"editData.currGameObjectInEdit.rigid\"></td><td></td></tr><tr><td>{{i18n.get('width')}}</td><td><input type=\"number\" required data-model=\"editData.currGameObjectInEdit.width\"></td><td></td></tr><tr><td>{{i18n.get('height')}}</td><td><input type=\"number\" required data-model=\"editData.currGameObjectInEdit.height\"></td><td></td></tr><tr><td>{{i18n.get('angle')}}</td><td><input step=\"0.1\" type=\"number\" required data-model=\"editData.currGameObjectInEdit.angle\"></td><td align=\"left\"><div class=\"inlineBlock\"><app-angle-picker data-state=\"{ object: editData.currGameObjectInEdit, value: 'angle' }\"></app-angle-picker></div></td></tr><tr><td>alpha</td><td><input type=\"number\" min=\"0\" max=\"1\" step=\"0.1\" required data-model=\"editData.currGameObjectInEdit.alpha\"></td><td><input type=\"range\" min=\"0\" max=\"1\" step=\"0.1\" data-model=\"editData.currGameObjectInEdit.alpha\"></td></tr><tr><td>{{i18n.get('currFrameIndex')}}</td><td><input type=\"number\" min=\"0\" data-change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\" required data-model=\"editData.currGameObjectInEdit.currFrameIndex\"></td><td></td></tr></table><table class=\"width100 stripped\"><tr><th colspan=\"4\">{{i18n.get('frAnimations')}}<button class=\"inlineBlock\" data-disabled=\"!editData.currGameObjectInEdit.id\" data-click=\"createFrameAnimation()\">+</button></th></tr><tr><th colspan=\"2\">{{i18n.get('actions')}}</th><th>{{i18n.get('name')}}</th><th>{{i18n.get('isDefault')}}<span class=\"small withPadding\">{{i18n.get('unselect')}}<button data-click=\"onStartFrameAnimNameChanged(null)\">*</button></span></th></tr><tr data-for=\"animItm in editData.currGameObjectInEdit.frameAnimations\"><td class=\"pointer\" data-click=\"editFrameAnimation(animItm)\"><span class=\"edit\"></span></td><td class=\"pointer\" data-click=\"deleteFrameAnimation(animItm)\"><span class=\"delete\"></span></td><td>{{animItm.name}}</td><td><input data-attribute=\"value: animItm.name\" data-change=\"onStartFrameAnimNameChanged(animItm.name)\" data-model=\"editData.currGameObjectInEdit.startFrameAnimationName\" type=\"radio\"></td></tr><tr><th colspan=\"4\">{{i18n.get('commonBehaviour')}}</th></tr><tr><td colspan=\"2\"><select class=\"width50\" data-model=\"selectedCb\"><option>-</option><option data-disabled=\"isCbItemDisabled(cb)\" data-value=\"cb\" data-for=\"cb in editData.commonBehaviourProtos\">{{cb.name}}</option></select></td><td colspan=\"2\"><button class=\"inlineBlock\" data-disabled=\"!editData.currGameObjectInEdit.id || !selectedCb\" data-click=\"createCommonBehaviour(selectedCb)\">+</button></td></tr><tr><th colspan=\"2\">{{i18n.get('actions')}}</th><th colspan=\"2\">{{i18n.get('name')}}</th></tr><tr data-for=\"itm in editData.currGameObjectInEdit.commonBehaviour\"><td class=\"pointer\" data-click=\"editCommonBehaviour(itm)\"><span class=\"edit\"></span></td><td class=\"pointer\" data-click=\"deleteCommonBehaviour(itm)\"><span class=\"delete\"></span></td><td colspan=\"2\">{{itm.name}}</td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">{{editData.currGameObjectInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal><app-frame-animation-dialog id=\"frameAnimationDialog\"></app-frame-animation-dialog><app-common-behaviour-dialog id=\"commonBehaviourDialog\"></app-common-behaviour-dialog>";
 
 /***/ }),
-/* 183 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var codeTemplates_1 = __webpack_require__(45);
+var baseComponent_1 = __webpack_require__(2);
+var codeTemplates_1 = __webpack_require__(46);
 var SceneDialog = (function (_super) {
     tslib_1.__extends(SceneDialog, _super);
     function SceneDialog() {
@@ -15331,7 +15756,7 @@ var SceneDialog = (function (_super) {
     SceneDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-scene-dialog',
-            template: __webpack_require__(184)
+            template: __webpack_require__(191)
         })
     ], SceneDialog);
     return SceneDialog;
@@ -15340,20 +15765,20 @@ exports.SceneDialog = SceneDialog;
 
 
 /***/ }),
-/* 184 */
+/* 191 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"sceneModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditScene(editData.currSceneInEdit)\"><div class=\"withPadding\"><div class=\"table\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input required data-model=\"editData.currSceneInEdit.name\"></div></div></div><button data-disabled=\"!form.valid()\">{{editData.currSceneInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></form></div></app-modal>";
 
 /***/ }),
-/* 185 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var LayerDialog = (function (_super) {
     tslib_1.__extends(LayerDialog, _super);
     function LayerDialog() {
@@ -15392,7 +15817,7 @@ var LayerDialog = (function (_super) {
     LayerDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-layer-dialog',
-            template: __webpack_require__(186)
+            template: __webpack_require__(193)
         })
     ], LayerDialog);
     return LayerDialog;
@@ -15401,20 +15826,20 @@ exports.LayerDialog = LayerDialog;
 
 
 /***/ }),
-/* 186 */
+/* 193 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"layerModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)\"><div class=\"withPadding\"><div>{{i18n.get('scene')}}: {{editData.currLayerInEdit._scene && editData.currLayerInEdit._scene.name}}</div><b class=\"block centerText\">{{i18n.get('layer')}}</b><div class=\"table width100\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input data-model=\"editData.currLayerInEdit.name\" required></div></div></div><div><button data-disabled=\"!form.valid()\">{{editData.currLayerInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></div></form></div></app-modal>";
 
 /***/ }),
-/* 187 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var tid;
 var ParticleSystemPreviewDialog = (function (_super) {
     tslib_1.__extends(ParticleSystemPreviewDialog, _super);
@@ -15470,7 +15895,7 @@ var ParticleSystemPreviewDialog = (function (_super) {
     ParticleSystemPreviewDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-particle-system-preview-dialog',
-            template: __webpack_require__(188)
+            template: __webpack_require__(195)
         })
     ], ParticleSystemPreviewDialog);
     return ParticleSystemPreviewDialog;
@@ -15479,20 +15904,20 @@ exports.ParticleSystemPreviewDialog = ParticleSystemPreviewDialog;
 
 
 /***/ }),
-/* 188 */
+/* 195 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"particleSystemPreviewModal\"><div data-transclusion=\"content\"><div>{{i18n.get('preview')}} {{i18n.get('particleSystem')}}<span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span></div><div data-click=\"emit($event)\" data-mousemove=\"$event.buttons==1 && emit($event)\" class=\"subFullScreen relative noOverFlow\"><div data-for=\"item in editData.currParticleSystemInEdit._particles\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left:item.pos.x+'px', top: item.pos.y+'px', pointerEvents:'none' } )\"></div></div><div><button data-click=\"close()\">{{i18n.get('close')}}</button></div></div></app-modal>";
 
 /***/ }),
-/* 189 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var gameObject_1 = __webpack_require__(29);
 var spriteSheet_1 = __webpack_require__(26);
 var FrameAnimationDialog = (function (_super) {
@@ -15605,7 +16030,7 @@ var FrameAnimationDialog = (function (_super) {
     FrameAnimationDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-frame-animation-dialog',
-            template: __webpack_require__(190)
+            template: __webpack_require__(197)
         })
     ], FrameAnimationDialog);
     return FrameAnimationDialog;
@@ -15614,20 +16039,20 @@ exports.FrameAnimationDialog = FrameAnimationDialog;
 
 
 /***/ }),
-/* 190 */
+/* 197 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"frameAnimationModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currFrameAnimationInEdit.name\"></td><td rowspan=\"3\"><div style=\"max-height: 80vh;max-width:80vw;overflow: auto;padding: 5px;\">{{ editData.currFrameAnimationInEdit._gameObject && editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0 }}<div data-style=\"utils.merge( utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject), {outline:'1px solid blue'} )\"></div><div><button data-click=\"playAnimation()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.get('playAnim')}}</button><button data-click=\"stopAnimation()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.get('stopAnim')}}</button></div><div><button data-click=\"previousFrame()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"><< </button><button data-click=\"nextFrame()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">>></button></<><div class=\"relative\" data-style=\"{ 'background-image': 'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.getDefaultResourcePath()+')', 'width': editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px', 'height': editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px' }\"><div data-for=\"v,i in getLoopArr()\" data-style=\"{ 'display': 'inline-block', 'left': editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px', 'top': editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px', 'position': 'absolute', 'text-align': 'left', 'outline': '1px solid red', 'width': editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px', 'height': editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px' }\">{{i}}</div></div></button></div></div><tr><td>{{i18n.get('duration')}}</td><td><input type=\"number\" min=\"1\" required data-model=\"editData.currFrameAnimationInEdit.duration\"></td></tr><tr><td><table><tr><td>{{i18n.get('frames')}}</td><td><button data-click=\"setAllIndexes()\">{{i18n.get('all')}}</button></td></tr><tr><td>{{i18n.get('from')}}</td><td><input type=\"number\" data-model=\"from\" min=\"0\" data-keyup=\"setRangeIndexes()\"></td></tr><tr><td>{{i18n.get('to')}}</td><td><input type=\"number\" min=\"0\" data-model=\"to\" data-change=\"setRangeIndexes()\"></td></tr><tr><td>{{i18n.get('step')}}</td><td><input type=\"number\" min=\"0\" data-model=\"step\" data-change=\"setRangeIndexes()\"></td></tr></table></td><td><textarea required data-model=\"frames\"></textarea></td></tr></td><button data-click=\"createOrEditFrameAnimation()\" data-disabled=\"!form.valid()\">{{editData.currFrameAnimationInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></tr></table></div></app-modal>";
 
 /***/ }),
-/* 191 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var CommonBehaviourDialog = (function (_super) {
     tslib_1.__extends(CommonBehaviourDialog, _super);
     function CommonBehaviourDialog() {
@@ -15669,7 +16094,7 @@ var CommonBehaviourDialog = (function (_super) {
     CommonBehaviourDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-common-behaviour-dialog',
-            template: __webpack_require__(192)
+            template: __webpack_require__(199)
         })
     ], CommonBehaviourDialog);
     return CommonBehaviourDialog;
@@ -15678,20 +16103,20 @@ exports.CommonBehaviourDialog = CommonBehaviourDialog;
 
 
 /***/ }),
-/* 192 */
+/* 199 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"commonBehaviourModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td class=\"borderBottom\">{{i18n.get('name')}}</td><td class=\"borderBottom\">{{editData.currCommonBehaviourInEdit.name}}</td></tr><tr><td class=\"borderBottom\">{{i18n.get('description')}}</td><td class=\"borderBottom\">{{editData.currCommonBehaviourInEdit.description}}</td></tr><tr data-for=\"value,key in editData.currCommonBehaviourInEdit.parameters\"><td class=\"borderBottom\">{{key}}</td><td class=\"borderBottom\"><input type=\"text\" data-model=\"editData.currCommonBehaviourInEdit.parameters[key]\"></td></tr><tr data-if=\"utils.size(editData.currCommonBehaviourInEdit.parameters)==0\"><td colspan=\"2\" class=\"borderBottom\">{{i18n.get('noDataToEdit')}}</td></tr></table><button data-click=\"createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)\" data-disabled=\"!form.valid()\">{{editData.currCommonBehaviourInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
 
 /***/ }),
-/* 193 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
+var baseComponent_1 = __webpack_require__(2);
 var BuildDialog = (function (_super) {
     tslib_1.__extends(BuildDialog, _super);
     function BuildDialog() {
@@ -15706,7 +16131,7 @@ var BuildDialog = (function (_super) {
     BuildDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-build-dialog',
-            template: __webpack_require__(194)
+            template: __webpack_require__(201)
         })
     ], BuildDialog);
     return BuildDialog;
@@ -15715,23 +16140,23 @@ exports.BuildDialog = BuildDialog;
 
 
 /***/ }),
-/* 194 */
+/* 201 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"buildModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('minify')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.minify\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('debug')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.debug\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('windowed')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.windowed\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('embedResources')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.embedResources\" type=\"checkbox\"></td></tr></table><button data-click=\"close()\">ok</button></div></app-modal>";
 
 /***/ }),
-/* 195 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var baseComponent_1 = __webpack_require__(1);
-var codeTemplates_1 = __webpack_require__(45);
+var baseComponent_1 = __webpack_require__(2);
+var codeTemplates_1 = __webpack_require__(46);
 var editData_1 = __webpack_require__(9);
-var utils_1 = __webpack_require__(21);
+var utils_1 = __webpack_require__(22);
 var getRawName = function (str) {
     var splited = str.split('.');
     if (splited.length == 1)
@@ -15773,7 +16198,7 @@ var ScriptDialog = (function (_super) {
     ScriptDialog = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-script-dialog',
-            template: __webpack_require__(196)
+            template: __webpack_require__(203)
         })
     ], ScriptDialog);
     return ScriptDialog;
@@ -15782,20 +16207,20 @@ exports.ScriptDialog = ScriptDialog;
 
 
 /***/ }),
-/* 196 */
+/* 203 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"scriptModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditScript(editData.currScriptInEdit)\"><div class=\"withPadding\"><div class=\"table\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input required data-model=\"editData.currScriptInEdit.name\"></div></div></div><button data-disabled=\"!form.valid()\">{{editData.currScriptInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></form></div></app-modal>";
 
 /***/ }),
-/* 197 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-__webpack_require__(213);
+__webpack_require__(222);
 var EditableArray = (function () {
     function EditableArray() {
         this.array = [];
@@ -15823,7 +16248,7 @@ var EditableArray = (function () {
     EditableArray = tslib_1.__decorate([
         RF.decorateComponent({
             name: 'app-editable-array',
-            template: __webpack_require__(198)
+            template: __webpack_require__(205)
         })
     ], EditableArray);
     return EditableArray;
@@ -15832,74 +16257,54 @@ exports.EditableArray = EditableArray;
 
 
 /***/ }),
-/* 198 */
+/* 205 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><span data-for=\"name,index of array\"><span data-if=\"!editableMap[index]\" class=\"groupName\"><span>{{array[index]}}</span><span data-click=\"setItemEditable(index)\" class=\"edit\"></span><span data-click=\"removeItem(index)\" class=\"delete\"></span></span><form data-if=\"editableMap[index]\" class=\"groupName\" data-submit=\"updateItem(array[index],index)\"><input data-model=\"array[index]\"></form></span><form><input data-click=\"setItemEditable(index)\" class=\"itemInput\" data-model=\"newItemName\"><button data-click=\"addNewItem()\">+</button></form></div>";
 
 /***/ }),
-/* 199 */,
-/* 200 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 201 */,
-/* 202 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 203 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 204 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 205 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
 /* 206 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+__webpack_require__(223);
+var baseComponent_1 = __webpack_require__(2);
+var BottomPanel = (function (_super) {
+    tslib_1.__extends(BottomPanel, _super);
+    function BottomPanel() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.text = 'test';
+        return _this;
+    }
+    BottomPanel = tslib_1.__decorate([
+        RF.decorateComponent({
+            name: 'app-bottom-panel',
+            template: __webpack_require__(207)
+        })
+    ], BottomPanel);
+    return BottomPanel;
+}(baseComponent_1.BaseComponent));
+exports.BottomPanel = BottomPanel;
+
 
 /***/ }),
 /* 207 */
 /***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+module.exports = "<div class=\"bottomPanel\">{{text}}</div>";
 
 /***/ }),
-/* 208 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
+/* 208 */,
 /* 209 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 210 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
+/* 210 */,
 /* 211 */
 /***/ (function(module, exports) {
 
@@ -15913,6 +16318,66 @@ module.exports = "<div><span data-for=\"name,index of array\"><span data-if=\"!e
 
 /***/ }),
 /* 213 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 214 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 215 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 216 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 217 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 218 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 219 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 220 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 221 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 222 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 223 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

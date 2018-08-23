@@ -1,5 +1,7 @@
 import {IAudioContext} from "./iAudioContext";
 import {AudioPlayer} from "../audioPlayer";
+import {Game} from "../../game";
+import {DebugError} from "../../../debugError";
 
 declare const EMBED_RESOURCES:boolean;
 declare const DEBUG:boolean;
@@ -23,13 +25,13 @@ export class HtmlAudioContext implements IAudioContext{
     private _ctx: HTMLAudioElement;
 
     static isAcceptable():boolean{
-        return false;//!!(window && (window as any).Audio);
+        return !!(window && (window as any).Audio);
     }
     load(url:string,progress:Function,callBack:Function){
         callBack();
     }
 
-    constructor() {
+    constructor(private game:Game) {
         this._ctx = CtxHolder.getCtx();
     }
 
@@ -38,8 +40,13 @@ export class HtmlAudioContext implements IAudioContext{
     }
 
     play(resourcePath:string, loop: boolean) {
+
+        let base64Url = this.game.repository.embeddedResources[resourcePath];
+        if (DEBUG && !base64Url) throw new DebugError(`no embedded resource provided by url ${resourcePath}`);
+
+        console.log({base64Url});
         this.free = false;
-        this._ctx.src = resourcePath;
+        this._ctx.src = base64Url;
         this._ctx.play();
         this._ctx.loop = loop;
         this._ctx.onended = () => {

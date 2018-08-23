@@ -1,18 +1,19 @@
 import {IAudioContext} from "./context/iAudioContext";
 import {AudioNode} from "./audioNode";
 import {Sound} from "../../model/impl/sound";
+import {Game} from "../game";
 
 interface Clazz<T> { // todo extract to separate file
-    new() : T;
+    new(game: Game) : T;
 }
 
 export class AudioNodeSet {
 
     nodes:AudioNode[] = [] as AudioNode[];
 
-    constructor(private ContextClass:Clazz<IAudioContext>,private numOfNodes:number){
+    constructor(game: Game,private ContextClass:Clazz<IAudioContext>,private numOfNodes:number){
         for (let i = 0;i<numOfNodes;i++) {
-            this.nodes.push(new AudioNode(new ContextClass()));
+            this.nodes.push(new AudioNode(new ContextClass(game)));
         }
     }
 
