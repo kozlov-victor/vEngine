@@ -54,6 +54,7 @@ export class WebAudioContext implements IAudioContext {
             let base64Url = this.game.repository.embeddedResources[url];
             if (DEBUG && !base64Url) throw new DebugError(`no embedded resource provided by url ${url}`);
             base64Url = base64Url.split(',')[1];
+            // data:[<MIME-type>][;charset=<encoding>][;base64]
             let buffer:ArrayBuffer = base64ToArrayBuffer(base64Url);
             decode(buffer, (decoded)=>{
                 AudioPlayer.cache[url] = decoded;
