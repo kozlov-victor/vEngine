@@ -1,8 +1,9 @@
-import {_global as global} from '../../engine/core/global'
+
 
 export class MainSceneBehaviour {
 
     onCreate(){
+        let global = this.game.__global__;
         this.x = 0;
         this.y = 0;
         this.color = global.Color.RGB(255,0,0);
@@ -45,14 +46,12 @@ export class MainSceneBehaviour {
 
         let widget = this.game.uiBuilder.build({
             AbsoluteLayout: {
-                properties: {
-                    pos: {x:0,y:0},
-                    width:200,height:200,
-                    background: {
-                        type: 'Rectangle',
-                    },
-                    on: ['click',()=>{console.log('clicked on layout');}]
+                pos: {x:0,y:0},
+                width:200,height:200,
+                background: {
+                    type: 'Rectangle',
                 },
+                on: ['click',()=>{console.log('clicked on layout');}],
                 children: [
                     {
                         Button: {
@@ -91,6 +90,7 @@ export class MainSceneBehaviour {
                     },
                     {
                         TextField: {
+                            name: 'qq',
                             pos: {x: 250, y: 0},
                             font: {type: 'Font', name: 'font1'},
                             text: '12345\n12345\n54321',
@@ -109,6 +109,7 @@ export class MainSceneBehaviour {
     }
 
     onUpdate(){
+        let global = this.game.__global__;
         this.cnt++;
         if (this.cnt===5) {
             this.points.shift();

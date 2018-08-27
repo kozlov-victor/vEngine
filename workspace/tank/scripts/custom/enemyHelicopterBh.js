@@ -40,7 +40,7 @@ export class EnemyHelicopterBh extends CommonBehaviour {
             obj.getIndividualBehaviour().damage();
         });
         window.f = fireSmoke;
-        this.game.getCurrScene().addGameObject(fireSmoke);
+        this.game.getCurrScene().appendChild(fireSmoke);
     }
     
 }

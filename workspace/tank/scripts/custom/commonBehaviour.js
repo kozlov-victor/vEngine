@@ -25,7 +25,7 @@ export class CommonBehaviour {
     }
     
     damage(){
-        this.live -= 10;
+        this.live -= 5;
         if (this.live<50) this.liveRect.fillColor.setR(155);
         if (this.live<25) this.liveRect.fillColor.setRGB(255,0,0);
         if (this.live<0) {

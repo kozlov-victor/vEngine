@@ -469,6 +469,34 @@
                 "height": 0
             },
             "id": 26
+        },
+        {
+            "name": "doow",
+            "width": 418,
+            "height": 418,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "resourceMap": {
+                "main": "resources/doow.jpg"
+            },
+            "type": "SpriteSheet",
+            "frameRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+            },
+            "id": 34
         }
     ],
     "GameObjectProto": [
@@ -739,6 +767,33 @@
                 "x": 0,
                 "y": 0
             }
+        },
+        {
+            "name": "doow",
+            "width": 418,
+            "height": 418,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 34,
+                "type": "SpriteSheet"
+            },
+            "velocity": {
+                "x": 0,
+                "y": 0
+            },
+            "id": 35
         }
     ],
     "GameObject": [

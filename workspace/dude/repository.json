@@ -352,8 +352,12 @@
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 232,
-                "y": 60
+                "x": 197,
+                "y": 48
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
             },
             "layerId": 2,
             "type": "GameObject",

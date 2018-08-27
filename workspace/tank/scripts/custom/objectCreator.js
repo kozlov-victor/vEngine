@@ -24,7 +24,7 @@ export class ObjectCreator {
         tank.setIndividualBehaviour(new EnemyTankBh({type,vel:-100,fireFreq: 500, fireVel:100,fireDistance:50}));
         tank.appendChild(tankHead);
         
-        this.game.getCurrScene().addGameObject(tank);
+        this.game.getCurrScene().appendChild(tank);
 
         return tank;
     }
@@ -44,7 +44,7 @@ export class ObjectCreator {
         helicopterBody.setIndividualBehaviour(new EnemyHelicopterBh({vel:-150,fireFreq:300,fireVel:380,fireDistance:50}));
 
         helicopterBody.appendChild(helicopterHead);
-        this.game.getCurrScene().addGameObject(helicopterBody);
+        this.game.getCurrScene().appendChild(helicopterBody);
 
         return helicopterBody;
     }

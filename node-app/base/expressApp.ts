@@ -67,20 +67,25 @@ export class ExpressApp {
                 response.send(result);
             }
         };
-        let codeResult = opts.ctrl[opts.methodName](params,response);
+        let codeResult;
+        try {
+            codeResult = opts.ctrl[opts.methodName](params,response);
+        } catch(error){
+            console.error('catch method promise error',error);
+            response.statusCode = 500;
+            response.send(error || 'server error');
+        }
+        
         if (codeResult && codeResult.then) {
             // promise
             codeResult.then((data)=>{
                 callback(data);
             }).catch((error)=>{
-                console.error('catch method promise error',error);
                 response.statusCode = 500;
-                response.end(error);
+                response.send(error || 'server error');
             });
         }
-        else if (typeof codeResult === 'function') {
-            // do nothing, callback will be invoked
-        } else {
+        else  {
             callback(codeResult);
         }
     }

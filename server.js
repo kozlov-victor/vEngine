@@ -1220,17 +1220,22 @@ var ExpressApp = (function () {
                 response.send(result);
             }
         };
-        var codeResult = opts.ctrl[opts.methodName](params, response);
+        var codeResult;
+        try {
+            codeResult = opts.ctrl[opts.methodName](params, response);
+        }
+        catch (error) {
+            console.error('catch method promise error', error);
+            response.statusCode = 500;
+            response.send(error || 'server error');
+        }
         if (codeResult && codeResult.then) {
             codeResult.then(function (data) {
                 callback(data);
             }).catch(function (error) {
-                console.error('catch method promise error', error);
                 response.statusCode = 500;
-                response.end(error);
+                response.send(error || 'server error');
             });
-        }
-        else if (typeof codeResult === 'function') {
         }
         else {
             callback(codeResult);

@@ -1,4 +1,5 @@
 
+
 import {GameObjectProto} from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
 import {_global} from "../../core/global";

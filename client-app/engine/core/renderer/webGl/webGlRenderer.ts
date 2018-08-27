@@ -28,6 +28,7 @@ import {IDrawer} from "./renderPrograms/interface/iDrawer";
 import {UniformsInfo} from "./renderPrograms/interface/uniformsInfo";
 import {Size} from "../../geometry/size";
 import {AbstractFilter} from "./filters/abstract/abstractFilter";
+import { ModelDrawer } from './renderPrograms/impl/base/modelDrawer';
 
 const getCtx = el=>{
     return (
@@ -79,6 +80,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     private spriteRectLightDrawer:SpriteRectLightDrawer;
     private tiledSpriteRectDrawer:TiledSpriteRectDrawer;
     private colorRectDrawer:ColorRectDrawer;
+    private modelDrawer:ModelDrawer;
     private lineDrawer:LineDrawer;
     private addBlendDrawer:AddBlendDrawer;
     private frameBuffer:FrameBuffer;
@@ -90,7 +92,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         this._init();
     }
 
-    _init(){
+    private _init(){
     	let gl = getCtx(this.container);
     	this.gl = gl;
 
@@ -100,7 +102,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         this.tiledSpriteRectDrawer = new TiledSpriteRectDrawer(gl);
         this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
-        //this.modelDrawer = new ModelDrawer(gl);
+        this.modelDrawer = new ModelDrawer(gl);
         this.addBlendDrawer = new AddBlendDrawer(gl);
 
         this.frameBuffer = new FrameBuffer(gl,this.game.width,this.game.height);
@@ -234,6 +236,30 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         rDst.setXYWH(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y+destRect.height-d,b,d);
         this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
     }
+
+    drawModel(model){
+        this.modelDrawer.setModel(model);
+        this.modelDrawer.bind();
+        model.texture.bind('u_texture',1,this.modelDrawer['program']);
+
+
+        matrixStack.scale(1,-1,1);
+        let matrix1 = matrixStack.getCurrentMatrix();
+
+        let zToWMatrix = mat4.makeZToWMatrix(1);
+        let projectionMatrix = mat4.ortho(0,this.game.width,0,this.game.height,-SCENE_DEPTH,SCENE_DEPTH);
+        let matrix2 = mat4.matrixMultiply(projectionMatrix, zToWMatrix);
+
+        this.modelDrawer.setUniform("u_modelMatrix",matrix1);
+        this.modelDrawer.setUniform("u_projectionMatrix",matrix2);
+
+        this.modelDrawer.setUniform('u_alpha',1);
+        this.gl.enable(this.gl.DEPTH_TEST);
+        this.modelDrawer.draw();
+        this.modelDrawer.unbind();
+        if (model.texture) model.texture.unbind();
+        this.gl.disable(this.gl.DEPTH_TEST);
+    };
 
 
     private drawTextureInfo(texInfo:TextureInfo[],

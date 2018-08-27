@@ -68,7 +68,7 @@ export class EnemyTankBh extends CommonBehaviour {
         let fireSmokeVel = 180;
         fireSmoke.velocity.setXY(-this.params.fireVel*Math.cos(fireSmoke.angle),-fireSmokeVel*Math.sin(fireSmoke.angle));
         fireSmoke.setIndividualBehaviour(new EnemyBulletBh({fireDistance:this.params.fireDistance}));
-        this.game.getCurrScene().addGameObject(fireSmoke);
+        this.game.getCurrScene().appendChild(fireSmoke);
         fireSmoke.collideWith.push(this.opponent);
         fireSmoke.on('collide',(obj)=>{
             fireSmoke.kill();

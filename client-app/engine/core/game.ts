@@ -1,5 +1,5 @@
 import {Layer} from "../model/impl/layer";
-
+import {GameObject3d} from "../model/impl/gameObject3d";
 
 declare const DEBUG:boolean,IN_EDITOR:boolean,PROJECT_NAME:string;
 declare const setTimeout: (f:Function,n:number)=>number;
@@ -86,6 +86,7 @@ export class Game extends CommonObject {
 
     constructor(){
         super();
+        this['GameObject3d'] = GameObject3d;
         this.repository = new Repository(this);
         this.mouse = new Mouse(this);
         this.keyboard = new Keyboard(this);

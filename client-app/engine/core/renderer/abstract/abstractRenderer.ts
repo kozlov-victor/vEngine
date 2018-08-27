@@ -136,6 +136,8 @@ export class AbstractRenderer {
 
     rotateZ(a:number){}
 
+    rotateY(a:number){}
+
     draw(renderable:GameObjectProto){
 
     }
