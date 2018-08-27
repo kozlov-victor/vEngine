@@ -1918,6 +1918,7 @@ var fs_1 = __webpack_require__(1);
 var webpack_config_1 = __webpack_require__(25);
 var termToHtml_1 = __webpack_require__(26);
 var wsService_1 = __webpack_require__(6);
+var debugError_1 = __webpack_require__(27);
 var GeneratorService = (function () {
     function GeneratorService() {
         this.cnt = 0;
@@ -1999,9 +2000,17 @@ var GeneratorService = (function () {
             });
         });
     };
+    GeneratorService.prototype.getMediaTypeByExtension = function (extension) {
+        if (['png', 'jpg', 'jpeg', 'bmp'].indexOf(extension) > -1)
+            return 'image';
+        if (['mp3', 'ogg'].indexOf(extension) > -1)
+            return 'audio';
+        throw new debugError_1.DebugError("unsupported format " + extension);
+    };
     GeneratorService.prototype.generateData = function (params) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var allScripts, allScriptCode, repository, _a, _b, gameProps, _c, _d, embeddedResources;
+            var _this = this;
             return tslib_1.__generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -2046,7 +2055,8 @@ var GeneratorService = (function () {
                     case 10: return [4, fs_1.default.readDir("workspace/" + params.projectName + "/resources", 'binary')];
                     case 11:
                         (_e.sent()).forEach(function (file) {
-                            embeddedResources["resources/" + file.name] = "data:image/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
+                            embeddedResources["resources/" + file.name] =
+                                "data:" + _this.getMediaTypeByExtension(file.ext) + "/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
                         });
                         _e.label = 12;
                     case 12: return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/embeddedResources.ts", "export let embeddedResources:any = \n\t" + JSON.stringify(embeddedResources, null, 4) + ";")];
@@ -4426,6 +4436,32 @@ exports.termToHtml = function (text, options) {
     });
     return text.replace(/\u001B\[.*?[A-Za-z]/g, '');
 };
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var DebugError = (function (_super) {
+    tslib_1.__extends(DebugError, _super);
+    function DebugError(message) {
+        var _this = _super.call(this, message) || this;
+        _this.name = 'DebugError';
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(_this, _this.constructor);
+        }
+        else {
+            _this.stack = (new Error()).stack;
+        }
+        return _this;
+    }
+    return DebugError;
+}(Error));
+exports.DebugError = DebugError;
 
 
 /***/ })

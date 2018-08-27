@@ -46,7 +46,7 @@ const base64ToArrayBuffer = (base64:string):ArrayBuffer=> {
 export class WebAudioContext implements IAudioContext {
 
     static isAcceptable() {
-        return false;//!!(window && CtxHolder.getCtx());
+        return !!(window && CtxHolder.getCtx());
     }
 
     load(url:string, progress:Function, callBack:Function) {

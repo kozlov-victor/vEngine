@@ -2,7 +2,7 @@
 import {Game} from "../../game";
 export interface IAudioContext {
     type:string,
-    new(private game: Game) : IAudioContext;
+    //new(private game: Game): IAudioContext,
     play(resourcePath:string,loop:boolean),
     stop(),
     isFree():boolean,

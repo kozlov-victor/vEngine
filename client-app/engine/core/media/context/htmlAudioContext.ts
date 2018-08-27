@@ -44,7 +44,6 @@ export class HtmlAudioContext implements IAudioContext{
         let base64Url = this.game.repository.embeddedResources[resourcePath];
         if (DEBUG && !base64Url) throw new DebugError(`no embedded resource provided by url ${resourcePath}`);
 
-        console.log({base64Url});
         this.free = false;
         this._ctx.src = base64Url;
         this._ctx.play();

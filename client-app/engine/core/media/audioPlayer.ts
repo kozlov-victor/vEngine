@@ -34,6 +34,7 @@ export  class AudioPlayer {
             this.contextClass = FakeAudioContext;
         }
         this.audioNodeSet = new AudioNodeSet(game,this.contextClass,6);
+        throw new DebugError('test error')
     }
 
     loadSound(url:string, progress:Function, callback:Function) {
