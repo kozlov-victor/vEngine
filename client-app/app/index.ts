@@ -55,6 +55,7 @@ import {BuildDialog} from './pages/editor/dialogs/buildDialog/buildDialog'
 import './index.scss'
 import {ScriptDialog} from "./pages/editor/dialogs/scriptDialog/scriptDialog";
 import {EditableArray} from "./pages/editor/dialogs/_editableArray/editableArray";
+import {BottomPanel} from "./pages/editor/bottomPanel/bottomPanel";
 
 declare const RF:any,BUILD_AT:Date,regeneratorRuntime:any;
 
@@ -69,7 +70,7 @@ RF.registerComponents([
     ScriptDialog, EditableArray,
     ParticleSystems, Sounds, Fonts, Scripts,
     SpriteSheets, GameObjects, Scenes,
-    UserInterface, TopPanel, PopupBlocked, ScriptEditor,
+    UserInterface, TopPanel, BottomPanel, PopupBlocked, ScriptEditor,
     SceneCentralPanel, SceneRightPanel, GameObjectRightPanel,
     Dialogs, ParticleSystemDialog, GameObjectRow,
     SoundDialog, FontDialog, SpriteSheetDialog,

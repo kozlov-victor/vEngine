@@ -15,11 +15,11 @@ class WebpackDonePlugin{
             if (stats.compilation.errors && stats.compilation.errors.length ) {
                 console.error(`errors: ${stats.compilation.errors.length}`);
                 let errorMessage = `window.showError("compiled with ${stats.compilation.errors.length} error(s)");`;
-                fs.writeFileSync('assets/js/build/compileMessageScript.js',errorMessage);
+                fs.writeFileSync('assets/generated/js/compileMessageScript.js',errorMessage);
             } else {
                 let successMessage = `build at ${date}`;
                 console.log(successMessage);
-                fs.writeFileSync('assets/js/build/compileMessageScript.js',`console.log("${successMessage}")`);
+                fs.writeFileSync('assets/generated/js/compileMessageScript.js',`console.log("${successMessage}")`);
             }
         });
     }
@@ -40,7 +40,7 @@ module.exports = (env={})=>{
 
     const clientOutput = {
         path: path.resolve('./assets/'),
-        filename:'js/build/[name].js'
+        filename:'generated/js/[name].js'
     };
 
     const serverOutput = {
@@ -107,7 +107,7 @@ module.exports = (env={})=>{
             EMBED_RESOURCES: false,
             PROJECT_NAME: ''
         }),
-        new ExtractTextPlugin('css/styles.css'),
+        new ExtractTextPlugin('generated/css/styles.css'),
         new WebpackDonePlugin()
     ];
 

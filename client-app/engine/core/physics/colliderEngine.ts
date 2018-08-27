@@ -156,7 +156,7 @@ export class ColliderEngine {
         }
     }
 
-    private isIntersect(arr1:string[], arr2:string[]):boolean{
+    private isIntersect(arr1:string[] = [], arr2:string[] = []):boolean{
         return arr1.filter(value => arr2.indexOf(value)!==-1).length>0;
     }
 

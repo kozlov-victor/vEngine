@@ -1,5 +1,6 @@
 
-export class ${name}Behaviour {
+
+export class BoardCardSheetBehaviour {
 
     onCreate(){
 

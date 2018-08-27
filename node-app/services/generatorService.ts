@@ -10,6 +10,7 @@ import fs from '../base/fs';
 import {configFn} from '../generator/webpack.config';
 import {termToHtml} from './termToHtml';
 import {wsService} from "./ws/wsService";
+import {DebugError} from "../../client-app/engine/debugError";
 
 class GeneratorService {
 
@@ -66,6 +67,12 @@ class GeneratorService {
         await fs.createFolder(`workspace/${params.projectName}/generated/src/app`);
     }
 
+    private getMediaTypeByExtension(extension:string){
+        if (['png','jpg','jpeg','bmp'].indexOf(extension)>-1) return 'image';
+        if (['mp3','ogg'].indexOf(extension)>-1) return 'audio';
+        throw new DebugError(`unsupported format ${extension}`);
+    }
+
     private async generateData(params) {
         console.log('generating data',params);
         await fs.copyFolder(`workspace/${params.projectName}/scripts`,`workspace/${params.projectName}/generated/src/app/`);
@@ -96,7 +103,8 @@ class GeneratorService {
         }
         else  {
             (await fs.readDir(`workspace/${params.projectName}/resources`,'binary')).forEach(file=>{
-                embeddedResources[`resources/${file.name}`] = `data:image/${file.ext};base64,`+new Buffer(file.content).toString('base64');
+                embeddedResources[`resources/${file.name}`] =
+                    `data:${this.getMediaTypeByExtension(file.ext)}/${file.ext};base64,`+new Buffer(file.content).toString('base64');
             });
         }
         await fs.createFile(

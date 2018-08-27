@@ -51,7 +51,6 @@ export class IntroSceneBehaviour {
             }
         });
         this.scene.appendChild(widget);
-        window.w = widget;
     }
 
 

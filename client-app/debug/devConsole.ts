@@ -29,7 +29,7 @@ window.addEventListener('load',(e:Event)=>{
 });
 
 window.addEventListener('error',function(e:any){
-    if (e.error && e.error.stack && e.error.stack.indexOf('new DebugError')>-1) return;
+    if (e.error && e.error.name && e.error.name==='DebugError') return;
     try {
         let lineNum = e.lineno;
         let colNum = e.colno;
