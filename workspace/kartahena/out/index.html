@@ -86,21 +86,21 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 112);
+/******/ 	return __webpack_require__(__webpack_require__.s = 115);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 112:
+/***/ 115:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(113);
-module.exports = __webpack_require__(114);
+__webpack_require__(116);
+module.exports = __webpack_require__(117);
 
 
 /***/ }),
 
-/***/ 113:
+/***/ 116:
 /***/ (function(module, exports) {
 
 var getPopupContainer = function () {
@@ -191,14 +191,14 @@ window.addEventListener('unhandledrejection', function (e) {
 
 /***/ }),
 
-/***/ 114:
+/***/ 117:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(115);
+var httpClient_1 = __webpack_require__(118);
 var devConsole = document.createElement('div');
 var css = {
     position: 'absolute',
@@ -218,13 +218,11 @@ devConsole.appendChild(label);
 window.addEventListener('load', function (e) {
     document.body.appendChild(devConsole);
     setInterval(function () {
-        label.textContent = 'fps:' + window['fps'];
+        label.textContent = 'fps:' + (window['fps'] + " || '_'");
     }, 1000);
 });
 window.addEventListener('error', function (e) {
-    console.log(e.error);
-    window.e = e;
-    if (e.error && e.error.stack && e.error.stack.indexOf('DebugError') > -1) return;
+    if (e.error && e.error.name && e.error.name === 'DebugError') return;
     try {
         var lineNum_1 = e.lineno;
         var colNum_1 = e.colno;
@@ -255,7 +253,7 @@ window.addEventListener('error', function (e) {
 
 /***/ }),
 
-/***/ 115:
+/***/ 118:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -384,7 +382,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
 </head>
 
 <body ontouchstart="">
-<script src="bundle.js?2"></script>
+<script src="bundle.js?126"></script>
 </body>
 
 </html>

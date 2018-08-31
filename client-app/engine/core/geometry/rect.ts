@@ -106,6 +106,10 @@ export class Rect extends ObservableEntity {
         return this.size;
     }
 
+    asArray():[number,numner,number,number]{
+        return [this.x,this.y,this.width,this.height];
+    }
+
     clone():Rect{
         return new Rect(this.x,this.y,this.width,this.height);
     }

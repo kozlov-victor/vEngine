@@ -1,8 +1,6 @@
 import {nodeRequire} from "../base/fns";
-
 const path = nodeRequire('path');
 const webpack = nodeRequire('webpack');
-const HardSourceWebpackPlugin = nodeRequire('hard-source-webpack-plugin');
 // const UglifyJsPlugin = nodeRequire('uglifyjs-webpack-plugin');
 
 export const configFn = (params)=>{
@@ -26,6 +24,11 @@ export const configFn = (params)=>{
                     test: /\.ts$/,
                     loader: "awesome-typescript-loader", // ts-loader
                     options: {
+                        // getCustomTransformers: program => ({
+                        //     before: [
+                        //         transformer(program)
+                        //     ]
+                        // }),
                         configFileName: "./node-app/generator/tsconfig.json"
                     }
                 },

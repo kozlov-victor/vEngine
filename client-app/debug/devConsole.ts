@@ -23,7 +23,7 @@ window.addEventListener('load',(e:Event)=>{
     document.body.appendChild(devConsole);
 
     setInterval(function(){
-        label.textContent = 'fps:'+window['fps'];
+        label.textContent = 'fps:'+`${window['fps']} || '_'`;
     },1000);
 
 });

@@ -1,1 +1,13 @@
 scene script not renames after scene renames
+
+
+
+
+
+
+
+
+
+
+
+this.circle.swap(this.rect);

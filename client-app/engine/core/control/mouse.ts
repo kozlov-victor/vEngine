@@ -1,20 +1,19 @@
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import * as mathEx from '../mathEx'
+import * as mathEx from "../mathEx";
 import {Point2d} from "../geometry/point2d";
 import {ObjectPool} from "../misc/objectPool";
 import {Game} from "../game";
 import {Scene} from "../../model/impl/scene";
 import {BaseModel} from "../../model/baseModel";
 import {Rect} from "../geometry/rect";
-import {Container} from "../../model/impl/ui/generic/container";
 import {RenderableModel} from "../../model/renderableModel";
 
-interface MouseEventEx extends MouseEvent {
-    identifier:number,
-    touches:Array<any>
-}
+// interface MouseEventEx extends MouseEvent {
+//     identifier:number,
+//     touches:Array<any>
+// }
 
 export class MousePoint extends Point2d{
 
@@ -184,11 +183,11 @@ export class Mouse {
     }
 
     resolveMouseUp(e:MouseEvent|Touch){
-        let point = this.triggerEvent(e,MOUSE_EVENTS.mouseUp);
+        let point:MousePoint = this.triggerEvent(e,MOUSE_EVENTS.mouseUp);
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
         if (!lastMouseDownObject) return;
-        lastMouseDownObject.trigger(MOUSE_EVENTS.mouseUp,point);
+        if (point.target!==lastMouseDownObject) lastMouseDownObject.trigger(MOUSE_EVENTS.mouseUp,point);
         delete this.objectsCaptured[point.id];
     }
 

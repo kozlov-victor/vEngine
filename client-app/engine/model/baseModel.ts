@@ -87,7 +87,7 @@ export abstract class BaseModel extends CommonObject {
         });
         this._timers.forEach((t:Timer)=>{
             t.onUpdate(time);
-        })
+        });
     }
 
     _emitter:EventEmitter;

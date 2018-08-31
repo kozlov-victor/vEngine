@@ -41,6 +41,9 @@ export class ShaderProgram {
     }
 
     setUniform(name:string, value) {
+        if (DEBUG && !name) {
+            throw new DebugError(`no uniform name was provided!`);
+        }
         let uniform = this.uniforms[name];
         if (DEBUG && !uniform) {
             console.error(this);

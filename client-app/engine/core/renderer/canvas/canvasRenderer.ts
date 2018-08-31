@@ -180,7 +180,8 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
             let size = new Size(img.width,img.height);
             this.renderableCache[resourcePath] = {
                 texture: c,
-                size
+                size,
+                name: undefined
             };
             (c as any).getSize = ()=>size;
             onLoad();

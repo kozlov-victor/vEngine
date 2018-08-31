@@ -11,7 +11,7 @@ export enum OVERFLOW {
 }
 
 export enum LAYOUT_SIZE {
-    FIXED,WRAP_CONTENT,MATCH_PARENT
+    FIXED = 'FIXED',WRAP_CONTENT = 'WRAP_CONTENT',MATCH_PARENT = 'MATCH_PARENT'
 }
 
 export enum STATE {
@@ -40,6 +40,7 @@ export abstract class Container extends RenderableModel {
 
     private bgByState :{[state:number]:Container} = {};
     private state     :STATE = STATE.NORMAL;
+    private _screenRect = new Rect();
 
     testLayout(){
         if (DEBUG) {
@@ -112,7 +113,7 @@ export abstract class Container extends RenderableModel {
         if (bottom===undefined) bottom = top;
         this.paddingTop = top;
         this.paddingBottom = bottom;
-        this._dirty = true;
+        this._setDirty();
     }
 
     setPaddingsLeftRight(left:number,right?:number){
@@ -152,6 +153,11 @@ export abstract class Container extends RenderableModel {
         });
     }
 
+    revalidate(){
+        this.calcLayoutRect();
+        super.revalidate();
+    }
+
     onGeometryChanged(){
         this.revalidate();
     }
@@ -163,12 +169,22 @@ export abstract class Container extends RenderableModel {
         return this._rect;
     }
 
+    getScreenRect():Rect{
+        return this._screenRect;
+    }
+
     private calcLayoutRect(){
         this._rect.setXYWH(
             this.pos.x,this.pos.y,
             this.width + this.marginLeft + this.marginRight,
             this.height + this.marginTop + this.marginBottom
-        )
+        );
+        this._screenRect.set(this._rect);
+        let parent:Container = this.parent;
+        while (parent) {
+            this._screenRect.addXY(parent.getRect().x,parent.getRect().y);
+            parent = parent.parent;
+        }
     }
 
     private getBgByState():Container {

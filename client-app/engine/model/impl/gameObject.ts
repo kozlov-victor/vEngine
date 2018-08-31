@@ -22,6 +22,7 @@ export class GameObject extends GameObjectProto {
 
     constructor(game){
         super(game);
+        console.log('created go');
     }
 
     revalidate(){

@@ -11,17 +11,27 @@ import {IDrawer} from "../interface/iDrawer";
 import {UniformsInfo} from "../interface/uniformsInfo";
 import {Size} from "../../../../geometry/size";
 
+let isArray = (a:any):a is Array<any>=> {
+    return a.splice;
+};
+
+let isEqualArray = (a:Array<any>,b:Array<any>):boolean=>{
+    for (let i=0,max=a.length;i<max;i++) {
+        if (a[i]!==b[i]) return false;
+    }
+    return true;
+};
 
 let isEqual = (a,b):boolean=>{
     if (a===undefined) return false;
-    if (a.splice) return false; // skip array checking for now
+    if (isArray(a) && isArray(b)) return isEqualArray(a as Array<any>,b as Array<any>);
     return a===b;
 };
 
 export interface TextureInfo {
     texture:any,
     size?:Size,
-    name?:string
+    name:string
 }
 
 export class AbstractDrawer implements IDrawer{
@@ -77,7 +87,7 @@ export class AbstractDrawer implements IDrawer{
         this.bufferInfo.draw();
     }
 
-    draw(textureInfos:TextureInfo[],uniforms:UniformsInfo,unused:FrameBuffer|null){
+    draw(textureInfos:TextureInfo[],uniforms:UniformsInfo,unused:FrameBuffer = null){
         this.bind();
         Object.keys(uniforms).forEach((name:string)=>this.setUniform(name,uniforms[name]));
         if (textureInfos) {

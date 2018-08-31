@@ -14,7 +14,6 @@ export class AbsoluteLayout extends Container {
 
     appendChild(c:RenderableModel){
         (c as Container).testLayout();
-        c.parent = this;
         super.appendChild(c);
     }
 
@@ -38,13 +37,13 @@ export class AbsoluteLayout extends Container {
         this.calcDrawableRect(this.width,this.height);
     }
 
-    update(time:number,delta:number){
-        super.update(time,delta);
-        for (let c of this.children) {
-            if (c._dirty) c.parent._dirty = true;
-            c.update(time,delta);
-        }
-    }
+    //update(time:number,delta:number){
+        //super.update(time,delta);
+        //for (let c of this.children) { // moved to Renderable model
+            //if (c._dirty) c.parent._dirty = true; // todo cyclic update!!
+            //c.update(time,delta);
+        //}
+    //}
 
     draw(){
         let renderer = this.game.renderer;

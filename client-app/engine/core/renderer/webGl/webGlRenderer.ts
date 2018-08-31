@@ -29,6 +29,7 @@ import {UniformsInfo} from "./renderPrograms/interface/uniformsInfo";
 import {Size} from "../../geometry/size";
 import {AbstractFilter} from "./filters/abstract/abstractFilter";
 import { ModelDrawer } from './renderPrograms/impl/base/modelDrawer';
+import {GameObject3d} from "../../../model/impl/gameObject3d";
 
 const getCtx = el=>{
     return (
@@ -237,11 +238,9 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
     }
 
-    drawModel(model){
-        this.modelDrawer.setModel(model);
+    drawModel(g3d:GameObject3d){
+        this.modelDrawer.bindModel(g3d);
         this.modelDrawer.bind();
-        model.texture.bind('u_texture',1,this.modelDrawer['program']);
-
 
         matrixStack.scale(1,-1,1);
         let matrix1 = matrixStack.getCurrentMatrix();
@@ -250,14 +249,16 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         let projectionMatrix = mat4.ortho(0,this.game.width,0,this.game.height,-SCENE_DEPTH,SCENE_DEPTH);
         let matrix2 = mat4.matrixMultiply(projectionMatrix, zToWMatrix);
 
-        this.modelDrawer.setUniform("u_modelMatrix",matrix1);
-        this.modelDrawer.setUniform("u_projectionMatrix",matrix2);
+        let uniforms:UniformsInfo = {
+            u_modelMatrix: matrix1,
+            u_projectionMatrix: matrix2,
+            u_alpha: 1
+        };
+        let texInfo:TextureInfo[] = [{texture:g3d.texture,name:'u_texture'}];
 
-        this.modelDrawer.setUniform('u_alpha',1);
         this.gl.enable(this.gl.DEPTH_TEST);
-        this.modelDrawer.draw();
+        this.modelDrawer.draw(texInfo,uniforms);
         this.modelDrawer.unbind();
-        if (model.texture) model.texture.unbind();
         this.gl.disable(this.gl.DEPTH_TEST);
     };
 
@@ -269,10 +270,10 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
                             dstRect:Rect){
 
         let camRectScaled:Rect = this.game.camera.getRectScaled();
-        if (!matEx.overlapTest(
-            camRectScaled,
-            dstRect)
-        ) return;
+        // if (!matEx.overlapTest(
+        //     camRectScaled,
+        //     dstRect)
+        // ) return;
 
         let scene = this.game.getCurrScene();
 
@@ -415,7 +416,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
     lockRect(rect:Rect) {
         this.gl.enable(this.gl.SCISSOR_TEST);
-        this.gl.scissor(rect.x, rect.y, rect.width, rect.height);
+        this.gl.scissor(rect.x,rect.y,rect.width,rect.height);
     }
 
     unlockRect(){
@@ -482,7 +483,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         img.onload = ()=>{
             let texture = new Texture(this.gl);
             texture.setImage(img);
-            this.renderableCache[resourcePath] = {texture,size:texture.size};
+            this.renderableCache[resourcePath] = {texture,size:texture.size,name:undefined};
             onLoad();
         };
         if (DEBUG) {

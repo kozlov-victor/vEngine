@@ -38,6 +38,7 @@ export class VertexBuffer {
     }
 
     setAttrName(attrName:string){
+        if (DEBUG && !attrName) throw new DebugError(`attrName not provided`);
         this.attrName = attrName;
     }
 

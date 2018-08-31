@@ -26,7 +26,7 @@ export class MainSceneBehaviour {
         teapotModel.model = teaPot;
         teapotModel.pos.setXY(500,500);
         teapotModel.anchor.setXY(0.5,0.5);
-        teapotModel.scale.setXY(10,10);
+        //teapotModel.scale.setXY(10,10);
         teapotModel.texture = this.game.renderer.renderableCache['resources/doow.jpg'].texture;
         this.game.getCurrScene().appendChild(teapotModel);
         

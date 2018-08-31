@@ -1,11 +1,10 @@
+import {ShaderProgram} from "../../../base/shaderProgram";
+import {AbstractDrawer} from "../../abstract/abstractDrawer";
+import {BufferInfo, BufferInfoDescription} from "../../../base/bufferInfo";
+import {GameObject3d} from "../../../../../../model/impl/gameObject3d";
+import {DebugError} from "../../../../../../debugError";
 
-
-import {ShaderProgram} from '../../../base/shaderProgram'
-import {VertexBuffer} from '../../../base/vertexBuffer'
-import {IndexBuffer} from '../../../base/indexBuffer'
-import {AbstractDrawer} from "./../../abstract/abstractDrawer";
-import {BufferInfo} from "../../../base/bufferInfo";
-
+declare const DEBUG:boolean;
 
 const vertexShader:string = `
 
@@ -54,12 +53,7 @@ void main() {
 
 export class ModelDrawer extends AbstractDrawer {
 
-    posVertexBuffer: VertexBuffer;
-    texVertexBuffer: VertexBuffer;
-    normalBuffer: VertexBuffer;
-    posIndexBuffer: IndexBuffer;
-    private model;
-
+    private g3d:GameObject3d;
 
     constructor(gl:WebGLRenderingContext){
         super(gl);
@@ -68,53 +62,48 @@ export class ModelDrawer extends AbstractDrawer {
             vertexShader,
             textureShader
         );
-    
-        this.posVertexBuffer = new VertexBuffer(gl);
-        this.texVertexBuffer = new VertexBuffer(gl);
-        this.normalBuffer = new VertexBuffer(gl);
-        this.posIndexBuffer = new IndexBuffer(gl);
-    
-        this.program.bind();
     }
     
+    private _initBufferInfo(){
+        this.g3d.bufferInfo = new BufferInfo(this.gl,{
+            posVertexInfo:{
+                array:this.g3d.model.vertexArr, type:this.gl.FLOAT,
+                size:3, attrName:'a_position'
+            },
+            posIndexInfo: {
+                array: this.g3d.model.indexArr
+            },
+            texVertexInfo: {
+                array: this.g3d.model.texCoordArr, type:this.gl.FLOAT,
+                size:2, attrName:'a_texcoord'
+            },
+            normalInfo: {
+                array: this.g3d.model.normalArr, type:this.gl.FLOAT,
+                size:3, attrName:'a_normal'
+            },
+            drawMethod:this.gl.TRIANGLES
+        } as BufferInfoDescription);
+    }
 
-    setModel(model){
-        this.model = model;
+    bindModel(g3d:GameObject3d){
+        this.g3d = g3d;
+        if (!this.g3d.bufferInfo) this._initBufferInfo();
+        this.bufferInfo = this.g3d.bufferInfo;
     }
 
     bind(){
-        //super.bind();
-        this.program.bind();
-        let gl = this.gl;
-        let program = this.program;
-    
-        this.posVertexBuffer.setData(this.model.vertexArr,gl.FLOAT,3);
-        program.bindBuffer(this.posVertexBuffer,'a_position');
-    
-        this.texVertexBuffer.setData(this.model.texCoordArr,gl.FLOAT,2);
-        if (this.texVertexBuffer) program.bindBuffer(this.texVertexBuffer,'a_texcoord');
-    
-        this.normalBuffer.setData(this.model.normalArr,gl.FLOAT,3);
-        if (this.normalBuffer) program.bindBuffer(this.normalBuffer,'a_normal');
-    
-        this.posIndexBuffer.setData(this.model.indexArr);
-        this.posIndexBuffer.bind();
+        if (DEBUG && !this.g3d.model) throw new DebugError(`can not bind modelDrawer;bindModel must be invoked firstly`);
+        super.bind();
     }
 
     unbind(){
-        this.posVertexBuffer.unbind();
-        this.normalBuffer.unbind();
-        this.posIndexBuffer.unbind();
+        this.g3d = null;
+        super.unbind();
     }
-    
-    
-    
-    draw(){
-        this.gl.drawElements(
-            this.gl.TRIANGLES,
-            this.posIndexBuffer.getBufferLength(),
-            this.gl.UNSIGNED_SHORT,0
-        );
-    }
+
+
+    // draw(){
+    //     this.bufferInfo.draw();
+    // }
 
 }

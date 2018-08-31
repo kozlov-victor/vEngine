@@ -1207,6 +1207,11 @@ var ExpressApp = (function () {
         if (typeof responseObj == 'object')
             res.setHeader('Content-Type', 'application/json');
     };
+    ExpressApp.prototype.sendError = function (response, error) {
+        response.statusCode = 500;
+        response.send(error && (error.message || error.toString()) || 'internal server error');
+        return false;
+    };
     ExpressApp.prototype.createResponse = function (opts, response, params) {
         var _this = this;
         var callback = function (result) {
@@ -1225,16 +1230,13 @@ var ExpressApp = (function () {
             codeResult = opts.ctrl[opts.methodName](params, response);
         }
         catch (error) {
-            console.error('catch method promise error', error);
-            response.statusCode = 500;
-            response.send(error || 'server error');
+            return this.sendError(response, error);
         }
         if (codeResult && codeResult.then) {
             codeResult.then(function (data) {
                 callback(data);
             }).catch(function (error) {
-                response.statusCode = 500;
-                response.send(error || 'server error');
+                _this.sendError(response, error);
             });
         }
         else {
@@ -1335,8 +1337,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fns_1 = __webpack_require__(2);
 var fs = fns_1.nodeRequire('fs');
 var handlebars = fns_1.nodeRequire('handlebars');
+var typescript = fns_1.nodeRequire('typescript');
 var HbsSettings = (function () {
     function HbsSettings() {
+        var _this = this;
+        this.cache = {};
         handlebars.registerHelper('json', function (obj) {
             return JSON.stringify(obj);
         });
@@ -1344,14 +1349,31 @@ var HbsSettings = (function () {
             return Object.keys(obj).length > 0;
         });
         handlebars.registerHelper('var', function (name, value, context) {
-            this[name] = value;
+            _this[name] = value;
         });
         handlebars.registerHelper('include', function (name, value, context) {
-            return fs.readFileSync("./node-app/mvc/views/" + name);
+            var fileSource = fs.readFileSync("./node-app/mvc/views/" + name, { encoding: 'utf-8' });
+            if (name.endsWith('.ts')) {
+                if (_this.cache[fileSource])
+                    return _this.cache[fileSource];
+                _this.cache[fileSource] =
+                    '<script>\n' +
+                        typescript.transpileModule(fileSource, {
+                            compilerOptions: { declaration: true, module: typescript.ModuleKind.CommonJS }
+                        }).outputText +
+                        '</script>\n';
+                return _this.cache[fileSource];
+            }
+            else
+                return fileSource;
         });
         handlebars.registerHelper('script', function (name, value, context) {
             var appMeta = JSON.parse(fs.readFileSync('./app-meta.json'));
             return "<script onerror=\"onLoadingError()\" type=\"text/javascript\" src=\"" + name + "?hash=" + appMeta.hash + "\"></script>";
+        });
+        handlebars.registerHelper('style', function (name, value, context) {
+            var appMeta = JSON.parse(fs.readFileSync('./app-meta.json'));
+            return "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + name + "?hash=" + appMeta.hash + "\">";
         });
     }
     return HbsSettings;
@@ -1916,6 +1938,7 @@ var fs_1 = __webpack_require__(1);
 var webpack_config_1 = __webpack_require__(25);
 var termToHtml_1 = __webpack_require__(26);
 var wsService_1 = __webpack_require__(6);
+var debugError_1 = __webpack_require__(27);
 var GeneratorService = (function () {
     function GeneratorService() {
         this.cnt = 0;
@@ -1997,9 +2020,17 @@ var GeneratorService = (function () {
             });
         });
     };
+    GeneratorService.prototype.getMediaTypeByExtension = function (extension) {
+        if (['png', 'jpg', 'jpeg', 'bmp'].indexOf(extension) > -1)
+            return 'image';
+        if (['mp3', 'ogg'].indexOf(extension) > -1)
+            return 'audio';
+        throw new debugError_1.DebugError("unsupported format " + extension);
+    };
     GeneratorService.prototype.generateData = function (params) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var allScripts, allScriptCode, repository, _a, _b, gameProps, _c, _d, embeddedResources;
+            var _this = this;
             return tslib_1.__generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -2044,7 +2075,8 @@ var GeneratorService = (function () {
                     case 10: return [4, fs_1.default.readDir("workspace/" + params.projectName + "/resources", 'binary')];
                     case 11:
                         (_e.sent()).forEach(function (file) {
-                            embeddedResources["resources/" + file.name] = "data:image/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
+                            embeddedResources["resources/" + file.name] =
+                                "data:" + _this.getMediaTypeByExtension(file.ext) + "/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
                         });
                         _e.label = 12;
                     case 12: return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/embeddedResources.ts", "export let embeddedResources:any = \n\t" + JSON.stringify(embeddedResources, null, 4) + ";")];
@@ -4250,9 +4282,9 @@ module.exports = Array.isArray || function (arr) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var fns_1 = __webpack_require__(2);
+var transformer = fns_1.nodeRequire('typescript-runtime-types/').transformer;
 var path = fns_1.nodeRequire('path');
 var webpack = fns_1.nodeRequire('webpack');
-var HardSourceWebpackPlugin = fns_1.nodeRequire('hard-source-webpack-plugin');
 exports.configFn = function (params) {
     var config = {
         entry: {
@@ -4273,6 +4305,11 @@ exports.configFn = function (params) {
                     test: /\.ts$/,
                     loader: "awesome-typescript-loader",
                     options: {
+                        getCustomTransformers: function (program) { return ({
+                            before: [
+                                transformer(program)
+                            ]
+                        }); },
                         configFileName: "./node-app/generator/tsconfig.json"
                     }
                 },
@@ -4426,6 +4463,32 @@ exports.termToHtml = function (text, options) {
     });
     return text.replace(/\u001B\[.*?[A-Za-z]/g, '');
 };
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = __webpack_require__(0);
+var DebugError = (function (_super) {
+    tslib_1.__extends(DebugError, _super);
+    function DebugError(message) {
+        var _this = _super.call(this, message) || this;
+        _this.name = 'DebugError';
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(_this, _this.constructor);
+        }
+        else {
+            _this.stack = (new Error()).stack;
+        }
+        return _this;
+    }
+    return DebugError;
+}(Error));
+exports.DebugError = DebugError;
 
 
 /***/ })

@@ -29,7 +29,7 @@ export abstract class RenderableModel extends Resource {
         return !(this.angle===0 && this.scale.equal(1));
     }
 
-    protected doAdditionaltransform(){
+    protected doAdditionalTransform(){
         this.game.renderer.rotateZ(this.angle);
         if (this['angleY']) this.game.renderer['rotateY'](this['angleY']);
     }
@@ -46,7 +46,7 @@ export abstract class RenderableModel extends Resource {
             let dx = this.width/2,dy = this.height/2;
             renderer.translate(dx,dy);
             renderer.scale(this.scale.x,this.scale.y);
-            this.doAdditionaltransform();
+            this.doAdditionalTransform();
             renderer.translate(-dx, -dy);
         }
 
@@ -65,4 +65,12 @@ export abstract class RenderableModel extends Resource {
 
         renderer.restore();
     }
+
+    update(time:number,delta:number){
+        super.update(time,delta);
+        this.children.forEach((c:RenderableModel)=>{
+            c.update(time,delta);
+        });
+    }
+
 }

@@ -17,7 +17,7 @@ export class Button extends Container {
     constructor(game) {
         super(game);
         this._textField = new TextField(game);
-        this._textField.name = 'textField_' + random(0,1000);
+        this.appendChild(this._textField);
     }
 
     revalidate(){

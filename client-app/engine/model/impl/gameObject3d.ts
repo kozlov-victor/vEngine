@@ -1,26 +1,27 @@
 import { GameObject } from './gameObject';
 import { WebGlRenderer } from '../../core/renderer/webGl/webGlRenderer';
 import { _global } from '../../core/global';
+import {BufferInfo} from "../../core/renderer/webGl/base/bufferInfo";
+import {IPrimitive} from "../../core/renderer/webGl/primitives/abstractPrimitive";
 
 
 export class GameObject3d extends GameObject {
 
-    model;
+    model:IPrimitive;
     texture;
+    bufferInfo:BufferInfo;
     angleY:number = 0;
 
     protected isNeedAdditionalTransform():boolean{
-        return !(this.angle===0 && this.angleY!==0 && this.scale.equal(1));
+        return !(this.angle===0 && this.angleY===0 && this.scale.equal(1));
     }
 
-    protected doAdditionaltransform(){
+    protected doAdditionalTransform(){
         this.game.renderer.rotateY(this.angleY);
     }
 
     draw(){
-        // todo
-        this.model.texture = this.texture;
-        (this.game.renderer as WebGlRenderer).drawModel(this.model);
+        (this.game.renderer as WebGlRenderer).drawModel(this);
     }
 
 

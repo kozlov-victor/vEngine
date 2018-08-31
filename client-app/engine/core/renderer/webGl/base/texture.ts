@@ -151,6 +151,10 @@ export class Texture {
 
     bind(name:string,i:number,program:ShaderProgram) { // uniform eq to 0 by default
         if (DEBUG) {
+            if (!name) {
+                console.error(this);
+                throw new DebugError(`can not bind texture: uniform name was not provided`);
+            }
             if (i>Texture.MAX_TEXTURE_IMAGE_UNITS - 1) {
                 throw new DebugError(`can not bind texture with index ${i}. Max supported value by device is ${Texture.MAX_TEXTURE_IMAGE_UNITS}`);
             }

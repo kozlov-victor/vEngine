@@ -2483,7 +2483,7 @@ var TextInfo = (function () {
     TextInfo.prototype.newString = function () {
         this.strings.push(new StringInfo());
     };
-    TextInfo.prototype.newChar = function (c) {
+    TextInfo.prototype.addChar = function (c) {
         this.strings[this.strings.length - 1].chars.push(c);
         this.allCharsCached.push(c);
     };
@@ -2672,7 +2672,7 @@ var TextField = (function (_super) {
                 charInfo.symbol = text[i];
                 charInfo.sourceRect = charRect;
                 charInfo.destRect.setXYWH(posX, posY, charRect.width, charRect.height);
-                textInfo.newChar(charInfo);
+                textInfo.addChar(charInfo);
                 posX += charRect.width;
             }
         }

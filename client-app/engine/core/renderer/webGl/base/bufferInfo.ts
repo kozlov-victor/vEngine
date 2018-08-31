@@ -6,18 +6,22 @@ import {VertexBuffer} from "./vertexBuffer";
 import {IndexBuffer} from "./indexBuffer";
 import {ShaderProgram} from "./shaderProgram";
 
-export interface ArrayInfo {
-    array:Array<number>,
+export interface VertexArrayInfo {
+    array:number[],
     type:number,
     size:number,
     attrName:string
+}
 
+export interface IndexArrayInfo {
+    array:number[]
 }
 
 export interface BufferInfoDescription {
-    posVertexInfo:ArrayInfo,
-    posIndexInfo?:ArrayInfo,
-    texVertexInfo?:ArrayInfo,
+    posVertexInfo:VertexArrayInfo,
+    posIndexInfo?:IndexArrayInfo,
+    texVertexInfo?:VertexArrayInfo,
+    normalInfo?:VertexArrayInfo,
     drawMethod:number
 }
 
@@ -28,6 +32,7 @@ export class BufferInfo {
     posVertexBuffer:VertexBuffer = null;
     posIndexBuffer:IndexBuffer = null;
     texVertexBuffer:VertexBuffer = null;
+    normalBuffer:VertexBuffer = null;
     drawMethod:number = null;
     numOfElementsToDraw:number = 0;
 
@@ -61,6 +66,15 @@ export class BufferInfo {
                 description.texVertexInfo.size);
             this.texVertexBuffer.setAttrName(description.texVertexInfo.attrName);
         }
+
+        if (description.normalInfo) {
+            this.normalBuffer = new VertexBuffer(gl);
+            this.normalBuffer.setData(
+                description.normalInfo.array,
+                description.normalInfo.type,
+                description.normalInfo.size);
+            this.normalBuffer.setAttrName(description.normalInfo.attrName);
+        }
     }
 
     bind(program:ShaderProgram){
@@ -68,21 +82,24 @@ export class BufferInfo {
         if (this.posIndexBuffer) this.posIndexBuffer.bind();
         if (this.posVertexBuffer) this.posVertexBuffer.bind(program);
         if (this.texVertexBuffer) this.texVertexBuffer.bind(program);
+        if (this.normalBuffer) this.normalBuffer.bind(program);
     }
 
     unbind(){
         if (this.posIndexBuffer) this.posIndexBuffer.unbind();
         if (this.posVertexBuffer) this.posVertexBuffer.unbind();
         if (this.texVertexBuffer) this.texVertexBuffer.unbind();
+        if (this.normalBuffer) this.normalBuffer.unbind();
     }
 
     destroy(){
         if (this.posVertexBuffer) this.posVertexBuffer.destroy();
         if (this.posIndexBuffer) this.posIndexBuffer.destroy();
         if (this.texVertexBuffer) this.texVertexBuffer.destroy();
+        if (this.normalBuffer) this.normalBuffer.destroy();
     }
 
-    _getNumOfElementsToDraw(drawMethod:number){
+    private _getNumOfElementsToDraw(drawMethod:number){
         switch (drawMethod) {
             case this.gl.LINE_STRIP:
             case this.gl.TRIANGLE_FAN:
