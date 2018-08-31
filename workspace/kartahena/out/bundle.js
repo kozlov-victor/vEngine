@@ -151,7 +151,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var size_1 = __webpack_require__(16);
-var point2d_1 = __webpack_require__(4);
+var point2d_1 = __webpack_require__(5);
 var objectPool_1 = __webpack_require__(10);
 var global_1 = __webpack_require__(2);
 var observableEntity_1 = __webpack_require__(29);
@@ -281,228 +281,10 @@ exports._global = {};
 
 "use strict";
 
-/*global DEBUG:true*/
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var debugError_1 = __webpack_require__(0);
-var shaderProgramUtils_1 = __webpack_require__(6);
-var ShaderProgram = /** @class */function () {
-    function ShaderProgram(gl, vertexSource, fragmentSource) {
-        var vShader = shaderProgramUtils_1.compileShader(gl, vertexSource, gl.VERTEX_SHADER);
-        var fShader = shaderProgramUtils_1.compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
-        this.program = shaderProgramUtils_1.createProgram(gl, vShader, fShader);
-        gl.deleteShader(vShader);
-        gl.deleteShader(fShader);
-        this.uniforms = shaderProgramUtils_1.extractUniforms(gl, this.program);
-        this.attributes = shaderProgramUtils_1.extractAttributes(gl, this.program);
-        this.gl = gl;
-    }
-    ShaderProgram.prototype.getProgram = function () {
-        return this.program;
-    };
-    ShaderProgram.prototype.bind = function () {
-        this.gl.useProgram(this.program);
-        ShaderProgram.currentProgram = this;
-    };
-    ShaderProgram.prototype.setUniform = function (name, value) {
-        if (true && !name) {
-            throw new debugError_1.DebugError("no uniform name was provided!");
-        }
-        var uniform = this.uniforms[name];
-        if (true && !uniform) {
-            console.error(this);
-            throw new debugError_1.DebugError("no uniform with name " + name + " found!");
-        }
-        if (true) {
-            if (ShaderProgram.currentProgram !== this) {
-                console.error(this);
-                throw new debugError_1.DebugError("can not set uniform: target program is inactive");
-            }
-        }
-        uniform.setter(this.gl, uniform.location, value);
-    };
-    ShaderProgram.prototype.bindBuffer = function (buffer, attrName) {
-        if (true) {
-            if (!attrName) throw new debugError_1.DebugError("can not found attribute location: attrLocationName not defined");
-            if (this.attributes[attrName] === undefined) {
-                console.log(this);
-                throw new debugError_1.DebugError("can not found attribute location for  " + attrName);
-            }
-        }
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
-        var attrLocation = this.attributes[attrName];
-        this.gl.enableVertexAttribArray(attrLocation);
-        this.gl.vertexAttribPointer(attrLocation, buffer.getItemSize(), buffer.getItemType(), // type of data
-        false, // if the content is normalized [0..1] vectors
-        0, // number of bytes to skip in between elements
-        0 // offsets to the first element
-        );
-    };
-    ShaderProgram.prototype.destroy = function () {
-        this.gl.deleteProgram(this.program);
-    };
-    ShaderProgram.currentProgram = null;
-    return ShaderProgram;
-}();
-exports.ShaderProgram = ShaderProgram;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __extends = this && this.__extends || function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
-            d.__proto__ = b;
-        } || function (d, b) {
-            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-}();
-Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(10);
-var observableEntity_1 = __webpack_require__(29);
-var global_1 = __webpack_require__(2);
-var Point2d = /** @class */function (_super) {
-    __extends(Point2d, _super);
-    function Point2d(x, y, onChangedFn) {
-        if (x === void 0) {
-            x = 0;
-        }
-        if (y === void 0) {
-            y = 0;
-        }
-        var _this = _super.call(this) || this;
-        _this.x = 0;
-        _this.y = 0;
-        _this.x = x;
-        _this.y = y;
-        if (onChangedFn) _this.addListener(onChangedFn);
-        return _this;
-    }
-    Point2d.fromPool = function () {
-        return Point2d.pool.getNextObject();
-    };
-    Point2d.prototype.checkObservableChanged = function () {
-        return this._state.setState(this.x, this.y);
-    };
-    Point2d.prototype.observe = function (onChangedFn) {
-        this.addListener(onChangedFn);
-    };
-    Point2d.prototype.setXY = function (x, y) {
-        if (y === undefined) {
-            //noinspection JSSuspiciousNameCombination
-            y = x;
-        }
-        this.x = x;
-        this.y = y;
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.setX = function (x) {
-        this.x = x;
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.setY = function (y) {
-        this.y = y;
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.set = function (another) {
-        this.setXY(another.x, another.y);
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.add = function (another) {
-        this.addXY(another.x, another.y);
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.substract = function (another) {
-        this.addXY(-another.x, -another.y);
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.multiply = function (n) {
-        this.x *= n;
-        this.y *= n;
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.addXY = function (x, y) {
-        this.x += x;
-        this.y += y;
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.addX = function (x) {
-        this.x += x;
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.addY = function (y) {
-        this.y += y;
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.negative = function () {
-        this.x = -this.x;
-        this.y = -this.y;
-        this.triggerObservable();
-        return this;
-    };
-    Point2d.prototype.equal = function (val) {
-        return this.x === val && this.y === val;
-    };
-    Point2d.prototype.equalXY = function (x, y) {
-        return this.x === x && this.y === y;
-    };
-    Point2d.prototype.equalPoint = function (point) {
-        return this.x === point.x && this.y === point.y;
-    };
-    Point2d.prototype.clone = function () {
-        return new Point2d(this.x, this.y);
-    };
-    Point2d.prototype.fromJSON = function (json) {
-        this.setXY(json.x, json.y);
-    };
-    Point2d.prototype.toJSON = function () {
-        return { x: this.x, y: this.y };
-    };
-    Point2d.prototype.toArray = function () {
-        if (!this._arr) this._arr = new Array(2);
-        this._arr[0] = this.x;
-        this._arr[1] = this.y;
-        return this._arr;
-    };
-    Point2d.pool = new objectPool_1.ObjectPool(Point2d, 4);
-    return Point2d;
-}(observableEntity_1.ObservableEntity);
-exports.Point2d = Point2d;
-global_1._global['Point2d'] = Point2d;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var mat4 = __webpack_require__(14);
-var point2d_1 = __webpack_require__(4);
+var point2d_1 = __webpack_require__(5);
 // todo class
 exports.isPointInRect = function (point, rect, angle) {
     // if (angle) {
@@ -764,6 +546,224 @@ exports.easeOutBounce = function (t, b, c, d) {
 exports.easeInOutBounce = function (t, b, c, d) {
     if (t < d / 2) return exports.easeInBounce(t * 2, 0, c, d) * .5 + b;else return exports.easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
 };
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/*global DEBUG:true*/
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var debugError_1 = __webpack_require__(0);
+var shaderProgramUtils_1 = __webpack_require__(6);
+var ShaderProgram = /** @class */function () {
+    function ShaderProgram(gl, vertexSource, fragmentSource) {
+        var vShader = shaderProgramUtils_1.compileShader(gl, vertexSource, gl.VERTEX_SHADER);
+        var fShader = shaderProgramUtils_1.compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
+        this.program = shaderProgramUtils_1.createProgram(gl, vShader, fShader);
+        gl.deleteShader(vShader);
+        gl.deleteShader(fShader);
+        this.uniforms = shaderProgramUtils_1.extractUniforms(gl, this.program);
+        this.attributes = shaderProgramUtils_1.extractAttributes(gl, this.program);
+        this.gl = gl;
+    }
+    ShaderProgram.prototype.getProgram = function () {
+        return this.program;
+    };
+    ShaderProgram.prototype.bind = function () {
+        this.gl.useProgram(this.program);
+        ShaderProgram.currentProgram = this;
+    };
+    ShaderProgram.prototype.setUniform = function (name, value) {
+        if (true && !name) {
+            throw new debugError_1.DebugError("no uniform name was provided!");
+        }
+        var uniform = this.uniforms[name];
+        if (true && !uniform) {
+            console.error(this);
+            throw new debugError_1.DebugError("no uniform with name " + name + " found!");
+        }
+        if (true) {
+            if (ShaderProgram.currentProgram !== this) {
+                console.error(this);
+                throw new debugError_1.DebugError("can not set uniform: target program is inactive");
+            }
+        }
+        uniform.setter(this.gl, uniform.location, value);
+    };
+    ShaderProgram.prototype.bindBuffer = function (buffer, attrName) {
+        if (true) {
+            if (!attrName) throw new debugError_1.DebugError("can not found attribute location: attrLocationName not defined");
+            if (this.attributes[attrName] === undefined) {
+                console.log(this);
+                throw new debugError_1.DebugError("can not found attribute location for  " + attrName);
+            }
+        }
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
+        var attrLocation = this.attributes[attrName];
+        this.gl.enableVertexAttribArray(attrLocation);
+        this.gl.vertexAttribPointer(attrLocation, buffer.getItemSize(), buffer.getItemType(), // type of data
+        false, // if the content is normalized [0..1] vectors
+        0, // number of bytes to skip in between elements
+        0 // offsets to the first element
+        );
+    };
+    ShaderProgram.prototype.destroy = function () {
+        this.gl.deleteProgram(this.program);
+    };
+    ShaderProgram.currentProgram = null;
+    return ShaderProgram;
+}();
+exports.ShaderProgram = ShaderProgram;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = this && this.__extends || function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var objectPool_1 = __webpack_require__(10);
+var observableEntity_1 = __webpack_require__(29);
+var global_1 = __webpack_require__(2);
+var Point2d = /** @class */function (_super) {
+    __extends(Point2d, _super);
+    function Point2d(x, y, onChangedFn) {
+        if (x === void 0) {
+            x = 0;
+        }
+        if (y === void 0) {
+            y = 0;
+        }
+        var _this = _super.call(this) || this;
+        _this.x = 0;
+        _this.y = 0;
+        _this.x = x;
+        _this.y = y;
+        if (onChangedFn) _this.addListener(onChangedFn);
+        return _this;
+    }
+    Point2d.fromPool = function () {
+        return Point2d.pool.getNextObject();
+    };
+    Point2d.prototype.checkObservableChanged = function () {
+        return this._state.setState(this.x, this.y);
+    };
+    Point2d.prototype.observe = function (onChangedFn) {
+        this.addListener(onChangedFn);
+    };
+    Point2d.prototype.setXY = function (x, y) {
+        if (y === undefined) {
+            //noinspection JSSuspiciousNameCombination
+            y = x;
+        }
+        this.x = x;
+        this.y = y;
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.setX = function (x) {
+        this.x = x;
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.setY = function (y) {
+        this.y = y;
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.set = function (another) {
+        this.setXY(another.x, another.y);
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.add = function (another) {
+        this.addXY(another.x, another.y);
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.substract = function (another) {
+        this.addXY(-another.x, -another.y);
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.multiply = function (n) {
+        this.x *= n;
+        this.y *= n;
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.addXY = function (x, y) {
+        this.x += x;
+        this.y += y;
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.addX = function (x) {
+        this.x += x;
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.addY = function (y) {
+        this.y += y;
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.negative = function () {
+        this.x = -this.x;
+        this.y = -this.y;
+        this.triggerObservable();
+        return this;
+    };
+    Point2d.prototype.equal = function (val) {
+        return this.x === val && this.y === val;
+    };
+    Point2d.prototype.equalXY = function (x, y) {
+        return this.x === x && this.y === y;
+    };
+    Point2d.prototype.equalPoint = function (point) {
+        return this.x === point.x && this.y === point.y;
+    };
+    Point2d.prototype.clone = function () {
+        return new Point2d(this.x, this.y);
+    };
+    Point2d.prototype.fromJSON = function (json) {
+        this.setXY(json.x, json.y);
+    };
+    Point2d.prototype.toJSON = function () {
+        return { x: this.x, y: this.y };
+    };
+    Point2d.prototype.toArray = function () {
+        if (!this._arr) this._arr = new Array(2);
+        this._arr[0] = this.x;
+        this._arr[1] = this.y;
+        return this._arr;
+    };
+    Point2d.pool = new objectPool_1.ObjectPool(Point2d, 4);
+    return Point2d;
+}(observableEntity_1.ObservableEntity);
+exports.Point2d = Point2d;
+global_1._global['Point2d'] = Point2d;
 
 /***/ }),
 /* 6 */
@@ -1612,7 +1612,7 @@ var tween_1 = __webpack_require__(21);
 var eventEmitter_1 = __webpack_require__(32);
 var decorators_1 = __webpack_require__(17);
 var rect_1 = __webpack_require__(1);
-var point2d_1 = __webpack_require__(4);
+var point2d_1 = __webpack_require__(5);
 var debugError_1 = __webpack_require__(0);
 var BaseModel = /** @class */function (_super) {
     __extends(BaseModel, _super);
@@ -2127,7 +2127,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var plane_1 = __webpack_require__(23);
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var abstractDrawer_1 = __webpack_require__(7);
 var bufferInfo_1 = __webpack_require__(8);
 var texShaderGenerator_1 = __webpack_require__(15);
@@ -2179,6 +2179,7 @@ var container_1 = __webpack_require__(9);
 var rect_1 = __webpack_require__(1);
 var debugError_1 = __webpack_require__(0);
 var mouse_1 = __webpack_require__(26);
+var mathEx_1 = __webpack_require__(3);
 var TEXT_ALIGN;
 (function (TEXT_ALIGN) {
     TEXT_ALIGN["LEFT"] = "LEFT";
@@ -2374,7 +2375,7 @@ var TextField = /** @class */function (_super) {
         _this.maxWidth = 0;
         _this.maxHeight = 0;
         _this.border = null;
-        _this.scrollInfo = { offset: 0, scrollVelocity: 0, scrollHeight: 0 };
+        _this.scrollInfo = { offset: 0, scrollVelocity: 0, scrollHeight: 0, deceleration: 0 };
         _this._textInfo = new TextInfo(_this);
         _this._listenScroll();
         return _this;
@@ -2391,6 +2392,7 @@ var TextField = /** @class */function (_super) {
                 time: _this.scrollInfo.lastPoint.time
             };
             _this.scrollInfo.scrollVelocity = 0;
+            _this.scrollInfo.deceleration = 0;
         });
         this.on(mouse_1.MOUSE_EVENTS.mouseMove, function (p) {
             if (!p.isMouseDown) return;
@@ -2493,12 +2495,12 @@ var TextField = /** @class */function (_super) {
         _super.prototype.update.call(this, time, delta);
         if (this.scrollInfo.scrollVelocity) {
             this.scrollInfo.offset += this.scrollInfo.scrollVelocity / delta;
-            // console.clear();
-            // console.log('this.scrollInfo.offset',this.scrollInfo.offset,this.scrollInfo.scrollHeight - this.height);
             if (this.scrollInfo.offset > this.scrollInfo.scrollHeight - this.height) this.scrollInfo.offset = this.scrollInfo.scrollHeight - this.height;
             if (this.scrollInfo.offset < 0) this.scrollInfo.offset = 0;
         }
-        //this.scrollInfo.scrollVelocity*=0.99;
+        this.scrollInfo.deceleration = this.scrollInfo.deceleration + 0.5 / delta;
+        if (this.scrollInfo.scrollVelocity > 0) this.scrollInfo.scrollVelocity -= this.scrollInfo.deceleration;else if (this.scrollInfo.scrollVelocity < 0) this.scrollInfo.scrollVelocity += this.scrollInfo.deceleration;
+        if (mathEx_1.closeTo(this.scrollInfo.scrollVelocity, 0)) this.scrollInfo.scrollVelocity = 0;
     };
     TextField.prototype.draw = function () {
         this.game.renderer.lockRect(this.getScreenRect());
@@ -2585,7 +2587,7 @@ exports.Resource = Resource;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var mathEx = __webpack_require__(5);
+var mathEx = __webpack_require__(3);
 var global_1 = __webpack_require__(2);
 var accessByPath = function (obj, path) {
     var pathArr = path.split('.');
@@ -2866,8 +2868,8 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var mathEx = __webpack_require__(5);
-var point2d_1 = __webpack_require__(4);
+var mathEx = __webpack_require__(3);
+var point2d_1 = __webpack_require__(5);
 var objectPool_1 = __webpack_require__(10);
 var rect_1 = __webpack_require__(1);
 // interface MouseEventEx extends MouseEvent {
@@ -3211,7 +3213,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var point2d_1 = __webpack_require__(4);
+var point2d_1 = __webpack_require__(5);
 var rect_1 = __webpack_require__(1);
 var shaderMaterial_1 = __webpack_require__(30);
 var renderableModel_1 = __webpack_require__(31);
@@ -5051,10 +5053,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
 var tween_1 = __webpack_require__(21);
 var mat4 = __webpack_require__(14);
-var mathEx = __webpack_require__(5);
+var mathEx = __webpack_require__(3);
 var rect_1 = __webpack_require__(1);
-var point2d_1 = __webpack_require__(4);
-var mathEx_1 = __webpack_require__(5);
+var point2d_1 = __webpack_require__(5);
+var mathEx_1 = __webpack_require__(3);
 var CAMERA_MATRIX_MODE;
 (function (CAMERA_MATRIX_MODE) {
     CAMERA_MATRIX_MODE[CAMERA_MATRIX_MODE["MODE_TRANSFORM"] = 0] = "MODE_TRANSFORM";
@@ -5348,11 +5350,11 @@ var decorators_1 = __webpack_require__(17);
 var commonObject_1 = __webpack_require__(13);
 var camera_1 = __webpack_require__(49);
 var consts_1 = __webpack_require__(45);
-var point2d_1 = __webpack_require__(4);
+var point2d_1 = __webpack_require__(5);
 var lightArray_1 = __webpack_require__(36);
 var uiBuilder_1 = __webpack_require__(98);
 var colliderEngine_1 = __webpack_require__(99);
-var MathEx = __webpack_require__(5);
+var MathEx = __webpack_require__(3);
 var global_1 = __webpack_require__(2);
 var debugError_1 = __webpack_require__(0);
 var audioPlayer_1 = __webpack_require__(50);
@@ -6074,7 +6076,7 @@ var circleDrawer_1 = __webpack_require__(72);
 var frameBuffer_1 = __webpack_require__(38);
 var matrixStack_1 = __webpack_require__(74);
 var mat4 = __webpack_require__(14);
-var matEx = __webpack_require__(5);
+var matEx = __webpack_require__(3);
 var texture_1 = __webpack_require__(39);
 var addBlendDrawer_1 = __webpack_require__(75);
 var rect_1 = __webpack_require__(1);
@@ -6459,7 +6461,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var spriteRectDrawer_1 = __webpack_require__(18);
 var texShaderGenerator_1 = __webpack_require__(15);
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var shaderProgramUtils_1 = __webpack_require__(6);
 var lightArray_1 = __webpack_require__(36);
 var SpriteRectLightDrawer = /** @class */function (_super) {
@@ -6621,7 +6623,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var point2d_1 = __webpack_require__(4);
+var point2d_1 = __webpack_require__(5);
 var abstractLight_1 = __webpack_require__(37);
 var PointLight = /** @class */function (_super) {
     __extends(PointLight, _super);
@@ -6678,7 +6680,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var plane_1 = __webpack_require__(23);
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var bufferInfo_1 = __webpack_require__(8);
 var abstractDrawer_1 = __webpack_require__(7);
 var shaderProgramUtils_1 = __webpack_require__(6);
@@ -6732,7 +6734,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var plane_1 = __webpack_require__(23);
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var bufferInfo_1 = __webpack_require__(8);
 var abstractDrawer_1 = __webpack_require__(7);
 var colorShaderGenerator_1 = __webpack_require__(25);
@@ -6780,7 +6782,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var line_1 = __webpack_require__(71);
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var bufferInfo_1 = __webpack_require__(8);
 var abstractDrawer_1 = __webpack_require__(7);
 var colorShaderGenerator_1 = __webpack_require__(25);
@@ -6865,7 +6867,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var circle_1 = __webpack_require__(73);
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var abstractDrawer_1 = __webpack_require__(7);
 var bufferInfo_1 = __webpack_require__(8);
 var colorShaderGenerator_1 = __webpack_require__(25);
@@ -7054,7 +7056,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var spriteRectDrawer_1 = __webpack_require__(18);
 var shaderProgramUtils_1 = __webpack_require__(6);
 var texShaderGenerator_1 = __webpack_require__(15);
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var simpleCopyFilter_1 = __webpack_require__(77);
 var AbstractBlendDrawer = /** @class */function () {
     function AbstractBlendDrawer(gl) {
@@ -7134,7 +7136,7 @@ exports.SimpleCopyFilter = SimpleCopyFilter;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var spriteRectDrawer_1 = __webpack_require__(18);
 var mat4 = __webpack_require__(14);
 var texShaderGenerator_1 = __webpack_require__(15);
@@ -7563,7 +7565,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var shaderProgram_1 = __webpack_require__(3);
+var shaderProgram_1 = __webpack_require__(4);
 var abstractDrawer_1 = __webpack_require__(7);
 var bufferInfo_1 = __webpack_require__(8);
 var debugError_1 = __webpack_require__(0);
@@ -7998,7 +8000,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var baseModel_1 = __webpack_require__(12);
-var mathEx = __webpack_require__(5);
+var mathEx = __webpack_require__(3);
 var r = function (obj) {
     return mathEx.random(obj.from, obj.to);
 };
@@ -8798,7 +8800,7 @@ exports.UIBuilder = UIBuilder;
 Object.defineProperty(exports, "__esModule", { value: true });
 var rigidShapes_1 = __webpack_require__(47);
 var rect_1 = __webpack_require__(1);
-var mathEx = __webpack_require__(5);
+var mathEx = __webpack_require__(3);
 var ColliderEngine = /** @class */function () {
     function ColliderEngine(game) {
         this.relaxationCount = 15;

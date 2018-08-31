@@ -4,6 +4,7 @@ import {Rect} from "../../../../core/geometry/rect";
 import {DebugError} from "../../../../debugError";
 import {Rectangle} from "../drawable/rectangle";
 import {MousePoint, MOUSE_EVENTS} from "../../../../core/control/mouse";
+import {closeTo} from "../../../../core/mathEx";
 
 declare const DEBUG:boolean;
 type char = string;
@@ -183,7 +184,7 @@ export class TextField extends Container {
     maxHeight:number = 0;
     border:Rectangle = null;
 
-    private scrollInfo:any = {offset:0,scrollVelocity:0,scrollHeight:0};
+    private scrollInfo:any = {offset:0,scrollVelocity:0,scrollHeight:0,deceleration:0};
 
     constructor(game){
         super(game);
@@ -202,6 +203,7 @@ export class TextField extends Container {
                 time: this.scrollInfo.lastPoint.time
             };
             this.scrollInfo.scrollVelocity = 0;
+            this.scrollInfo.deceleration = 0;
         });
         this.on(MOUSE_EVENTS.mouseMove,(p:MousePoint)=>{
            if (!p.isMouseDown) return;
@@ -315,13 +317,14 @@ export class TextField extends Container {
         super.update(time,delta);
         if (this.scrollInfo.scrollVelocity) {
             this.scrollInfo.offset+=this.scrollInfo.scrollVelocity/delta;
-            // console.clear();
-            // console.log('this.scrollInfo.offset',this.scrollInfo.offset,this.scrollInfo.scrollHeight - this.height);
             if (this.scrollInfo.offset>this.scrollInfo.scrollHeight - this.height)
                 this.scrollInfo.offset = this.scrollInfo.scrollHeight - this.height;
             if (this.scrollInfo.offset<0) this.scrollInfo.offset = 0;
         }
-        //this.scrollInfo.scrollVelocity*=0.99;
+        this.scrollInfo.deceleration = this.scrollInfo.deceleration + 0.5/delta;
+        if (this.scrollInfo.scrollVelocity>0) this.scrollInfo.scrollVelocity-=this.scrollInfo.deceleration;
+        else if (this.scrollInfo.scrollVelocity<0) this.scrollInfo.scrollVelocity+=this.scrollInfo.deceleration;
+        if (closeTo(this.scrollInfo.scrollVelocity,0)) this.scrollInfo.scrollVelocity = 0;
     }
 
     draw(){
