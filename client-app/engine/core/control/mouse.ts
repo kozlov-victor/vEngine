@@ -1,3 +1,4 @@
+import {MouseEventEx} from "../../declarations";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -10,10 +11,7 @@ import {BaseModel} from "../../model/baseModel";
 import {Rect} from "../geometry/rect";
 import {RenderableModel} from "../../model/renderableModel";
 
-// interface MouseEventEx extends MouseEvent {
-//     identifier:number,
-//     touches:Array<any>
-// }
+
 
 export class MousePoint extends Point2d{
 
@@ -21,6 +19,8 @@ export class MousePoint extends Point2d{
     public screenY:number;
     public id:number;
     public target:BaseModel;
+    public eventName:string;
+    public nativeEvent:MouseEventEx;
     public isMouseDown:boolean;
 
     private static mousePointsPool:ObjectPool<MousePoint> = new ObjectPool<MousePoint>(MousePoint);
@@ -53,7 +53,8 @@ export let MOUSE_EVENTS = {
     mouseLeave  :   'mouseLeave',
     mouseEnter  :   'mouseEnter',
     mouseUp     :   'mouseUp',
-    doubleClick :   'doubleClick'
+    doubleClick :   'doubleClick',
+    scroll      :   'scroll'
 };
 
 export class Mouse {
@@ -86,7 +87,11 @@ export class Mouse {
         return mousePoint;
     }
 
-    private static triggerGameObjectEvent(eventName:string,point:MousePoint,go:RenderableModel,offsetX = 0, offsetY = 0):boolean{
+    private static triggerGameObjectEvent(
+        e:MouseEvent|TouchEvent|Touch,
+        eventName:string,point:MousePoint,
+        go:RenderableModel,offsetX = 0, offsetY = 0):boolean{
+
         let rectWithOffset = Rect.fromPool().clone().set(go.getRect()).addXY(offsetX,offsetY);
         if (
             mathEx.isPointInRect(point,rectWithOffset)
@@ -99,6 +104,8 @@ export class Mouse {
                 objectY:point.y - go.pos.y,
                 id:point.id,
                 target:go,
+                nativeEvent: e,
+                eventName,
                 isMouseDown: point.isMouseDown
             });
             return true;
@@ -107,12 +114,16 @@ export class Mouse {
     }
 
 
-    private triggerChildren(c:RenderableModel[], eventName:string, point:MousePoint, offsetX:number, offsetY:number){
+    private triggerChildren(
+        e:MouseEvent|TouchEvent|Touch,
+        c:RenderableModel[],
+        eventName:string, point:MousePoint, offsetX:number, offsetY:number){
         for (let i=0;i<c.length;i++){
             let go:RenderableModel = c[c.length - 1 - i];
-            let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,point,go,offsetX,offsetY);
+            let isCaptured:boolean = Mouse.triggerGameObjectEvent(e,eventName,point,go,offsetX,offsetY);
             if (isCaptured) {
                 this.triggerChildren(
+                    e,
                     go.children,
                     eventName,
                     point,
@@ -133,9 +144,9 @@ export class Mouse {
         point.target = undefined;
 
         for (let go of scene.getAllGameObjects()) {
-            let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,point,go);
+            let isCaptured:boolean = Mouse.triggerGameObjectEvent(e,eventName,point,go);
             if (isCaptured) {
-                if (go.children) this.triggerChildren(go.children,eventName,point,go.pos.x,go.pos.y);
+                if (go.children) this.triggerChildren(e,go.children,eventName,point,go.pos.x,go.pos.y);
                 break;
             }
         }
@@ -143,9 +154,9 @@ export class Mouse {
         let untransformedPoint = MousePoint.unTransform(point);
         for (let j=0;j<scene.uiLayer.children.length;j++){
             let go = scene.uiLayer.children[scene.uiLayer.children.length - 1 - j];
-            let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,untransformedPoint,go);
+            let isCaptured:boolean = Mouse.triggerGameObjectEvent(e,eventName,untransformedPoint,go);
             if (isCaptured) {
-                if (go.children) this.triggerChildren(go.children,eventName,untransformedPoint,go.pos.x,go.pos.y);
+                if (go.children) this.triggerChildren(e,go.children,eventName,untransformedPoint,go.pos.x,go.pos.y);
                 break;
             }
         }
@@ -157,6 +168,7 @@ export class Mouse {
             screenY:point.y,
             id:point.id,
             target:scene,
+            eventName,
             isMouseDown
         });
         return point;
@@ -197,6 +209,12 @@ export class Mouse {
         delete this.objectsCaptured[point.id];
     }
 
+    resolveScroll(e:MouseEvent){
+        let point = this.triggerEvent(e,MOUSE_EVENTS.scroll);
+        if (!point) return;
+        delete this.objectsCaptured[point.id];
+    }
+
     listenTo(container:HTMLElement) {
         this.container = container;
         // mouseDown
@@ -233,6 +251,9 @@ export class Mouse {
         // other
         container.ondblclick = (e:MouseEvent)=>{ // todo now only on pc
             this.resolveDoubleClick(e);
+        };
+        container.onmousewheel = (e:MouseEvent)=>{
+            this.resolveScroll(e);
         }
     }
 

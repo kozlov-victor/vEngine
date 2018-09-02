@@ -15,7 +15,7 @@ export class EventEmitter{
         this.events[name].push(callBack);
     }
 
-    on(eventNameOrList:string|Array<string>,callBack:Function){
+    on(eventNameOrList:string|string[],callBack:Function){
         if (typeof  eventNameOrList === 'string') {
             this._on(eventNameOrList,callBack);
         } else if (eventNameOrList.splice) {

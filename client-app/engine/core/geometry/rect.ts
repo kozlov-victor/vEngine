@@ -106,7 +106,7 @@ export class Rect extends ObservableEntity {
         return this.size;
     }
 
-    asArray():[number,numner,number,number]{
+    asArray():[number,number,number,number]{
         return [this.x,this.y,this.width,this.height];
     }
 

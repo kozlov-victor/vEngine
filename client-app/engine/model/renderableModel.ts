@@ -2,6 +2,7 @@
 import {AbstractRenderer} from "../core/renderer/abstract/abstractRenderer";
 import {Resource} from "./resource";
 import {ArrayEx} from "../declarations";
+import * as matEx from "../core/mathEx";
 
 export abstract class RenderableModel extends Resource {
 
@@ -34,7 +35,12 @@ export abstract class RenderableModel extends Resource {
         if (this['angleY']) this.game.renderer['rotateY'](this['angleY']);
     }
 
+    protected isInViewPort():boolean{
+        return matEx.overlapTest(this.game.camera.getRectScaled(),this.getRect());
+    }
+
     render(){
+        if (!this.isInViewPort()) return;
         let renderer:AbstractRenderer = this.game.renderer;
 
         renderer.save();

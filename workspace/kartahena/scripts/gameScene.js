@@ -23,7 +23,7 @@ export class GameSceneBehaviour {
                 children: [
                     {
                         TextField: {
-                            maxWidth: 1020,
+                            maxWidth: 1000,
                             maxHeight: 500,
                             pos: {x:10,y:10},
                             fontName: 'scriptFont', 

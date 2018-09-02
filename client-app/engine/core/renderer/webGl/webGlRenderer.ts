@@ -115,11 +115,6 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
     draw(renderable:GameObjectProto){
 
-        //console.log(this.game.camera.getRectScaled(),renderable.getRect(),matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect()));
-        //this.game.destroy();
-
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect())) return;
-
         let texToDraw:Texture = this.renderableCache[renderable.spriteSheet.getDefaultResourcePath()].texture;
         texToDraw = texToDraw.applyFilters(renderable.filters,this.frameBuffer);
 
@@ -166,7 +161,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
                 filters:AbstractFilter[],
                 drawableInfo:DrawableInfo,
     ){
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),dstRect)) return;
+        //if (!matEx.overlapTest(this.game.camera.getRectScaled(),dstRect)) return;
         let texture:Texture = this.renderableCache[texturePath].texture;
         texture = texture.applyFilters(filters,this.frameBuffer);
         if (DEBUG && !texture) {
@@ -269,7 +264,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
                             srcRect:Rect,
                             dstRect:Rect){
 
-        let camRectScaled:Rect = this.game.camera.getRectScaled();
+        //let camRectScaled:Rect = this.game.camera.getRectScaled();
         // if (!matEx.overlapTest(
         //     camRectScaled,
         //     dstRect)
@@ -302,9 +297,6 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
                    dstRect:Rect,
                    offset:Point2d){
 
-        //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
-        //gl.blendColor(0, 0.5, 1, 1);
-
         let texture:Texture = this.renderableCache[texturePath].texture;
         if (DEBUG && !texture) {
             if (!texturePath) throw new DebugError(`no texture path provided`);
@@ -335,7 +327,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
     fillRect(rect:Rect, color:Color){
 
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),rect)) return;
+        //if (!matEx.overlapTest(this.game.camera.getRectScaled(),rect)) return;
         let uniforms = {
             u_vertexMatrix: makePositionMatrix(
                 rect,
@@ -358,7 +350,6 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     drawLine(x1:number,y1:number,x2:number,y2:number,color:Color){
 
         let dx = x2-x1,dy = y2-y1;
-        //if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x1,y1,dx,dy))) return;
         let uniforms:any = {};
         uniforms.u_vertexMatrix = makePositionMatrix(
             Rect.fromPool().setXYWH(x1,y1,dx,dy),
@@ -371,7 +362,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
     fillCircle(x:number,y:number,r:number,color:Color){
         let r2 = r*2;
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),Rect.fromPool().setXYWH(x-r,y-r,r2,r2))) return;
+        //if (!matEx.overlapTest(this.game.camera.getRectScaled(),Rect.fromPool().setXYWH(x-r,y-r,r2,r2))) return;
         let uniforms:UniformsInfo = {} as UniformsInfo;
         uniforms['u_vertexMatrix'] = makePositionMatrix(
             new Rect(x-r,y-r,r2,r2),

@@ -180,7 +180,7 @@ export abstract class Container extends RenderableModel {
             this.height + this.marginTop + this.marginBottom
         );
         this._screenRect.set(this._rect);
-        let parent:Container = this.parent;
+        let parent:RenderableModel = this.parent;
         while (parent) {
             this._screenRect.addXY(parent.getRect().x,parent.getRect().y);
             parent = parent.parent;

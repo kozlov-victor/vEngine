@@ -4282,7 +4282,6 @@ module.exports = Array.isArray || function (arr) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var fns_1 = __webpack_require__(2);
-var transformer = fns_1.nodeRequire('typescript-runtime-types/').transformer;
 var path = fns_1.nodeRequire('path');
 var webpack = fns_1.nodeRequire('webpack');
 exports.configFn = function (params) {
@@ -4305,11 +4304,6 @@ exports.configFn = function (params) {
                     test: /\.ts$/,
                     loader: "awesome-typescript-loader",
                     options: {
-                        getCustomTransformers: function (program) { return ({
-                            before: [
-                                transformer(program)
-                            ]
-                        }); },
                         configFileName: "./node-app/generator/tsconfig.json"
                     }
                 },

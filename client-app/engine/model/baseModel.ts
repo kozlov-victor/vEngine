@@ -92,7 +92,7 @@ export abstract class BaseModel extends CommonObject {
 
     _emitter:EventEmitter;
 
-    on(eventName:string,callBack:Function){
+    on(eventName:string|string[],callBack:Function){
         this._emitter.on(eventName,callBack);
         return callBack;
     }
