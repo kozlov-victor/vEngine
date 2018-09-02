@@ -242,10 +242,58 @@ export class TextField extends Container {
         this.on(MOUSE_EVENTS.mouseUp, (p: MousePoint) => {
             if (!this.scrollInfo.lastPoint) return;
             if (!this.scrollInfo.prevPoint) return;
-            this.scrollInfo.scrollVelocity = 50 *
-                (this.scrollInfo.prevPoint.point.screenY - this.scrollInfo.lastPoint.point.screenY) /
-                (this.scrollInfo.lastPoint.time - this.scrollInfo.prevPoint.time);
+            if (this.scrollInfo.lastPoint.time === this.scrollInfo.prevPoint.time) {
+                this.scrollInfo.scrollVelocity = 0;
+            }
+            else {
+                this.scrollInfo.scrollVelocity = 1000 *
+                    (this.scrollInfo.prevPoint.point.screenY - this.scrollInfo.lastPoint.point.screenY) /
+                    (this.scrollInfo.lastPoint.time - this.scrollInfo.prevPoint.time);
+            }
+            this.scrollInfo.deceleration = 0;
         });
+
+    }
+
+
+    update(time: number, delta: number) {
+        super.update(time, delta);
+        if (this.scrollInfo.scrollVelocity) {
+            this.scrollInfo.offset += this.scrollInfo.scrollVelocity * delta /1000;
+            if (this.scrollInfo.offset > this.scrollInfo.scrollHeight - this.height) {
+                this.scrollInfo.offset = this.scrollInfo.scrollHeight - this.height;
+                this.scrollInfo.scrollVelocity = 0;
+                this.scrollInfo.deceleration = 0;
+            }
+
+            if (this.scrollInfo.offset < 0) {
+                this.scrollInfo.offset = 0;
+                this.scrollInfo.scrollVelocity = 0;
+                this.scrollInfo.deceleration = 0;
+            }
+        }
+        this.scrollInfo.deceleration = this.scrollInfo.deceleration + 0.5 / delta;
+
+        if (delta>1000) {
+            this.scrollInfo.scrollVelocity = 0;
+            this.scrollInfo.deceleration = 0;
+        }
+
+        if (this.scrollInfo.scrollVelocity > 0) this.scrollInfo.scrollVelocity -= this.scrollInfo.deceleration;
+        else if (this.scrollInfo.scrollVelocity < 0) this.scrollInfo.scrollVelocity += this.scrollInfo.deceleration;
+        if (closeTo(this.scrollInfo.scrollVelocity, 0,3)) {
+            this.scrollInfo.scrollVelocity = 0;
+            this.scrollInfo.deceleration = 0;
+        }
+
+        // if (!document.getElementById('debug')) {
+        //     let d = document.createElement('debug');
+        //     d.id = 'debug';
+        //     d.style.cssText = 'position: absolute;top:0;left:0;';
+        //     document.body.appendChild(d);
+        // }
+        //document.getElementById('debug').innerHTML = this.scrollInfo.scrollVelocity;
+
     }
 
     revalidate() {
@@ -331,38 +379,6 @@ export class TextField extends Container {
         this.setFont(font);
     }
 
-    update(time: number, delta: number) {
-        super.update(time, delta);
-        if (this.scrollInfo.scrollVelocity) {
-            this.scrollInfo.offset += this.scrollInfo.scrollVelocity / delta;
-            if (this.scrollInfo.offset > this.scrollInfo.scrollHeight - this.height) {
-                this.scrollInfo.offset = this.scrollInfo.scrollHeight - this.height;
-                this.scrollInfo.scrollVelocity = 0;
-                this.scrollInfo.deceleration = 0;
-            }
-
-            if (this.scrollInfo.offset < 0) {
-                this.scrollInfo.offset = 0;
-                this.scrollInfo.scrollVelocity = 0;
-                this.scrollInfo.deceleration = 0;
-            }
-        }
-        this.scrollInfo.deceleration = this.scrollInfo.deceleration + 0.5 / delta;
-
-        if (delta>1000) {
-            this.scrollInfo.scrollVelocity = 0;
-            this.scrollInfo.deceleration = 0;
-        }
-
-        if (this.scrollInfo.scrollVelocity > 0) this.scrollInfo.scrollVelocity -= this.scrollInfo.deceleration;
-        else if (this.scrollInfo.scrollVelocity < 0) this.scrollInfo.scrollVelocity += this.scrollInfo.deceleration;
-        if (closeTo(this.scrollInfo.scrollVelocity, 0,0.1)) {
-            this.scrollInfo.scrollVelocity = 0;
-            this.scrollInfo.deceleration = 0;
-        }
-        // console.clear();
-        // console.log(this.scrollInfo.scrollVelocity,this.scrollInfo.deceleration);
-    }
 
     draw() {
         this.game.renderer.lockRect(this.getScreenRect());
