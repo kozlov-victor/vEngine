@@ -217,8 +217,10 @@ label.style.color = 'white';
 devConsole.appendChild(label);
 window.addEventListener('load', function (e) {
     document.body.appendChild(devConsole);
+    var game = window.game;
+    if (!game) return;
     setInterval(function () {
-        label.textContent = 'fps:' + (window['fps'] + " || '_'");
+        label.textContent = 'fps:' + ("" + game.fps) || "?";
     }, 1000);
 });
 window.addEventListener('error', function (e) {
@@ -382,7 +384,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
 </head>
 
 <body ontouchstart="">
-<script src="bundle.js?56"></script>
+<script src="bundle.js?92"></script>
 </body>
 
 </html>

@@ -219,14 +219,17 @@ export class TextField extends Container {
         });
         this.on(MOUSE_EVENTS.mouseMove, (p: MousePoint) => {
             if (!p.isMouseDown) return;
-            this.scrollInfo.prevPoint = {
-                point: this.scrollInfo.lastPoint.point,
-                time: this.scrollInfo.lastPoint.time,
-            };
+            let lastPoint = this.scrollInfo.lastPoint;
             this.scrollInfo.lastPoint = {
                 point: p,
-                time: Date.now()
+                time:  Date.now()
             };
+            if (!lastPoint) lastPoint = this.scrollInfo.lastPoint;
+            this.scrollInfo.prevPoint = {
+                point: lastPoint.point,
+                time:  lastPoint.time,
+            };
+
 
             this.scrollInfo.offset -=
                 this.scrollInfo.lastPoint.point.screenY - this.scrollInfo.prevPoint.point.screenY;

@@ -57,7 +57,7 @@ export class Game extends CommonObject {
     private _deltaTime:number = 0;
     private _currentScene:Scene = null;
     private _running:boolean = false;
-    private destroyed:boolean = false;
+    private _destroyed:boolean = false;
 
     renderer:AbstractRenderer = null;
     audioPlayer:AudioPlayer;
@@ -169,7 +169,7 @@ export class Game extends CommonObject {
     }
 
     update(){
-        if (this.destroyed) return;
+        if (this._destroyed) return;
         this._lastTime = this._currTime;
         this._currTime = Date.now();
         let currTimeCopy = this._currTime;
@@ -178,7 +178,6 @@ export class Game extends CommonObject {
 
         if (DEBUG) {
             this.fps = ~~(1000 / this._deltaTime);
-            window.fps = this.fps;
             let renderError = this.renderer.getError();
             if (renderError) throw new DebugError(`render error with code ${renderError}`);
         }
@@ -208,12 +207,12 @@ export class Game extends CommonObject {
     }
 
     destroy(){
-        this.destroyed = true;
+        this._destroyed = true;
         this.keyboard.destroy();
         this.mouse.destroy();
         this.renderer.cancelFullScreen();
         BaseAbstractBehaviour.destroyAll();
-        setTimeout(()=>{ // wait for rendering stopped
+        let tid = setTimeout(()=>{ // wait for rendering stopped
             this.renderer.destroy();
         },1000);
         let lastTimeout:number = setTimeout(()=>{},0);
@@ -221,10 +220,11 @@ export class Game extends CommonObject {
         let lastInterval:number = setInterval(()=>{},0);
         const delta:number = 16;
         let lastMaxVal = Math.max(lastTimeout,lastInterval) + delta;
-        for (let i=0;i<lastMaxVal;i++) {
-            clearInterval(i);
-            clearTimeout(i);
-        }
+        // for (let i=0;i<lastMaxVal;i++) {
+        //     if (i===tid) continue;
+        //     clearInterval(i);
+        //     clearTimeout(i);
+        // }
     }
 
 }

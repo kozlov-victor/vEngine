@@ -2396,13 +2396,15 @@ var TextField = /** @class */function (_super) {
         });
         this.on(mouse_1.MOUSE_EVENTS.mouseMove, function (p) {
             if (!p.isMouseDown) return;
-            _this.scrollInfo.prevPoint = {
-                point: _this.scrollInfo.lastPoint.point,
-                time: _this.scrollInfo.lastPoint.time
-            };
+            var lastPoint = _this.scrollInfo.lastPoint;
             _this.scrollInfo.lastPoint = {
                 point: p,
                 time: Date.now()
+            };
+            if (!lastPoint) lastPoint = _this.scrollInfo.lastPoint;
+            _this.scrollInfo.prevPoint = {
+                point: lastPoint.point,
+                time: lastPoint.time
             };
             _this.scrollInfo.offset -= _this.scrollInfo.lastPoint.point.screenY - _this.scrollInfo.prevPoint.point.screenY;
             if (_this.scrollInfo.offset > _this.scrollInfo.scrollHeight - _this.height) _this.scrollInfo.offset = _this.scrollInfo.scrollHeight - _this.height;
@@ -2415,8 +2417,46 @@ var TextField = /** @class */function (_super) {
         this.on(mouse_1.MOUSE_EVENTS.mouseUp, function (p) {
             if (!_this.scrollInfo.lastPoint) return;
             if (!_this.scrollInfo.prevPoint) return;
-            _this.scrollInfo.scrollVelocity = 50 * (_this.scrollInfo.prevPoint.point.screenY - _this.scrollInfo.lastPoint.point.screenY) / (_this.scrollInfo.lastPoint.time - _this.scrollInfo.prevPoint.time);
+            if (_this.scrollInfo.lastPoint.time === _this.scrollInfo.prevPoint.time) {
+                _this.scrollInfo.scrollVelocity = 0;
+            } else {
+                _this.scrollInfo.scrollVelocity = 1000 * (_this.scrollInfo.prevPoint.point.screenY - _this.scrollInfo.lastPoint.point.screenY) / (_this.scrollInfo.lastPoint.time - _this.scrollInfo.prevPoint.time);
+            }
+            _this.scrollInfo.deceleration = 0;
         });
+    };
+    TextField.prototype.update = function (time, delta) {
+        _super.prototype.update.call(this, time, delta);
+        if (this.scrollInfo.scrollVelocity) {
+            this.scrollInfo.offset += this.scrollInfo.scrollVelocity * delta / 1000;
+            if (this.scrollInfo.offset > this.scrollInfo.scrollHeight - this.height) {
+                this.scrollInfo.offset = this.scrollInfo.scrollHeight - this.height;
+                this.scrollInfo.scrollVelocity = 0;
+                this.scrollInfo.deceleration = 0;
+            }
+            if (this.scrollInfo.offset < 0) {
+                this.scrollInfo.offset = 0;
+                this.scrollInfo.scrollVelocity = 0;
+                this.scrollInfo.deceleration = 0;
+            }
+        }
+        this.scrollInfo.deceleration = this.scrollInfo.deceleration + 0.5 / delta;
+        if (delta > 1000) {
+            this.scrollInfo.scrollVelocity = 0;
+            this.scrollInfo.deceleration = 0;
+        }
+        if (this.scrollInfo.scrollVelocity > 0) this.scrollInfo.scrollVelocity -= this.scrollInfo.deceleration;else if (this.scrollInfo.scrollVelocity < 0) this.scrollInfo.scrollVelocity += this.scrollInfo.deceleration;
+        if (mathEx_1.closeTo(this.scrollInfo.scrollVelocity, 0, 3)) {
+            this.scrollInfo.scrollVelocity = 0;
+            this.scrollInfo.deceleration = 0;
+        }
+        // if (!document.getElementById('debug')) {
+        //     let d = document.createElement('debug');
+        //     d.id = 'debug';
+        //     d.style.cssText = 'position: absolute;top:0;left:0;';
+        //     document.body.appendChild(d);
+        // }
+        //document.getElementById('debug').innerHTML = this.scrollInfo.scrollVelocity;
     };
     TextField.prototype.revalidate = function () {
         _super.prototype.revalidate.call(this);
@@ -2494,34 +2534,6 @@ var TextField = /** @class */function (_super) {
         });
         if (!font) throw new debugError_1.DebugError("can not find font with name " + name);
         this.setFont(font);
-    };
-    TextField.prototype.update = function (time, delta) {
-        _super.prototype.update.call(this, time, delta);
-        if (this.scrollInfo.scrollVelocity) {
-            this.scrollInfo.offset += this.scrollInfo.scrollVelocity / delta;
-            if (this.scrollInfo.offset > this.scrollInfo.scrollHeight - this.height) {
-                this.scrollInfo.offset = this.scrollInfo.scrollHeight - this.height;
-                this.scrollInfo.scrollVelocity = 0;
-                this.scrollInfo.deceleration = 0;
-            }
-            if (this.scrollInfo.offset < 0) {
-                this.scrollInfo.offset = 0;
-                this.scrollInfo.scrollVelocity = 0;
-                this.scrollInfo.deceleration = 0;
-            }
-        }
-        this.scrollInfo.deceleration = this.scrollInfo.deceleration + 0.5 / delta;
-        if (this.scrollInfo.scrollVelocity > 0) this.scrollInfo.scrollVelocity -= this.scrollInfo.deceleration;else if (this.scrollInfo.scrollVelocity < 0) this.scrollInfo.scrollVelocity += this.scrollInfo.deceleration;
-        if (mathEx_1.closeTo(this.scrollInfo.scrollVelocity, 0, 0.1)) {
-            this.scrollInfo.scrollVelocity = 0;
-            this.scrollInfo.deceleration = 0;
-        }
-        if (delta > 1000) {
-            this.scrollInfo.scrollVelocity = 0;
-            this.scrollInfo.deceleration = 0;
-        }
-        console.clear();
-        console.log(this.scrollInfo.scrollVelocity);
     };
     TextField.prototype.draw = function () {
         this.game.renderer.lockRect(this.getScreenRect());
@@ -5401,7 +5413,7 @@ var Game = /** @class */function (_super) {
         _this._deltaTime = 0;
         _this._currentScene = null;
         _this._running = false;
-        _this.destroyed = false;
+        _this._destroyed = false;
         _this.renderer = null;
         _this.scale = new point2d_1.Point2d(1, 1);
         _this.pos = new point2d_1.Point2d(0, 0);
@@ -5494,7 +5506,7 @@ var Game = /** @class */function (_super) {
         this._currentScene = scene;
     };
     Game.prototype.update = function () {
-        if (this.destroyed) return;
+        if (this._destroyed) return;
         this._lastTime = this._currTime;
         this._currTime = Date.now();
         var currTimeCopy = this._currTime;
@@ -5502,7 +5514,6 @@ var Game = /** @class */function (_super) {
         this._deltaTime = this._currTime - this._lastTime;
         if (true) {
             this.fps = ~~(1000 / this._deltaTime);
-            window.fps = this.fps;
             var renderError = this.renderer.getError();
             if (renderError) throw new debugError_1.DebugError("render error with code " + renderError);
         }
@@ -5528,15 +5539,12 @@ var Game = /** @class */function (_super) {
         requestAnimationFrame(this.update.bind(this));
     };
     Game.prototype.destroy = function () {
-        var _this = this;
-        this.destroyed = true;
+        this._destroyed = true;
         this.keyboard.destroy();
         this.mouse.destroy();
         this.renderer.cancelFullScreen();
         baseAbstractBehaviour_1.BaseAbstractBehaviour.destroyAll();
-        setTimeout(function () {
-            _this.renderer.destroy();
-        }, 1000);
+        this.renderer.destroy();
         var lastTimeout = setTimeout(function () {}, 0);
         //noinspection TypeScriptValidateTypes
         var lastInterval = setInterval(function () {}, 0);
@@ -9482,7 +9490,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var str = '\n\u041F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u043A\u0430 \u043A \u0438\u0433\u0440\u0435\n\u0421\u043E\u0431\u0435\u0440\u0438\u0442\u0435 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u044B\u0439 \u0445\u043E\u0434 \u0438\u0437 \u0448\u0435\u0441\u0442\u0438 \u0443\u0447\u0430\u0441\u0442\u043A\u043E\u0432 \u043F\u043E\u043B\u044F, \u0443\u0447\u0430\u0441\u0442\u043A\u0438 \u043C\u043E\u0436\u043D\u043E \u043A\u043B\u0430\u0441\u0442\u044C \u043B\u044E\u0431\u043E\u0439 \u0441\u0442\u043E\u0440\u043E\u043D\u043E\u0439 \u0438 \u0432 \u043B\u044E\u0431\u043E\u043C \u043F\u043E\u0440\u044F\u0434\u043A\u0435 \u2014 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u044E\u0442 \u0442\u044B\u0441\u044F\u0447\u0438 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u044B\u0445 \u043A\u043E\u043C\u0431\u0438\u043D\u0430\u0446\u0438\u0439. \u0412 \u043B\u044E\u0431\u043E\u043C \u0441\u043B\u0443\u0447\u0430\u0435 \u0443 \u0432\u0430\u0441 \u0434\u043E\u043B\u0436\u0435\u043D \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C\u0441\u044F \u0435\u0434\u0438\u043D\u044B\u0439 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u044B\u0439 \u0445\u043E\u0434 \u0441 36 \u0434\u0435\u043B\u0435\u043D\u0438\u044F\u043C\u0438-\u0441\u0438\u043C\u0432\u043E\u043B\u0430\u043C\u0438. \u041A\u0430\u0436\u0434\u044B\u0439 \u0438\u0433\u0440\u043E\u043A \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442 6 \u0444\u0438\u0448\u0435\u043A \u043F\u0438\u0440\u0430\u0442\u043E\u0432 \u043E\u0434\u043D\u043E\u0433\u043E \u0446\u0432\u0435\u0442\u0430. \u041D\u0435\u043D\u0443\u0436\u043D\u044B\u0435 \u0444\u0438\u0448\u043A\u0438 \u0443\u0431\u0435\u0440\u0438\u0442\u0435 \u0432 \u043A\u043E\u0440\u043E\u0431\u043A\u0443. \u0418\u0433\u0440\u043E\u043A\u0438 \u0441\u0442\u0430\u0432\u044F\u0442 \u0432\u0441\u0435\u0445 \u0441\u0432\u043E\u0438\u0445 \u043F\u0438\u0440\u0430\u0442\u043E\u0432 \u0441 \u043E\u0434\u043D\u043E\u0433\u043E \u043A\u043E\u043D\u0446\u0430 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u043E\u0433\u043E \u0445\u043E\u0434\u0430, \u0430 \u0443 \u0434\u0440\u0443\u0433\u043E\u0433\u043E \u0448\u0432\u0430\u0440\u0442\u0443\u0435\u0442\u0441\u044F \u0448\u043B\u044E\u043F\u043A\u0430. \u041E\u0442\u043B\u043E\u0436\u0438\u0442\u0435 \u043A\u0430\u0440\u0442\u0443 \u0441\u043E \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439. \u0415\u0441\u043B\u0438 \u0438\u0433\u0440\u0430\u0435\u0442\u0435 \u0432 \xAB\u0422\u043E\u0440\u0442\u0443\u0433\u0443\xBB, \u043E\u043D\u0430 \u043F\u043E\u043D\u0430\u0434\u043E\u0431\u0438\u0442\u0441\u044F \u0447\u0443\u0442\u044C \u043F\u043E\u0437\u0436\u0435, \u0430 \u0434\u043B\u044F \xAB\u042F\u043C\u0430\u0439\u043A\u0438\xBB \u0441\u043E\u0432\u0441\u0435\u043C \u043D\u0435 \u043F\u0440\u0438\u0433\u043E\u0434\u0438\u0442\u0441\u044F. \u041F\u0435\u0440\u0435\u0442\u0430\u0441\u0443\u0439\u0442\u0435 \u043A\u043E\u043B\u043E\u0434\u0443 \u0438 \u0441\u0434\u0430\u0439\u0442\u0435 \u043A\u0430\u0436\u0434\u043E\u043C\u0443 \u0438\u0433\u0440\u043E\u043A\u0443 \u043F\u043E 6 \u043A\u0430\u0440\u0442.\n\u0415\u0441\u043B\u0438 \u0432\u044B \u0435\u0449\u0451 \u043D\u0435 \u0440\u0435\u0448\u0438\u043B\u0438, \u043F\u043E \u043A\u0430\u043A\u043E\u043C\u0443 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u0443 \u043F\u0440\u0430\u0432\u0438\u043B \u0438\u0433\u0440\u0430\u0442\u044C, \u0441\u0430\u043C\u043E\u0435 \u0432\u0440\u0435\u043C\u044F \u0441\u0434\u0435\u043B\u0430\u0442\u044C \u044D\u0442\u043E.\n"\u042F\u043C\u0430\u0439\u043A\u0430" - \u043A\u0430\u0440\u0442\u044B \u0441\u043A\u0440\u044B\u0442\u044B, \u043F\u043E\u0431\u0435\u0434\u0430 \u0432 \u0431\u043E\u043B\u044C\u0448\u0435\u0439 \u0441\u0442\u0435\u043F\u0435\u043D\u0438 \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043E\u0442 \u0432\u0435\u0437\u0435\u043D\u0438\u044F.\u0418\u0433\u0440\u043E\u043A\u0438 \u0434\u0435\u0440\u0436\u0430\u0442 \u0441\u0432\u043E\u0438 \u043A\u0430\u0440\u0442\u044B \u043D\u0430 \u0440\u0443\u043A\u0435, \u043D\u0435 \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u044F \u0441\u043E\u043F\u0435\u0440\u043D\u0438\u043A\u0430\u043C. \u041A\u043E\u043B\u043E\u0434\u0430 \u043B\u0435\u0436\u0438\u0442 \u0440\u044F\u0434\u043E\u043C \u0441 \u043F\u043E\u043B\u0435\u043C \u0442\u0430\u043A\u0436\u0435 \u0432\u0437\u0430\u043A\u0440\u044B\u0442\u0443\u044E; \u0432 \u0445\u043E\u0434\u0435 \u043F\u0430\u0440\u0442\u0438\u0438 \u0438\u0433\u0440\u043E\u043A\u0438 \u0431\u0435\u0440\u0443\u0442 \u043A\u0430\u0440\u0442\u044B \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B.\n"\u0422\u043E\u0440\u0442\u0443\u0433\u0430" - \u043A\u0430\u0440\u0442\u044B \u0440\u0430\u0441\u043A\u0440\u044B\u0442\u044B, \u043F\u043E\u0431\u0435\u0434\u0430 \u0432 \u0431\u043E\u043B\u044C\u0448\u0435\u0439 \u0441\u0442\u0435\u043F\u0435\u043D\u0438 \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043E\u0442 \u0440\u0430\u0441\u0447\u0451\u0442\u0430.\u0418\u0433\u0440\u043E\u043A\u0438 \u0434\u0435\u0440\u0436\u0430\u0442 \u0441\u0432\u043E\u0438 \u043A\u0430\u0440\u0442\u044B \u0432 \u043E\u0442\u043A\u0440\u044B\u0442\u0443\u044E, \u043D\u0430 \u0441\u0442\u043E\u043B\u0435 \u043F\u0435\u0440\u0435\u0434 \u0441\u043E\u0431\u043E\u0439. \u0420\u0430\u0437\u0434\u0430\u0432 \u043A\u0430\u0440\u0442\u044B \u0438\u0433\u0440\u043E\u043A\u0430\u043C, \u0432\u044B\u043B\u043E\u0436\u0438\u0442\u0435 \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B \u043F\u043E\u0441\u0435\u0440\u0435\u0434\u0438\u043D\u0435 \u0441\u0442\u043E\u043B\u0430 \u0440\u044F\u0434 \u0438\u0437 12 \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0445 \u043A\u0430\u0440\u0442. \u041A\u0430\u0440\u0442\u0443 \u0441\u043E \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439 \u043F\u043E\u043B\u043E\u0436\u0438\u0442\u0435 \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u043E \u0440\u044F\u0434\u043E\u043C \u0441 \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u043C\u0438 \u043A\u0430\u0440\u0442\u0430\u043C\u0438 (\u0442\u0430\u043A, \u0447\u0442\u043E\u0431\u044B \u043E\u043D\u0430 \u0443\u043A\u0430\u0437\u044B\u0432\u0430\u043B\u0430 \u0432\u043F\u0440\u0430\u0432\u043E \u0438\u043B\u0438 \u0432\u043B\u0435\u0432\u043E). \u0412 \u0445\u043E\u0434\u0435 \u043F\u0430\u0440\u0442\u0438\u0438 \u0438\u0433\u0440\u043E\u043A\u0438 \u0431\u0435\u0440\u0443\u0442 \u043A\u0430\u0440\u0442\u044B \u0438\u0437 \u044D\u0442\u043E\u0433\u043E \u0440\u044F\u0434\u0430 \u0432 \u043F\u043E\u0440\u044F\u0434\u043A\u0435, \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u043E\u043C \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439. \u041A\u043E\u0433\u0434\u0430 \u043A\u0430\u0440\u0442\u044B \u0432 \u0440\u044F\u0434\u0443 \u0437\u0430\u043A\u043E\u043D\u0447\u0430\u0442\u0441\u044F, \u0432\u044B\u043B\u043E\u0436\u0438\u0442\u0435 12 \u043D\u043E\u0432\u044B\u0445 \u043A\u0430\u0440\u0442 \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B.\n';
+var str = '\u041F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u043A\u0430 \u043A \u0438\u0433\u0440\u0435\n\u0421\u043E\u0431\u0435\u0440\u0438\u0442\u0435 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u044B\u0439 \u0445\u043E\u0434 \u0438\u0437 \u0448\u0435\u0441\u0442\u0438 \u0443\u0447\u0430\u0441\u0442\u043A\u043E\u0432 \u043F\u043E\u043B\u044F, \u0443\u0447\u0430\u0441\u0442\u043A\u0438 \u043C\u043E\u0436\u043D\u043E \u043A\u043B\u0430\u0441\u0442\u044C \u043B\u044E\u0431\u043E\u0439 \u0441\u0442\u043E\u0440\u043E\u043D\u043E\u0439 \u0438 \u0432 \u043B\u044E\u0431\u043E\u043C \u043F\u043E\u0440\u044F\u0434\u043A\u0435 - \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u044E\u0442 \u0442\u044B\u0441\u044F\u0447\u0438 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u044B\u0445 \u043A\u043E\u043C\u0431\u0438\u043D\u0430\u0446\u0438\u0439. \u0412 \u043B\u044E\u0431\u043E\u043C \u0441\u043B\u0443\u0447\u0430\u0435 \u0443 \u0432\u0430\u0441 \u0434\u043E\u043B\u0436\u0435\u043D \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C\u0441\u044F \u0435\u0434\u0438\u043D\u044B\u0439 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u044B\u0439 \u0445\u043E\u0434 \u0441 36 \u0434\u0435\u043B\u0435\u043D\u0438\u044F\u043C\u0438-\u0441\u0438\u043C\u0432\u043E\u043B\u0430\u043C\u0438. \u041A\u0430\u0436\u0434\u044B\u0439 \u0438\u0433\u0440\u043E\u043A \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442 6 \u0444\u0438\u0448\u0435\u043A \u043F\u0438\u0440\u0430\u0442\u043E\u0432 \u043E\u0434\u043D\u043E\u0433\u043E \u0446\u0432\u0435\u0442\u0430. \u041D\u0435\u043D\u0443\u0436\u043D\u044B\u0435 \u0444\u0438\u0448\u043A\u0438 \u0443\u0431\u0435\u0440\u0438\u0442\u0435 \u0432 \u043A\u043E\u0440\u043E\u0431\u043A\u0443. \u0418\u0433\u0440\u043E\u043A\u0438 \u0441\u0442\u0430\u0432\u044F\u0442 \u0432\u0441\u0435\u0445 \u0441\u0432\u043E\u0438\u0445 \u043F\u0438\u0440\u0430\u0442\u043E\u0432 \u0441 \u043E\u0434\u043D\u043E\u0433\u043E \u043A\u043E\u043D\u0446\u0430 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u043E\u0433\u043E \u0445\u043E\u0434\u0430, \u0430 \u0443 \u0434\u0440\u0443\u0433\u043E\u0433\u043E \u0448\u0432\u0430\u0440\u0442\u0443\u0435\u0442\u0441\u044F \u0448\u043B\u044E\u043F\u043A\u0430. \u041E\u0442\u043B\u043E\u0436\u0438\u0442\u0435 \u043A\u0430\u0440\u0442\u0443 \u0441\u043E \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439. \u0415\u0441\u043B\u0438 \u0438\u0433\u0440\u0430\u0435\u0442\u0435 \u0432 \xAB\u0422\u043E\u0440\u0442\u0443\u0433\u0443\xBB, \u043E\u043D\u0430 \u043F\u043E\u043D\u0430\u0434\u043E\u0431\u0438\u0442\u0441\u044F \u0447\u0443\u0442\u044C \u043F\u043E\u0437\u0436\u0435, \u0430 \u0434\u043B\u044F \xAB\u042F\u043C\u0430\u0439\u043A\u0438\xBB \u0441\u043E\u0432\u0441\u0435\u043C \u043D\u0435 \u043F\u0440\u0438\u0433\u043E\u0434\u0438\u0442\u0441\u044F. \u041F\u0435\u0440\u0435\u0442\u0430\u0441\u0443\u0439\u0442\u0435 \u043A\u043E\u043B\u043E\u0434\u0443 \u0438 \u0441\u0434\u0430\u0439\u0442\u0435 \u043A\u0430\u0436\u0434\u043E\u043C\u0443 \u0438\u0433\u0440\u043E\u043A\u0443 \u043F\u043E 6 \u043A\u0430\u0440\u0442.\n\u0415\u0441\u043B\u0438 \u0432\u044B \u0435\u0449\u0451 \u043D\u0435 \u0440\u0435\u0448\u0438\u043B\u0438, \u043F\u043E \u043A\u0430\u043A\u043E\u043C\u0443 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u0443 \u043F\u0440\u0430\u0432\u0438\u043B \u0438\u0433\u0440\u0430\u0442\u044C, \u0441\u0430\u043C\u043E\u0435 \u0432\u0440\u0435\u043C\u044F \u0441\u0434\u0435\u043B\u0430\u0442\u044C \u044D\u0442\u043E.\n"\u042F\u043C\u0430\u0439\u043A\u0430" - \u043A\u0430\u0440\u0442\u044B \u0441\u043A\u0440\u044B\u0442\u044B, \u043F\u043E\u0431\u0435\u0434\u0430 \u0432 \u0431\u043E\u043B\u044C\u0448\u0435\u0439 \u0441\u0442\u0435\u043F\u0435\u043D\u0438 \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043E\u0442 \u0432\u0435\u0437\u0435\u043D\u0438\u044F.\u0418\u0433\u0440\u043E\u043A\u0438 \u0434\u0435\u0440\u0436\u0430\u0442 \u0441\u0432\u043E\u0438 \u043A\u0430\u0440\u0442\u044B \u043D\u0430 \u0440\u0443\u043A\u0435, \u043D\u0435 \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u044F \u0441\u043E\u043F\u0435\u0440\u043D\u0438\u043A\u0430\u043C. \u041A\u043E\u043B\u043E\u0434\u0430 \u043B\u0435\u0436\u0438\u0442 \u0440\u044F\u0434\u043E\u043C \u0441 \u043F\u043E\u043B\u0435\u043C \u0442\u0430\u043A\u0436\u0435 \u0432\u0437\u0430\u043A\u0440\u044B\u0442\u0443\u044E; \u0432 \u0445\u043E\u0434\u0435 \u043F\u0430\u0440\u0442\u0438\u0438 \u0438\u0433\u0440\u043E\u043A\u0438 \u0431\u0435\u0440\u0443\u0442 \u043A\u0430\u0440\u0442\u044B \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B.\n"\u0422\u043E\u0440\u0442\u0443\u0433\u0430" - \u043A\u0430\u0440\u0442\u044B \u0440\u0430\u0441\u043A\u0440\u044B\u0442\u044B, \u043F\u043E\u0431\u0435\u0434\u0430 \u0432 \u0431\u043E\u043B\u044C\u0448\u0435\u0439 \u0441\u0442\u0435\u043F\u0435\u043D\u0438 \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043E\u0442 \u0440\u0430\u0441\u0447\u0451\u0442\u0430.\u0418\u0433\u0440\u043E\u043A\u0438 \u0434\u0435\u0440\u0436\u0430\u0442 \u0441\u0432\u043E\u0438 \u043A\u0430\u0440\u0442\u044B \u0432 \u043E\u0442\u043A\u0440\u044B\u0442\u0443\u044E, \u043D\u0430 \u0441\u0442\u043E\u043B\u0435 \u043F\u0435\u0440\u0435\u0434 \u0441\u043E\u0431\u043E\u0439. \u0420\u0430\u0437\u0434\u0430\u0432 \u043A\u0430\u0440\u0442\u044B \u0438\u0433\u0440\u043E\u043A\u0430\u043C, \u0432\u044B\u043B\u043E\u0436\u0438\u0442\u0435 \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B \u043F\u043E\u0441\u0435\u0440\u0435\u0434\u0438\u043D\u0435 \u0441\u0442\u043E\u043B\u0430 \u0440\u044F\u0434 \u0438\u0437 12 \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0445 \u043A\u0430\u0440\u0442. \u041A\u0430\u0440\u0442\u0443 \u0441\u043E \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439 \u043F\u043E\u043B\u043E\u0436\u0438\u0442\u0435 \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u043E \u0440\u044F\u0434\u043E\u043C \u0441 \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u043C\u0438 \u043A\u0430\u0440\u0442\u0430\u043C\u0438 (\u0442\u0430\u043A, \u0447\u0442\u043E\u0431\u044B \u043E\u043D\u0430 \u0443\u043A\u0430\u0437\u044B\u0432\u0430\u043B\u0430 \u0432\u043F\u0440\u0430\u0432\u043E \u0438\u043B\u0438 \u0432\u043B\u0435\u0432\u043E). \u0412 \u0445\u043E\u0434\u0435 \u043F\u0430\u0440\u0442\u0438\u0438 \u0438\u0433\u0440\u043E\u043A\u0438 \u0431\u0435\u0440\u0443\u0442 \u043A\u0430\u0440\u0442\u044B \u0438\u0437 \u044D\u0442\u043E\u0433\u043E \u0440\u044F\u0434\u0430 \u0432 \u043F\u043E\u0440\u044F\u0434\u043A\u0435, \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u043E\u043C \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439. \u041A\u043E\u0433\u0434\u0430 \u043A\u0430\u0440\u0442\u044B \u0432 \u0440\u044F\u0434\u0443 \u0437\u0430\u043A\u043E\u043D\u0447\u0430\u0442\u0441\u044F, \u0432\u044B\u043B\u043E\u0436\u0438\u0442\u0435 12 \u043D\u043E\u0432\u044B\u0445 \u043A\u0430\u0440\u0442 \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B.';
 
 var GameSceneBehaviour = exports.GameSceneBehaviour = function () {
     function GameSceneBehaviour() {
@@ -9505,8 +9513,8 @@ var GameSceneBehaviour = exports.GameSceneBehaviour = function () {
                     },
                     children: [{
                         TextField: {
-                            maxWidth: 1000,
-                            maxHeight: 500,
+                            maxWidth: 990,
+                            maxHeight: 480,
                             pos: { x: 10, y: 10 },
                             fontName: 'scriptFont',
                             text: str,
@@ -9514,6 +9522,19 @@ var GameSceneBehaviour = exports.GameSceneBehaviour = function () {
                             border: {
                                 type: 'Border'
                             }
+                        }
+                    }, {
+                        Button: {
+                            pos: { x: 360, y: 500 },
+                            fontName: 'scriptFont',
+                            text: "Продолжить",
+                            paddings: [15, 25],
+                            background: {
+                                type: 'NinePatchImage',
+                                resourceMap: { main: 'resources/button.png' },
+                                ABCD: 20
+                            },
+                            on: ['click', function () {}]
                         }
                     }]
                 }

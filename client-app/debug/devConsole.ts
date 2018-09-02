@@ -21,9 +21,10 @@ devConsole.appendChild(label);
 
 window.addEventListener('load',(e:Event)=>{
     document.body.appendChild(devConsole);
-
+    let game = (window as any).game;
+    if (!game) return;
     setInterval(function(){
-        label.textContent = 'fps:'+`${window['fps']} || '_'`;
+        label.textContent = 'fps:'+`${game.fps}`||`?`;
     },1000);
 
 });
