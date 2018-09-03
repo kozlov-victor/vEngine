@@ -46,7 +46,7 @@ export class IntroSceneBehaviour {
                                 self.toGameScene();
                             }]
                         }
-                    },
+                    }
                 ]
             }
         });

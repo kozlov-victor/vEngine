@@ -1,10 +1,9 @@
-import {Container} from "../generic/container";
 import {Font} from "../../font";
 import {Rect} from "../../../../core/geometry/rect";
 import {DebugError} from "../../../../debugError";
 import {Rectangle} from "../drawable/rectangle";
-import {MousePoint, MOUSE_EVENTS} from "../../../../core/control/mouse";
-import {closeTo} from "../../../../core/mathEx";
+import {ScrollableContainer} from "../generic/scrollableContainer";
+import {VScroll} from "./vScroll";
 
 declare const DEBUG: boolean;
 type char = string;
@@ -185,10 +184,12 @@ class StringInfo extends CharsHolder {
     }
 }
 
-export class TextField extends Container {
+export class TextField extends ScrollableContainer {
 
     readonly type = 'TextField';
     private _textInfo: TextInfo;
+    private _vScroll: VScroll;
+
     text: string = '';
     font: Font = null;
     textAlign: TEXT_ALIGN = TEXT_ALIGN.LEFT;
@@ -196,108 +197,20 @@ export class TextField extends Container {
     maxHeight: number = 0;
     border: Rectangle = null;
 
-    private scrollInfo: any = {offset: 0, scrollVelocity: 0, scrollHeight: 0, deceleration: 0};
-
     constructor(game) {
         super(game);
         this._textInfo = new TextInfo(this);
-        this._listenScroll();
+        this.initScrolling({vertical: true});
+        this._vScroll = new VScroll(game);
+        this._vScroll.width = 5;
+        this.appendChild(this._vScroll);
+        this.on('scrollVertical',()=>{
+            this._vScroll.maxValue = this.vScrollInfo.scrollHeight;
+            this._vScroll.value = this.vScrollInfo.offset;
+            this._vScroll.onGeometryChanged();
+        });
     }
 
-    private _listenScroll() {
-        this.on(MOUSE_EVENTS.mouseDown, (p: MousePoint) => {
-            this.scrollInfo.lastPoint = {
-                point: p,
-                time: Date.now()
-            };
-            this.scrollInfo.prevPoint = {
-                point: this.scrollInfo.lastPoint.point,
-                time: this.scrollInfo.lastPoint.time
-            };
-            this.scrollInfo.scrollVelocity = 0;
-            this.scrollInfo.deceleration = 0;
-        });
-        this.on(MOUSE_EVENTS.mouseMove, (p: MousePoint) => {
-            if (!p.isMouseDown) return;
-            let lastPoint = this.scrollInfo.lastPoint;
-            this.scrollInfo.lastPoint = {
-                point: p,
-                time:  Date.now()
-            };
-            if (!lastPoint) lastPoint = this.scrollInfo.lastPoint;
-            this.scrollInfo.prevPoint = {
-                point: lastPoint.point,
-                time:  lastPoint.time,
-            };
-
-
-            this.scrollInfo.offset -=
-                this.scrollInfo.lastPoint.point.screenY - this.scrollInfo.prevPoint.point.screenY;
-
-            if (this.scrollInfo.offset > this.scrollInfo.scrollHeight - this.height)
-                this.scrollInfo.offset = this.scrollInfo.scrollHeight - this.height;
-            if (this.scrollInfo.offset < 0) this.scrollInfo.offset = 0;
-        });
-        this.on(MOUSE_EVENTS.scroll, (p: MousePoint) => {
-            this.scrollInfo.scrollVelocity = -p.nativeEvent.wheelDelta;
-            this.scrollInfo.deceleration = 0;
-        });
-        this.on(MOUSE_EVENTS.mouseUp, (p: MousePoint) => {
-            if (!this.scrollInfo.lastPoint) return;
-            if (!this.scrollInfo.prevPoint) return;
-            if (this.scrollInfo.lastPoint.time === this.scrollInfo.prevPoint.time) {
-                this.scrollInfo.scrollVelocity = 0;
-            }
-            else {
-                this.scrollInfo.scrollVelocity = 1000 *
-                    (this.scrollInfo.prevPoint.point.screenY - this.scrollInfo.lastPoint.point.screenY) /
-                    (this.scrollInfo.lastPoint.time - this.scrollInfo.prevPoint.time);
-            }
-            this.scrollInfo.deceleration = 0;
-        });
-
-    }
-
-
-    update(time: number, delta: number) {
-        super.update(time, delta);
-        if (this.scrollInfo.scrollVelocity) {
-            this.scrollInfo.offset += this.scrollInfo.scrollVelocity * delta /1000;
-            if (this.scrollInfo.offset > this.scrollInfo.scrollHeight - this.height) {
-                this.scrollInfo.offset = this.scrollInfo.scrollHeight - this.height;
-                this.scrollInfo.scrollVelocity = 0;
-                this.scrollInfo.deceleration = 0;
-            }
-
-            if (this.scrollInfo.offset < 0) {
-                this.scrollInfo.offset = 0;
-                this.scrollInfo.scrollVelocity = 0;
-                this.scrollInfo.deceleration = 0;
-            }
-        }
-        this.scrollInfo.deceleration = this.scrollInfo.deceleration + 0.5 / delta;
-
-        if (delta>1000) {
-            this.scrollInfo.scrollVelocity = 0;
-            this.scrollInfo.deceleration = 0;
-        }
-
-        if (this.scrollInfo.scrollVelocity > 0) this.scrollInfo.scrollVelocity -= this.scrollInfo.deceleration;
-        else if (this.scrollInfo.scrollVelocity < 0) this.scrollInfo.scrollVelocity += this.scrollInfo.deceleration;
-        if (closeTo(this.scrollInfo.scrollVelocity, 0,3)) {
-            this.scrollInfo.scrollVelocity = 0;
-            this.scrollInfo.deceleration = 0;
-        }
-
-        // if (!document.getElementById('debug')) {
-        //     let d = document.createElement('debug');
-        //     d.id = 'debug';
-        //     d.style.cssText = 'position: absolute;top:0;left:0;';
-        //     document.body.appendChild(d);
-        // }
-        //document.getElementById('debug').innerHTML = this.scrollInfo.scrollVelocity;
-
-    }
 
     revalidate() {
         super.revalidate();
@@ -354,12 +267,21 @@ export class TextField extends Container {
         this.height = textInfo.height;
         if (this.maxHeight !== 0 && this.height > this.maxHeight) {
             this.height = this.maxHeight;
-            this.scrollInfo.scrollHeight = textInfo.height;
+            this.vScrollInfo.scrollHeight = textInfo.height;
+            this.vScrollInfo.enabled = true;
+            this._vScroll.enabled = true;
+        } else {
+            this.vScrollInfo.enabled = false;
+            this._vScroll.enabled = false;
         }
         if (this.border) {
             this.border.width = this.width;
             this.border.height = this.height;
         }
+        this._vScroll.height = this.height;
+        this._vScroll.pos.x = this.width - this._vScroll.width - 2;
+        this._vScroll.onGeometryChanged();
+        this.trigger('scrollVertical');
     }
 
     setText(text = '') {
@@ -386,12 +308,12 @@ export class TextField extends Container {
     draw() {
         this.game.renderer.lockRect(this.getScreenRect());
         this.game.renderer.save();
-        if (this.scrollInfo.offset) this.game.renderer.translate(0, -this.scrollInfo.offset, 0);
+        if (this.vScrollInfo.offset) this.game.renderer.translate(0, -this.vScrollInfo.offset, 0);
 
         for (let charInfo of this._textInfo.allCharsCached) {
 
-            if (charInfo.destRect.y - this.scrollInfo.offset > this.height) continue;
-            if (charInfo.destRect.y + charInfo.destRect.height - this.scrollInfo.offset < 0) continue;
+            if (charInfo.destRect.y - this.vScrollInfo.offset > this.height) continue;
+            if (charInfo.destRect.y + charInfo.destRect.height - this.vScrollInfo.offset < 0) continue;
 
             this.game.renderer.drawImage(
                 this.font.getDefaultResourcePath(), charInfo.sourceRect, charInfo.destRect
