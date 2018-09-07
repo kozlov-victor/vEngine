@@ -47,21 +47,15 @@ export class Layer extends BaseModel implements IParentChild{
 
     update(currTime,deltaTime){
         let all = this.children;
-        let i = all.length;
-        let l = i-1;
-        while(i--){
-            let obj = all[l-i];
-            obj && obj.update(currTime,deltaTime);
+        for (let obj of all) {
+            obj.update(currTime,deltaTime);
         }
     }
 
     render(){
         let all = this.children;
-        let i = all.length;
-        let l = i-1;
-        while(i--){
-            let obj = all[l-i];
-            obj && obj.render();
+        for (let obj of all) {
+            obj.render();
         }
     }
 }

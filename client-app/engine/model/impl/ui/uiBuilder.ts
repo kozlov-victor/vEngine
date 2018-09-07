@@ -57,18 +57,14 @@ export class UIBuilder {
                 return;
             }
 
-
-            // let Cl:Clazz<Container> = allUIClasses[propName] as Clazz<Container>;
-            // if (Cl) {
-            //     let child:Container;
-            //     if (appendChildren) child = new Cl(this.game);
-            //     else child = instance;
-            //     this._resolveProperties(child,desc[propName],appendChildren);
-            //     if (appendChildren) instance.appendChild(child);
-            // }
-
-
-            else {
+            else if (allUIClasses[propName]) {
+                let Cl:Clazz<Container> = allUIClasses[propName] as Clazz<Container>;
+                let child:Container;
+                if (appendChildren) child = new Cl(this.game);
+                else child = instance;
+                this._resolveProperties(child,desc[propName],appendChildren);
+                if (appendChildren) instance.appendChild(child);
+            } else {
                 let setterName = this._normalizeSetterName(propName);
                 let hasProperty:boolean = propName in instance;
                 let hasSetter:boolean = setterName in instance;
@@ -113,7 +109,8 @@ export class UIBuilder {
         if (DEBUG && !Cl) throw new DebugError(`no such ui class: ${firstKey}`);
         let instance:Container = new Cl(this.game);
         this._resolveProperties(instance,desc[firstKey],true);
-        instance.testLayout();
+        (instance as AbsoluteLayout).testLayout();
+        (window as any).l = instance;
         return instance;
     }
 

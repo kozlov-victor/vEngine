@@ -4843,20 +4843,16 @@ var Layer = function (_super) {
     };
     Layer.prototype.update = function (currTime, deltaTime) {
         var all = this.children;
-        var i = all.length;
-        var l = i - 1;
-        while (i--) {
-            var obj = all[l - i];
-            obj && obj.update(currTime, deltaTime);
+        for (var _i = 0, all_1 = all; _i < all_1.length; _i++) {
+            var obj = all_1[_i];
+            obj.update(currTime, deltaTime);
         }
     };
     Layer.prototype.render = function () {
         var all = this.children;
-        var i = all.length;
-        var l = i - 1;
-        while (i--) {
-            var obj = all[l - i];
-            obj && obj.render();
+        for (var _i = 0, all_2 = all; _i < all_2.length; _i++) {
+            var obj = all_2[_i];
+            obj.render();
         }
     };
     return Layer;
@@ -8343,14 +8339,6 @@ var Scene = function (_super) {
         this.game.repository.getArray('ParticleSystem').forEach(function (ps) {
             ps.render();
         });
-        if (true) {
-            this.game.renderer.restore();
-            if (this.game.renderer.debugTextField) {
-                this.game.renderer.debugTextField.update(this.game.getTime(), this.game.getDeltaTime());
-                this.game.renderer.debugTextField.render();
-            }
-            this.game.renderer.restore();
-        }
         renderer.flipFrameBuffer(this.filters);
     };
     return Scene;
@@ -8793,9 +8781,8 @@ var UIBuilder = function () {
                     instance.appendChild(child);
                 });
                 return;
-            }
-            var Cl = allUIClasses[propName];
-            if (Cl) {
+            } else if (allUIClasses[propName]) {
+                var Cl = allUIClasses[propName];
                 var child = void 0;
                 if (appendChildren) child = new Cl(_this.game);else child = instance;
                 _this._resolveProperties(child, desc[propName], appendChildren);
@@ -9787,8 +9774,8 @@ var SetFieldSceneBehaviour = exports.SetFieldSceneBehaviour = function () {
                                     children: [{
                                         Rectangle: {
                                             pos: { x: 20, y: 20 },
-                                            width: 10,
-                                            height: 10,
+                                            width: 15,
+                                            height: 15,
                                             fillColor: { r: 255, g: 0, b: 0, a: 255 }
                                         }
                                     }]
@@ -9799,6 +9786,7 @@ var SetFieldSceneBehaviour = exports.SetFieldSceneBehaviour = function () {
                     }]
                 }
             });
+            window.v = bgView;
             this.scene.getLayerByName('bg').prependChild(bgView);
 
             var cards = this.scene.getLayerByName('main').children.filter(function (it) {

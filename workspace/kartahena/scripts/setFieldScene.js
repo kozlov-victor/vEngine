@@ -96,8 +96,8 @@ export class SetFieldSceneBehaviour {
                                             {
                                                 Rectangle: {
                                                     pos: {x:20,y:20},
-                                                    width: 10,
-                                                    height: 10,
+                                                    width: 15,
+                                                    height: 15,
                                                     fillColor: {r:255,g:0,b:0,a:255},
                                                 }
                                             }
