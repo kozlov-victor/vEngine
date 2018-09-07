@@ -2,9 +2,14 @@ import {DebugError} from "../../debugError";
 
 declare const DEBUG:boolean;
 
+
+interface EventsHolder {
+    [name:string]:Function[]
+}
+
 export class EventEmitter{
 
-    private events:{[name:string]:Array<Function>} = {};
+    private events:EventsHolder = {};
 
     constructor(){
 
@@ -26,10 +31,10 @@ export class EventEmitter{
 
     };
 
-    off(eventName:string,callback){
-        let es = this.events[eventName];
+    off(eventName:string,callback:Function){
+        let es:Function[] = this.events[eventName];
         if (!es) return;
-        let index = es.indexOf(callback);
+        let index:number = es.indexOf(callback);
         if (DEBUG && index==-1) {
             console.error(callback);
             throw new DebugError(`can not remove event listener ${eventName}`);
@@ -38,9 +43,9 @@ export class EventEmitter{
     };
 
     trigger(eventName:string,data:any){
-        let es = this.events[eventName];
+        let es:Function[] = this.events[eventName];
         if (!es) return;
-        let l = es.length;
+        let l:number = es.length;
         while(l--){
             es[l](data);
         }

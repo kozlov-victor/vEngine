@@ -25,7 +25,7 @@ export class AbstractCanvasRenderer extends AbstractRenderer {
             canvas.style.width = `${window.innerWidth}px`;
             canvas.style.height = `${window.innerHeight}px`;
             return;
-        };
+        }
         let canvasRatio = canvas.height / canvas.width;
         let windowRatio = window.innerHeight / window.innerWidth;
         let width;

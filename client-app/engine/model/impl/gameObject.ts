@@ -84,22 +84,6 @@ export class GameObject extends GameObjectProto {
         this.commonBehaviour = instances;
     }
 
-
-    moveToFront(){
-        let index = this.parent.children.indexOf(this);
-        if (DEBUG && index==-1) throw new DebugError(`can not move to front: gameObject is detached`);
-        this.parent.children.splice(index,1);
-        this.parent.children.push(this);
-
-    }
-
-    moveToBack(){
-        let index = this.parent.children.indexOf(this);
-        if (DEBUG && index==-1) throw new DebugError(`can not move to back: gameObject is detached`);
-        this.parent.children.splice(index,1);
-        this.parent.children.unshift(this);
-    }
-
 }
 
 _global['GameObject'] = GameObject;

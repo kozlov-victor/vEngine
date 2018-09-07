@@ -3,15 +3,31 @@ import {AbstractRenderer} from "../core/renderer/abstract/abstractRenderer";
 import {Resource} from "./resource";
 import {ArrayEx} from "../declarations";
 import * as matEx from "../core/mathEx";
+import {DebugError} from "../debugError";
+import {Layer} from "./impl/layer";
 
-export abstract class RenderableModel extends Resource {
+declare const DEBUG:boolean;
 
-    parent:RenderableModel|null = null;
+export interface IParentChild {
+    parent:IParentChild,
+    children:ArrayEx<IParentChild>
+}
+
+export abstract class RenderableModel extends Resource implements IParentChild{
+
+    parent:RenderableModel = null;
     children:ArrayEx<RenderableModel> = [] as ArrayEx<RenderableModel>;
 
     appendChild(c:RenderableModel){
         c.parent = this;
         this.children.push(c);
+        c.onShow();
+    }
+
+
+    prependChild(c:RenderableModel){
+        c.parent = this;
+        this.children.unshift(c);
         c.onShow();
     }
 
@@ -37,6 +53,21 @@ export abstract class RenderableModel extends Resource {
 
     protected isInViewPort():boolean{
         return matEx.overlapTest(this.game.camera.getRectScaled(),this.getRect());
+    }
+
+    moveToFront(){
+        let index = this.parent.children.indexOf(this);
+        if (DEBUG && index==-1) throw new DebugError(`can not move to front: gameObject is detached`);
+        this.parent.children.splice(index,1);
+        this.parent.children.push(this);
+
+    }
+
+    moveToBack(){
+        let index = this.parent.children.indexOf(this);
+        if (DEBUG && index==-1) throw new DebugError(`can not move to back: gameObject is detached`);
+        this.parent.children.splice(index,1);
+        this.parent.children.unshift(this);
     }
 
     render(){

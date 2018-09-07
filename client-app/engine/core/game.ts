@@ -182,10 +182,10 @@ export class Game extends CommonObject {
             if (renderError) throw new DebugError(`render error with code ${renderError}`);
         }
 
-        let dTime = Math.min(this._deltaTime,Game.UPDATE_TIME_RATE);
-        let numOfLoops = (~~(this._deltaTime / Game.UPDATE_TIME_RATE))||1;
-        let currTime   = this._currTime - numOfLoops * Game.UPDATE_TIME_RATE;
-        let loopCnt = 0;
+        let dTime:number = Math.min(this._deltaTime,Game.UPDATE_TIME_RATE);
+        let numOfLoops:number = (~~(this._deltaTime / Game.UPDATE_TIME_RATE))||1;
+        let currTime:number = this._currTime - numOfLoops * Game.UPDATE_TIME_RATE;
+        let loopCnt:number = 0;
         do {
             this._currentScene && this._currentScene.update(currTime,dTime);
             this.collider.collisionArcade();
@@ -208,23 +208,21 @@ export class Game extends CommonObject {
 
     destroy(){
         this._destroyed = true;
+        const delta:number = 16;
+        let lastTimeout:number = setTimeout(()=>{},0);
+        let lastInterval:number = setInterval(()=>{},0);
+        let lastMaxVal = Math.max(lastTimeout,lastInterval) + delta;
+        for (let i=0;i<lastMaxVal;i++) {
+            clearInterval(i);
+            clearTimeout(i);
+        }
         this.keyboard.destroy();
         this.mouse.destroy();
         this.renderer.cancelFullScreen();
         BaseAbstractBehaviour.destroyAll();
         let tid = setTimeout(()=>{ // wait for rendering stopped
             this.renderer.destroy();
-        },1000);
-        let lastTimeout:number = setTimeout(()=>{},0);
-        //noinspection TypeScriptValidateTypes
-        let lastInterval:number = setInterval(()=>{},0);
-        const delta:number = 16;
-        let lastMaxVal = Math.max(lastTimeout,lastInterval) + delta;
-        // for (let i=0;i<lastMaxVal;i++) {
-        //     if (i===tid) continue;
-        //     clearInterval(i);
-        //     clearTimeout(i);
-        // }
+        },200);
     }
 
 }

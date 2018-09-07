@@ -15,11 +15,11 @@ export abstract class Resource extends BaseModel {
         return this.resourceMap['main'];
     }
 
-    setDefaultResourcePath(path){
+    setDefaultResourcePath(path:string){
         this.resourceMap['main'] = path;
     }
 
-    setResourcePath(path,name){
+    setResourcePath(path:string,name:string){
         this.resourceMap[name] = path;
     }
 

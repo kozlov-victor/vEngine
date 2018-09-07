@@ -4,7 +4,11 @@ import {DebugError} from "../debugError";
 
 declare const DEBUG:boolean;
 
-const isPropNotFit = (key, val, opts)=>{
+export interface CloneOpts {
+    preserveNull: boolean
+}
+
+const isPropNotFit = (key:string, val:any, opts:CloneOpts):boolean=>{
     if (!key) return true;
     if (key.indexOf('_')===0) return true;
     if (val && val.call) return true;
@@ -15,12 +19,11 @@ const isPropNotFit = (key, val, opts)=>{
 };
 
 
-const isPrimitive = val=>{
+const isPrimitive = (val:any):boolean=>{
     return typeof val === 'string' || typeof val === 'number'
 };
 
-
-const deepCopy = (obj, _clonedObjects = [])=> {
+const deepCopy = (obj:any, _clonedObjects:Array<any> = []):any=> {
     if (obj===undefined) return undefined;
     else if (obj===null) return null;
     else if (typeof window !== 'undefined' && obj===window) return undefined;
@@ -47,7 +50,7 @@ const deepCopy = (obj, _clonedObjects = [])=> {
         return out;
     }
     else if (typeof obj === 'object') {
-        let out = {};
+        let out:any = {};
         for (let i in obj) {
             if (!obj.hasOwnProperty(i)) continue;
             let clonedObject;
@@ -73,7 +76,7 @@ export class CommonObject {
     id:number = null;
     name:string = null;
 
-    fromJSON(params = {},forceNew?){
+    fromJSON(params:any = {},forceNew?:boolean){
         Object.keys(params).forEach((key:string)=>{
             if (key==='type') return;
 
@@ -81,48 +84,50 @@ export class CommonObject {
                 console.error(this);
                 throw new DebugError(`::fromJSON(): class ${this.constructor[`name`]} has no property ${key}`);
             }
+            let thisObj:any = this;
 
             if (params[key] && params[key].id && params[key].type)
-                this[key] = this.game.repository.getObject(params[key].id,params[key].type,forceNew);
+                thisObj[key] = this.game.repository.getObject(params[key].id,params[key].type,forceNew);
             else if (params[key] && params[key].forEach) {
-                this[key] = [];
-                params[key].forEach(item=>{
+                thisObj[key] = [];
+                params[key].forEach((item:any)=>{
                     if (item && item.type && item.id) {
-                        this[key].push(this.game.repository.getObject(item.id,item.type,forceNew));
+                        thisObj[key].push(this.game.repository.getObject(item.id,item.type,forceNew));
                     } else {
-                        this[key].push(item);
+                        thisObj[key].push(item);
                     }
                 });
-            } else if (this[key] && this[key].fromJSON) {
-                this[key].fromJSON(params[key]);
-            } else if (this[key] && this[key].call) {
-                this[key].call(this,...params[key]);
+            } else if (thisObj[key] && thisObj[key].fromJSON) {
+                thisObj[key].fromJSON(params[key]);
+            } else if (thisObj[key] && thisObj[key].call) {
+                thisObj[key].call(this,...params[key]);
             } else {
-                this[key] = params[key];
+                thisObj[key] = params[key];
             }
         });
         this.revalidate();
         return this;
     }
-    toJSON(opts = {preserveNull: false}) {
+    toJSON(opts:CloneOpts = {preserveNull: false}) {
         let res:any = {};
 
         for (let key in this) {
-            if (isPropNotFit(key,this[key],opts)) {
+            let thisObj:any = this;
+            if (isPropNotFit(key,thisObj[key],opts)) {
                 continue;
             }
-            if (this.constructor['transient'] && this.constructor['transient'][key]) {
+            if (thisObj.constructor['transient'] && thisObj.constructor['transient'][key]) {
                 continue;
             }
-            if (this[key]!=null && this[key]['type'] && this[key]['id']) { // is model
+            if (thisObj[key]!=null && thisObj[key]['type'] && thisObj[key]['id']) { // is model
                 res[key] = {
-                    id:this[key]['id'],
-                    type: this[key]['type']
+                    id:thisObj[key]['id'],
+                    type: thisObj[key]['type']
                 }
-            } else if (this[key]!=null && this[key]['splice']) { // is arr
-                let col:any = this[key];
-                let arr = [];
-                col.forEach((el)=>{
+            } else if (thisObj[key]!=null && thisObj[key]['splice']) { // is arr
+                let col:any = thisObj[key];
+                let arr:any[] = [];
+                col.forEach((el:any)=>{
                     if (el && el.type && el.id) {
                         arr.push({type:el.type,id:el.id});
                     } else {
@@ -130,11 +135,11 @@ export class CommonObject {
                     }
                 });
                 res[key] = arr;
-            } else if (this[key] && this[key]['toJSON']) {
-                res[key] = this[key]['toJSON']();
+            } else if (thisObj[key] && thisObj[key]['toJSON']) {
+                res[key] = thisObj[key]['toJSON']();
             }
             else {
-                let possiblePrimitive = deepCopy(this[key]);
+                let possiblePrimitive:any = deepCopy(thisObj[key]);
                 if (possiblePrimitive && possiblePrimitive.splice && !possiblePrimitive.length) continue;
                 else if (possiblePrimitive!=null && typeof possiblePrimitive === 'object' && !Object.keys(possiblePrimitive).length) continue;
                 res[key] = possiblePrimitive;
@@ -145,14 +150,14 @@ export class CommonObject {
 
     revalidate(){}
 
-    clone(opts?):CommonObject{
+    clone(opts?:CloneOpts):CommonObject{
         let Clazz:any = this.constructor;
-        let obj = new Clazz(this.game);
+        let obj:any = new Clazz(this.game);
         obj._cloner = this;
         return obj.fromJSON(this.toJSON(opts),true);
     }
 
-    updateCloner(opts?){
+    updateCloner(opts?:CloneOpts){
         if (!DEBUG) return;
         let cloner = this._cloner;
         if (!cloner) return;

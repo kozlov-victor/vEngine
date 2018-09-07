@@ -126,12 +126,12 @@ export class Texture {
 
     }
 
-    applyFilters(filters:Array<AbstractFilter>,frameBuffer:FrameBuffer){
+    applyFilters(filters:AbstractFilter[],frameBuffer:FrameBuffer){
         if (DEBUG && frameBuffer===undefined)
             throw new DebugError(`can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering`);
         let len = filters.length;
         if (len===0) return this;
-        if (this._texFilterBuff.buffers===null)
+        if (!this._texFilterBuff.buffers.length)
             this._texFilterBuff.instantiate(this.gl);
         let filter:AbstractFilter = filters[0];
 

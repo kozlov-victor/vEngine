@@ -4,7 +4,7 @@ import {_global} from "../../../../core/global";
 import {AbstractRenderer} from "../../../../core/renderer/abstract/abstractRenderer";
 import {Container} from "../generic/container";
 
-export class Rectangle extends Container{
+export class Rectangle extends Container {
 
     color:Color = Color.BLACK.clone();
     lineWidth:number = 1;

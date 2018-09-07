@@ -86,21 +86,21 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 118);
+/******/ 	return __webpack_require__(__webpack_require__.s = 120);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 118:
+/***/ 120:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(119);
-module.exports = __webpack_require__(120);
+__webpack_require__(121);
+module.exports = __webpack_require__(122);
 
 
 /***/ }),
 
-/***/ 119:
+/***/ 121:
 /***/ (function(module, exports) {
 
 var getPopupContainer = function () {
@@ -191,14 +191,14 @@ window.addEventListener('unhandledrejection', function (e) {
 
 /***/ }),
 
-/***/ 120:
+/***/ 122:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(121);
+var httpClient_1 = __webpack_require__(123);
 var devConsole = document.createElement('div');
 var css = {
     position: 'absolute',
@@ -255,7 +255,7 @@ window.addEventListener('error', function (e) {
 
 /***/ }),
 
-/***/ 121:
+/***/ 123:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -308,8 +308,7 @@ var request = function (data) {
     };
     xhr.open(data.method, data.url, true);
     if (data.requestType) {
-        if (data.requestType !== 'multipart/form-data') // at this case header needs to be auto generated
-            xhr.setRequestHeader("Content-Type", data.requestType);
+        if (data.requestType !== 'multipart/form-data') xhr.setRequestHeader("Content-Type", data.requestType);
     } else {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
@@ -384,7 +383,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
 </head>
 
 <body ontouchstart="">
-<script src="bundle.js?52"></script>
+<script src="bundle.js?44"></script>
 </body>
 
 </html>

@@ -6,7 +6,7 @@ import {ShaderGenerator} from "../../shaders/generators/shaderGenerator";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
 import {Color} from "../../../../color";
 
-export default class ColorizeFilter extends AbstractFilter{
+export class ColorizeFilter extends AbstractFilter{
 
     constructor(gl:WebGLRenderingContext){
         super(gl);

@@ -2,6 +2,9 @@
 import {Game} from "../../../../core/game";
 import {Rect} from "../../../../core/geometry/rect";
 import {Image} from "./image";
+import {DebugError} from "../../../../debugError";
+
+declare const DEBUG:boolean;
 
 export class NinePatchImage extends Image {
 
@@ -15,13 +18,15 @@ export class NinePatchImage extends Image {
         this.drawingRect.observe(()=>{this.revalidate()});
     }
 
-    revalidate(){
+    revalidate(){ // todo super.revalidate()?
+        if (DEBUG && !this.getDefaultResourcePath()) {
+            throw new DebugError(`can not render Image: default resource path not specified in resourceMap property`);
+        }
         let r:Rect = this.drawingRect;
         let {width,height} = r;
         if (width<this.a+this.b) width = this.a + this.b;
         if (height<this.c+this.d) height = this.c + this.d;
         r.setWH(width,height);
-
     }
 
     setABCD(a:number);

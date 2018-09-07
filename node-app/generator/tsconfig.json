@@ -11,13 +11,15 @@
             "es7"
         ],
         "strict": false,
-        "noImplicitAny": true
+        "noImplicitAny": false,
+        "noEmitOnError": true,
+        "removeComments": true
     },
     "exclude": [
-        "node_modules"
+        "node_modules", "node-app"
     ],
     "awesomeTypescriptLoaderOptions": {
-        "transpileOnly": true,
+        "transpileOnly": false,
         "useBabel": true,
         "useCache": true,
         "cacheDirectory": "./node_modules/.cache/awesome-typescript-loader",

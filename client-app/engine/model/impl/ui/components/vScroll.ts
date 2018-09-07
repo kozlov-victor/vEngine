@@ -10,18 +10,20 @@ export class VScroll extends Container {
 
     maxValue:number = 0;
     value: number = 0;
-    enabled: boolean = true;
+    enabled: boolean = false;
 
     constructor(game:Game) {
         super(game);
-        this.background = new Rectangle(game);
-        this.background.width = 5;
-        this.background.fillColor = new Color(50,50,50,10);
-        this.background.color = Color.NONE.clone();
-        this.handler = new Rectangle(game);
-        this.handler.height = 10;
-        this.handler.color = Color.NONE.clone();
-        this.handler.fillColor = new Color(10,10,10,25);
+        let bg:Rectangle = new Rectangle(game);
+        bg.width = 5;
+        bg.fillColor = new Color(50,50,50,10);
+        bg.color = Color.NONE.clone();
+        let hnd:Rectangle = new Rectangle(game);
+        hnd.height = 10;
+        hnd.color = Color.NONE.clone();
+        hnd.fillColor = new Color(10,10,10,25);
+        this.background = bg;
+        this.handler = hnd;
     }
 
     onGeometryChanged(){

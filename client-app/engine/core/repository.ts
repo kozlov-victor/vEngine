@@ -4,6 +4,7 @@ declare const DEBUG:boolean;
 
 import {Game} from "./game";
 import * as models from '../model/all'
+import {CommonObject} from "../model/commonObject";
 
 export class Repository {
 
@@ -33,7 +34,7 @@ export class Repository {
         });
     }
 
-    getObject(id,type,forceNew = false){
+    getObject(id,type,forceNew = false):CommonObject{
         if (DEBUG && !type) throw new DebugError('repository.getObject: type not specified');
         if (DEBUG && id==null) {
             console.trace("id is null");

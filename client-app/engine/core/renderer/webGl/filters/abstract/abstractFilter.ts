@@ -50,7 +50,7 @@ export abstract class AbstractFilter {
     }
 
     doFilter(textureInfos:TextureInfo[],destFrameBuffer:FrameBuffer){
-        destFrameBuffer.bind();
+        if (destFrameBuffer) destFrameBuffer.bind();
         let w:number = textureInfos[0].texture.size.width;
         let h:number = textureInfos[0].texture.size.height;
         this.uniformsToSet.u_textureMatrix = identity;

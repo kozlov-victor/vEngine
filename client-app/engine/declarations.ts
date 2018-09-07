@@ -5,7 +5,7 @@ export interface ArrayEx<T> extends Array<T>{
 
 export interface MouseEventEx extends MouseEvent {
     id:number,
-    wheelDelta,
+    wheelDelta: number,
     touches: any[]
 }
 

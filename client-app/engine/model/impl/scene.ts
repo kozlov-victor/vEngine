@@ -15,6 +15,7 @@ import {Resource} from "../resource";
 import {TextField} from "./ui/components/textField";
 import {ParticleSystem} from "./particleSystem";
 import {Sound} from "./sound";
+import {DebugError} from "../../debugError";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -89,7 +90,17 @@ export class Scene extends BaseModel  {
 
     appendChild(go){
         this.getDefaultLayer().appendChild(go);
-    };
+    }
+
+    prependChild(go){
+        this.getDefaultLayer().prependChild(go);
+    }
+
+    getLayerByName(name:string):Layer {
+        let l:Layer = this.layers.find((l:Layer)=>l.name===name);
+        if (DEBUG && !l) throw new DebugError(`can not find layer by name ${name}`);
+        return l;
+    }
 
     preload(cb){
         let resources =
@@ -156,20 +167,17 @@ export class Scene extends BaseModel  {
 
     update(currTime:number,deltaTime:number){
 
-        let layers = this.layers;
-        let i = this.layers.length;
-        let l = i - 1;
-
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
 
-        while(i--) {
-            layers[i-l].update(currTime,deltaTime);
+        let layers = this.layers;
+        for (let l of layers) {
+            l.update(currTime,deltaTime);
         }
         this.uiLayer.update(currTime,deltaTime);
 
-        this.game.repository.getArray('ParticleSystem').forEach((ps:ParticleSystem)=>{ // todo also while? or foreach
-            ps.update(currTime,deltaTime);
-        });
+        // this.game.repository.getArray('ParticleSystem').forEach((ps:ParticleSystem)=>{ // todo also while? or foreach
+        //     ps.update(currTime,deltaTime);
+        // });
         this._tweens.forEach((t:Tween,index:number)=>{
             t.update(currTime);
             if (t.isCompleted()) this._tweens.splice(index,1);
@@ -181,19 +189,17 @@ export class Scene extends BaseModel  {
         if (!this.prepared) return;
 
         let renderer = this.game.renderer;
-        renderer.beginFrameBuffer();
         if (this.useBG) renderer.clearColor(this.colorBG);
         else renderer.clear();
+        renderer.beginFrameBuffer();
 
-        let layers = this.layers;
-        let i = this.layers.length;
-        let l = i - 1;
 
         this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
         this.game.camera.update(this.game.getTime(),this.game.getDeltaTime());
 
-        while(i--) {
-            layers[i-l].render();
+        let layers = this.layers;
+        for (let l of layers) {
+            l.render();
         }
 
         this.tileMap.render();

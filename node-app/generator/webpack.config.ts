@@ -3,7 +3,15 @@ const path = nodeRequire('path');
 const webpack = nodeRequire('webpack');
 // const UglifyJsPlugin = nodeRequire('uglifyjs-webpack-plugin');
 
-export const configFn = (params)=>{
+
+interface GeneratorParams {
+    projectName : string,
+    minify: boolean,
+    debug: boolean,
+    embedResources: boolean
+}
+
+export const configFn = (params:GeneratorParams)=>{
 
     let config:any = {
         entry: {
@@ -22,13 +30,16 @@ export const configFn = (params)=>{
             rules: [
                 {
                     test: /\.ts$/,
-                    loader: "awesome-typescript-loader", // ts-loader
+                    loader: "awesome-typescript-loader", // ts-loader awesome-typescript-loader
                     options: {
                         // getCustomTransformers: program => ({
                         //     before: [
-                        //         transformer(program)
+                        //         function(){
+                        //             console.log(arguments);
+                        //         }
                         //     ]
                         // }),
+                        //configFile:  path.resolve(__dirname, "./node-app/generator", "tsconfig.json")
                         configFileName: "./node-app/generator/tsconfig.json"
                     }
                 },

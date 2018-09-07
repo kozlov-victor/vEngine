@@ -116,7 +116,7 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
     lockRect(rect:Rect) {
         this.ctx.save();
         this.ctx.beginPath();
-        this.ctx.drawingRect(rect.x,rect.y,rect.width,rect.height);
+        this.ctx.rect(rect.x,rect.y,rect.width,rect.height);
         this.ctx.clip();
     }
 
@@ -167,9 +167,10 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
         this.restore();
     }
 
+
     loadTextureInfo(resourcePath:string,onLoad:()=>void){
         let img = new Image();
-        img.src = resourcePath;
+        img.src = this.getResource(resourcePath);
         this.renderableCache[resourcePath] = this.renderableCache[resourcePath] || {} as any;
         img.onload = ()=>{
             let c = document.createElement('canvas');

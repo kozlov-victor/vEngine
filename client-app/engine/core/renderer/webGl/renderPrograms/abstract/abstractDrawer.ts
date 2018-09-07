@@ -68,7 +68,7 @@ export class AbstractDrawer implements IDrawer{
     }
 
     destroy(){
-        this.bufferInfo.destroy();
+        if (this.bufferInfo) this.bufferInfo.destroy();
         this.program.destroy();
     }
     static destroyAll(){

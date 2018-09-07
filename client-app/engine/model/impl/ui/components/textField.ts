@@ -3,7 +3,6 @@ import {Rect} from "../../../../core/geometry/rect";
 import {DebugError} from "../../../../debugError";
 import {Rectangle} from "../drawable/rectangle";
 import {ScrollableContainer} from "../generic/scrollableContainer";
-import {VScroll} from "./vScroll";
 
 declare const DEBUG: boolean;
 type char = string;
@@ -21,9 +20,7 @@ class TextInfo {
     posY: number = 0;
     private strings: StringInfo[] = [];
 
-    constructor(private textField: TextField) {
-
-    }
+    constructor(private textField: TextField) {}
 
     reset() {
         this.allCharsCached = [];
@@ -184,31 +181,21 @@ class StringInfo extends CharsHolder {
     }
 }
 
+
 export class TextField extends ScrollableContainer {
 
     readonly type = 'TextField';
     private _textInfo: TextInfo;
-    private _vScroll: VScroll;
 
     text: string = '';
     font: Font = null;
     textAlign: TEXT_ALIGN = TEXT_ALIGN.LEFT;
-    maxWidth: number = 0;
-    maxHeight: number = 0;
     border: Rectangle = null;
 
     constructor(game) {
         super(game);
         this._textInfo = new TextInfo(this);
-        this.initScrolling({vertical: true});
-        this._vScroll = new VScroll(game);
-        this._vScroll.width = 5;
-        this.appendChild(this._vScroll);
-        this.on('scrollVertical',()=>{
-            this._vScroll.maxValue = this.vScrollInfo.scrollHeight;
-            this._vScroll.value = this.vScrollInfo.offset;
-            this._vScroll.onGeometryChanged();
-        });
+        this._initScrolling({vertical: true});
     }
 
 
@@ -240,11 +227,11 @@ export class TextField extends ScrollableContainer {
         let text: string = this.text;
 
         let strings = text.split('\n');
-        strings.forEach((str, i) => {
-            let words = str.split(' ');
+        strings.forEach((str:string, i:number) => {
+            let words:string[] = str.split(' ');
             words.forEach((w: string, i: number) => {
-                let wordInfo = new WordInfo();
-                for (let k = 0; k < w.length; k++) {
+                let wordInfo:WordInfo = new WordInfo();
+                for (let k:number = 0; k < w.length; k++) {
                     let charInfo: CharInfo = this._getCharInfo(w[k]);
                     wordInfo.addChar(charInfo);
                 }
@@ -264,24 +251,16 @@ export class TextField extends ScrollableContainer {
         textInfo.revalidate(this.font.getDefaultSymbolHeight());
         textInfo.align(this.textAlign);
         this.width = textInfo.width;
-        this.height = textInfo.height;
-        if (this.maxHeight !== 0 && this.height > this.maxHeight) {
+        if (this.maxHeight !== 0 && textInfo.height > this.maxHeight) {
             this.height = this.maxHeight;
-            this.vScrollInfo.scrollHeight = textInfo.height;
-            this.vScrollInfo.enabled = true;
-            this._vScroll.enabled = true;
         } else {
-            this.vScrollInfo.enabled = false;
-            this._vScroll.enabled = false;
+            this.height = textInfo.height;
         }
         if (this.border) {
             this.border.width = this.width;
             this.border.height = this.height;
         }
-        this._vScroll.height = this.height;
-        this._vScroll.pos.x = this.width - this._vScroll.width - 2;
-        this._vScroll.onGeometryChanged();
-        this.trigger('scrollVertical');
+        this.updateScrollSize(textInfo.height,this.height);
     }
 
     setText(text = '') {

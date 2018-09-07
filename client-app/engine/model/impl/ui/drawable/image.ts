@@ -13,8 +13,13 @@ export class Image extends Container {
         super(game);
     }
 
+    setSrc(uri:string){
+        this.setDefaultResourcePath(uri);
+    }
+
     revalidate(){
         if (DEBUG && !this.getDefaultResourcePath()) {
+            console.error(this);
             throw new DebugError(`can not render Image: default resource path not specified in resourceMap property`);
         }
         let r:Rect = this.drawingRect;

@@ -37,14 +37,6 @@
             },
             "ambientLight": {
                 "intensity": 1,
-                "game": {
-                    "width": 1024,
-                    "height": 600,
-                    "gravityConstant": 0,
-                    "scaleStrategy": 1,
-                    "startSceneId": 2,
-                    "preloadingSceneId": 0
-                },
                 "direction": [
                     1,
                     1,
@@ -76,7 +68,7 @@
         },
         {
             "id": 13,
-            "name": "gameScene",
+            "name": "descScene",
             "pos": {
                 "x": 0,
                 "y": 0
@@ -110,20 +102,71 @@
                 "blendMode": ""
             },
             "ambientLight": {
-                "intensity": 1,
-                "game": {
-                    "width": 1024,
-                    "height": 600,
-                    "gravityConstant": 0,
-                    "scaleStrategy": 1,
-                    "startSceneId": 2,
-                    "preloadingSceneId": 0
+                "intensity": 1
+            },
+            "uiLayer": {
+                "width": 0,
+                "height": 0,
+                "pos": {
+                    "x": 0,
+                    "y": 0
                 },
-                "direction": [
-                    1,
-                    1,
-                    1
-                ]
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "anchor": {
+                    "x": 0,
+                    "y": 0
+                },
+                "angle": 0,
+                "alpha": 1,
+                "filters": [],
+                "acceptLight": false,
+                "fixedToCamera": false,
+                "rigid": false,
+                "type": "Layer",
+                "children": []
+            }
+        },
+        {
+            "id": 33,
+            "name": "setFieldScene",
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "Scene",
+            "layers": [
+                {
+                    "type": "Layer",
+                    "id": 42
+                },
+                {
+                    "type": "Layer",
+                    "id": 34
+                }
+            ],
+            "colorBG": {
+                "r": 255,
+                "g": 255,
+                "b": 255,
+                "a": 255
+            },
+            "tileMap": {
+                "type": "TileMap",
+                "data": [],
+                "width": 0,
+                "height": 0,
+                "blendMode": ""
             },
             "uiLayer": {
                 "width": 0,
@@ -153,24 +196,17 @@
     ],
     "Layer": [
         {
-            "id": 2,
             "name": "layer1",
-            "pos": {
-                "x": 0,
-                "y": 0
-            },
-            "scale": {
-                "x": 1,
-                "y": 1
-            },
-            "anchor": {
-                "x": 0,
-                "y": 0
-            },
-            "type": "Layer"
+            "type": "Layer",
+            "id": 2
         },
         {
             "name": "mainLayer",
+            "type": "Layer",
+            "id": 14
+        },
+        {
+            "name": "bg",
             "pos": {
                 "x": 0,
                 "y": 0
@@ -184,7 +220,50 @@
                 "y": 0
             },
             "type": "Layer",
-            "id": 14
+            "id": 42
+        },
+        {
+            "id": 34,
+            "name": "main",
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "Layer",
+            "children": [
+                {
+                    "type": "GameObject",
+                    "id": 35
+                },
+                {
+                    "type": "GameObject",
+                    "id": 37
+                },
+                {
+                    "type": "GameObject",
+                    "id": 38
+                },
+                {
+                    "type": "GameObject",
+                    "id": 39
+                },
+                {
+                    "type": "GameObject",
+                    "id": 40
+                },
+                {
+                    "type": "GameObject",
+                    "id": 41
+                }
+            ]
         }
     ],
     "SpriteSheet": [
@@ -208,12 +287,6 @@
                 "main": "resources/button.png"
             },
             "type": "SpriteSheet",
-            "frameRect": {
-                "x": 0,
-                "y": 0,
-                "width": 0,
-                "height": 0
-            },
             "id": 5
         },
         {
@@ -236,12 +309,6 @@
                 "main": "resources/bg.jpg"
             },
             "type": "SpriteSheet",
-            "frameRect": {
-                "x": 0,
-                "y": 0,
-                "width": 0,
-                "height": 0
-            },
             "id": 10
         },
         {
@@ -264,19 +331,13 @@
                 "main": "resources/pirate-flag.png"
             },
             "type": "SpriteSheet",
-            "frameRect": {
-                "x": 0,
-                "y": 0,
-                "width": 0,
-                "height": 0
-            },
             "id": 11
         },
         {
             "id": 29,
-            "name": "boardCardSheet",
-            "width": 200,
-            "height": 300,
+            "name": "boardCard",
+            "width": 606,
+            "height": 403,
             "pos": {
                 "x": 0,
                 "y": 0
@@ -290,17 +351,11 @@
                 "y": 0
             },
             "resourceMap": {
-                "main": "resources/boardCardSheet.png"
+                "main": "resources/boardCard.png"
             },
             "type": "SpriteSheet",
-            "numOfFramesH": 2,
-            "numOfFramesV": 3,
-            "frameRect": {
-                "x": 0,
-                "y": 0,
-                "width": 0,
-                "height": 0
-            }
+            "numOfFramesH": 3,
+            "numOfFramesV": 2
         }
     ],
     "GameObjectProto": [
@@ -335,9 +390,10 @@
             "id": 6
         },
         {
-            "name": "boardCardSheet",
-            "width": 100,
-            "height": 100,
+            "id": 30,
+            "name": "boardCard",
+            "width": 198,
+            "height": 198,
             "pos": {
                 "x": 0,
                 "y": 0
@@ -355,11 +411,16 @@
                 "id": 29,
                 "type": "SpriteSheet"
             },
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 36
+                }
+            ],
             "velocity": {
                 "x": 0,
                 "y": 0
-            },
-            "id": 30
+            }
         }
     ],
     "GameObject": [
@@ -383,7 +444,7 @@
         },
         {
             "id": 32,
-            "name": "boardCardSheet",
+            "name": "boardCard",
             "pos": {
                 "x": 0,
                 "y": 0
@@ -393,6 +454,114 @@
                 "y": 1
             },
             "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 30,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 35,
+            "name": "boardCard",
+            "pos": {
+                "x": 443,
+                "y": 281
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 34,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 30,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 37,
+            "name": "boardCard",
+            "pos": {
+                "x": 469,
+                "y": 301
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 34,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 30,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 38,
+            "name": "boardCard",
+            "pos": {
+                "x": 495,
+                "y": 325
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 34,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 30,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 39,
+            "name": "boardCard",
+            "pos": {
+                "x": 691,
+                "y": 236
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 34,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 30,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 40,
+            "name": "boardCard",
+            "pos": {
+                "x": 710,
+                "y": 266
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 34,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 30,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 41,
+            "name": "boardCard",
+            "pos": {
+                "x": 738,
+                "y": 297
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 34,
             "type": "GameObject",
             "gameObjectProto": {
                 "id": 30,
@@ -2792,6 +2961,25 @@
             "type": "Sound",
             "resourcePath": "resources/uiSound1.mp3",
             "id": 15
+        }
+    ],
+    "CommonBehaviour": [
+        {
+            "name": "Draggable",
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "CommonBehaviour",
+            "id": 36
         }
     ]
 }

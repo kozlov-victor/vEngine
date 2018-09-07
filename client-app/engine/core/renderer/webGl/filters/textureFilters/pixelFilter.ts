@@ -9,7 +9,7 @@ import {Texture} from "../../base/texture";
 import {FrameBuffer} from "../../base/frameBuffer";
 import {TextureInfo} from "../../renderPrograms/abstract/abstractDrawer";
 
-export default class PixelFilter extends AbstractFilter {
+export class PixelFilter extends AbstractFilter {
 
     constructor(gl: WebGLRenderingContext) {
         super(gl);

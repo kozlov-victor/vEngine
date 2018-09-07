@@ -19,12 +19,5 @@
     },
     "exclude": [
         "node_modules"
-    ],
-    "awesomeTypescriptLoaderOptions": {
-        "transpileOnly": true,
-        "useBabel": true,
-        "useCache": true,
-        "cacheDirectory": "./node_modules/.cache/awesome-typescript-loader",
-        "useTranspileModule": true
-    }
+    ]
 }

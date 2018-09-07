@@ -1,6 +1,9 @@
 import {MOUSE_EVENTS, MousePoint} from "../../../../core/control/mouse";
 import {Container} from "./container";
 import {closeTo} from "../../../../core/mathEx";
+import {Transient} from "../../../../core/misc/decorators";
+import {VScroll} from "../components/vScroll";
+import {Game} from "../../../../core/game";
 
 export interface ScrollInitDesc {
     vertical: boolean
@@ -19,11 +22,33 @@ export class ScrollInfo {
     private _prevPoint:ScrollPointDesc;
     private _scrollVelocity: number = 0;
     private _deceleration: number = 0;
+    private _enabled: boolean = false;
 
     offset: number = 0;
     scrollHeight: number = 0;
-    enabled: boolean = false;
-    
+    vScroll:VScroll;
+
+    constructor(private game:Game){}
+
+    private _initScrollBar(){
+        this.vScroll = new VScroll(this.game);
+        this.vScroll.width = 5;
+        this._container.appendChild(this.vScroll);
+    }
+
+
+    setEnabled(val:boolean) {
+        this._enabled = val;
+        this.vScroll.enabled = val;
+    }
+
+
+    onScroll(){
+        this.vScroll.maxValue = this.scrollHeight;
+        this.vScroll.value = this.offset;
+        this.vScroll.onGeometryChanged();
+    }
+
     listenScroll(container: Container) {
         this._container = container;
         container.on(MOUSE_EVENTS.mouseDown, (p: MousePoint) => {
@@ -58,7 +83,7 @@ export class ScrollInfo {
             if (this.offset > this.scrollHeight - this._container.height)
                 this.offset = this.scrollHeight - this._container.height;
             if (this.offset < 0) this.offset = 0;
-            this._container.trigger('scrollVertical');
+            this.onScroll();
         });
         container.on(MOUSE_EVENTS.scroll, (p: MousePoint) => {
             this._scrollVelocity = -p.nativeEvent.wheelDelta;
@@ -79,7 +104,7 @@ export class ScrollInfo {
             }
             this._deceleration = 0;
         });
-
+        this._initScrollBar();
     }
 
     private _scrollBy(val:number){
@@ -95,13 +120,13 @@ export class ScrollInfo {
             this._scrollVelocity = 0;
             this._deceleration = 0;
         }
-        this._container.trigger('scrollVertical');
+        this.onScroll();
     }
     
     update(time:number,delta:number){
-        if (!this.enabled) return;
+        if (!this._enabled) return;
 
-        if (this._scrollVelocity) this._container.trigger('scrollVertical');
+        if (this._scrollVelocity) this.onScroll();
 
         if (this._scrollVelocity) {
             this._scrollBy(this._scrollVelocity * delta /1000)
@@ -125,17 +150,36 @@ export class ScrollInfo {
 
 }
 
-
+@Transient({
+    vScrollInfo: true
+})
 export abstract class ScrollableContainer extends Container {
 
     protected vScrollInfo: ScrollInfo;
 
-    protected initScrolling(desc: ScrollInitDesc) {
+    constructor(game:Game) {
+        super(game);
+    }
+
+    protected _initScrolling(desc: ScrollInitDesc) {
         if (desc.vertical) {
-            this.vScrollInfo = new ScrollInfo();
+            this.vScrollInfo = new ScrollInfo(this.game);
             this.vScrollInfo.listenScroll(this);
         }
     }
+
+    protected updateScrollSize(desireableHeight:number, allowedHeight:number){
+        if (allowedHeight !== 0 && desireableHeight > allowedHeight) {
+            this.vScrollInfo.scrollHeight = desireableHeight;
+            this.vScrollInfo.setEnabled(true);
+        } else {
+            this.vScrollInfo.setEnabled(false);
+        }
+        this.vScrollInfo.vScroll.height = allowedHeight;
+        this.vScrollInfo.vScroll.pos.x = this.width - this.vScrollInfo.vScroll.width - 2;
+        this.vScrollInfo.onScroll();
+    }
+
 
     update(time:number,delta:number){
         if (this.vScrollInfo) this.vScrollInfo.update(time,delta);

@@ -12,14 +12,18 @@ export class IntroSceneBehaviour {
                 layoutWidth: 0,
                 layoutHeight: 0,
                 background: {
-                    type: 'Image',
-                    resourceMap: {main:'resources/bg.jpg'},
+                    Image: {
+                        id: 100,
+                        src: 'resources/bg.jpg'
+                    }
                 },
+
                 children: [
                     {
                         Image: {
+                            id: 200,
                             pos: {x:180,y:-40},
-                            resourceMap: {main:'resources/pirate-flag.png'},
+                            src: 'resources/pirate-flag.png',
                         }
                     },
                     {
@@ -33,17 +37,19 @@ export class IntroSceneBehaviour {
                     {
                         Button: {
                             pos: {x:360,y:500},
-                            fontName: 'scriptFont', 
+                            fontName: 'scriptFont',
                             text: "Продолжить",
                             paddings:[15,25],
                             background: {
-                                type: 'NinePatchImage',
-                                resourceMap: {main:'resources/button.png'},
-                                ABCD: 20
+                                NinePatchImage: {
+                                    id: 300,
+                                    src: 'resources/button.png',
+                                    ABCD: 20
+                                }
                             },
                             on: ['click',()=>{
                                 self.game.audioPlayer.play('uiSound1');
-                                self.toGameScene();
+                                self.toNextScene();
                             }]
                         }
                     }
@@ -51,13 +57,12 @@ export class IntroSceneBehaviour {
             }
         });
         this.scene.appendChild(widget);
-        window.w = widget;
     }
 
 
-    toGameScene(){
-        let gameScene = this.game.repository.getArray('Scene').find(it=>it.name=='gameScene');
-        this.game.runScene(gameScene);
+    toNextScene(){
+        let scene = this.game.repository.getArray('Scene').find(it=>it.name=='descScene');
+        this.game.runScene(scene);
     }
 
 

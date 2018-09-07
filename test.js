@@ -1,1 +1,0 @@
-const transformer = require('typescript-runtime-types/').transformer;

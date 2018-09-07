@@ -1,21 +1,21 @@
 declare const RF, FormData,Promise;
 
-let noop = function(data?){};
+let noop = function(data?:any):any{};
 
 
-let objectToQuery = function(o) {
+let objectToQuery = (o)=> {
     if (!o) return '';
     if (o instanceof FormData) return o;
-    let paramsArr = [];
+    let paramsArr:any[] = [];
     if (o===null || o===undefined || typeof o==='string' || typeof o==='number')
         return o;
     for (let key in o) {
         paramsArr.push([key,encodeURIComponent(o[key])]);
     }
-    return paramsArr.map(function(item){return [item[0]+'='+item[1]]}).join('&');
+    return paramsArr.map((item:any)=>[item[0]+'='+item[1]]).join('&')
 };
 
-let request = function(data) {
+let request = (data)=> {
     let abortTmr = null;
     let resolved = false;
     data.method = data.method || 'get';
@@ -26,7 +26,7 @@ let request = function(data) {
         resolveFn = resolve;
         rejectFn = reject;
     });
-    xhr.onreadystatechange=function() {
+    xhr.onreadystatechange=()=> {
         if (xhr.readyState===4) {
             if ( xhr.status===200 || xhr.status===0) {
                 let resp = xhr.responseText;
@@ -56,7 +56,7 @@ let request = function(data) {
         data.data = data.data && JSON.stringify(data.data);
     xhr.send(data.data);
     if (data.timeout) {
-        abortTmr = setTimeout(function(){
+        abortTmr = setTimeout(()=>{
             if (resolved) return;
             xhr.abort();
             if (data.ontimeout) data.ontimeout();
@@ -67,7 +67,7 @@ let request = function(data) {
 };
 
 
-let get = function(url,data,success?,error?){
+let get = (url,data,success?,error?)=>{
     return request({
         method:'get',
         url,
@@ -77,7 +77,7 @@ let get = function(url,data,success?,error?){
     });
 };
 
-let post = function(url,data,success?,error?){
+let post = (url,data,success?,error?)=>{
     return request({
         method:'post',
         url,
@@ -88,7 +88,7 @@ let post = function(url,data,success?,error?){
     });
 };
 
-let postMultiPart = function(url,file,data,success?,error?){
+let postMultiPart = (url,file,data,success?,error?)=>{
     let formData = new FormData();
     Object.keys(data).forEach(function(key){
         formData.append(key,data[key]);

@@ -2,14 +2,28 @@ import {BaseModel} from '../baseModel'
 import {Game} from "../../core/game";
 import {ArrayEx} from "../../declarations";
 import {GameObjectProto} from "./gameObjectProto";
+import {IParentChild} from "../renderableModel";
 
-export class Layer extends BaseModel {
+export class Layer extends BaseModel implements IParentChild{
 
     type:string = 'Layer';
+    parent:IParentChild;
     children:ArrayEx<any> = [] as ArrayEx<any>;
 
     constructor(game:Game) {
         super(game);
+    }
+
+    revalidate(){
+        this.children.forEach((r:IParentChild)=>{
+            r.parent = this;
+        });
+    }
+
+    prependChild(go){
+        go.parent = this;
+        this.children.unshift(go);
+        go.onShow();
     }
     appendChild(go){
         go.parent = this;

@@ -14,7 +14,7 @@ export class SpriteSheet extends Resource {
     _frameHeight:number = 0;
     _numOfFrames:number = 0;
 
-    private frameRect:Rect = new Rect();
+    private _frameRect:Rect = new Rect();
 
     constructor(game:Game) {
         super(game);
@@ -36,7 +36,7 @@ export class SpriteSheet extends Resource {
     }
 
     getFrameRect(index:number):Rect{
-        let fr:Rect = this.frameRect;
+        let fr:Rect = this._frameRect;
         fr.setXYWH(
             this.getFramePosX(index),
             this.getFramePosY(index),

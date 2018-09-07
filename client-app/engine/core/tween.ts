@@ -2,23 +2,32 @@
 import * as mathEx from './mathEx'
 import {_global} from "./global";
 
-let accessByPath = (obj,path)=>{
-    let pathArr = path.split('.');
+interface KeyVal {
+    [key:string]:any
+}
+
+interface ValByPathObj {
+    targetObj: any,
+    targetKey:string
+}
+
+let accessByPath = (obj:KeyVal,path:string):ValByPathObj=>{
+    let pathArr:string[] = path.split('.');
     if (pathArr.length===1) return {targetObj:obj,targetKey:path};
-    let lastPath = pathArr.pop();
+    let lastPath:string = pathArr.pop();
     pathArr.forEach(p=>{
         obj = obj[p];
     });
     return {targetObj:obj,targetKey:lastPath};
 };
 
-let setValByPath = (obj,path,val)=>{
-    let {targetObj,targetKey} = accessByPath(obj,path);
+let setValByPath = (obj:KeyVal,path:string,val:number)=>{
+    let {targetObj,targetKey}:ValByPathObj = accessByPath(obj,path);
     targetObj[targetKey] = val;
 };
 
-let getValByPath = (obj,path)=>{
-    let {targetObj,targetKey} = accessByPath(obj,path);
+let getValByPath = (obj:KeyVal,path:string):number=>{
+    let {targetObj,targetKey}:ValByPathObj = accessByPath(obj,path);
     return targetObj[targetKey];
 };
 
@@ -34,8 +43,8 @@ export interface TweenDescription {
 
 export interface TweenDescriptionNormalized extends TweenDescription{
     ease:string,
-    from:{[key:string]:number},
-    to:{[key:string]:number}
+    from:KeyVal,
+    to:KeyVal
 }
 
 export class Tween {
@@ -70,20 +79,20 @@ export class Tween {
         this.desc = this.normalizeDesc(tweenDesc);
     }
 
-    reuse(newTweenDesc):void{
+    reuse(newTweenDesc:TweenDescription):void{
         this.startedTime = this.currTime;
         this.completed = false;
 
         Object.keys(newTweenDesc).forEach(key=>{
-            this.desc[key] = newTweenDesc[key];
+            (this.desc as any)[key] = (newTweenDesc as any)[key];
         });
         this.desc = this.normalizeDesc(newTweenDesc);
     }
 
-    normalizeDesc(tweenDesc):TweenDescriptionNormalized{
+    normalizeDesc(tweenDesc:TweenDescription):TweenDescriptionNormalized{
         tweenDesc.from = tweenDesc.from || {};
         tweenDesc.to = tweenDesc.to || {};
-        let allPropsMap = {};
+        let allPropsMap:KeyVal = {};
         Object.keys(tweenDesc.from).forEach(keyFrom=>{
             allPropsMap[keyFrom] = true;
         });
@@ -91,11 +100,11 @@ export class Tween {
             allPropsMap[keyTo] = true;
         });
         this.propsToChange = Object.keys(allPropsMap);
-        this.propsToChange.forEach(prp=>{
+        this.propsToChange.forEach((prp:string)=>{
             if (tweenDesc.from[prp]===undefined) tweenDesc.from[prp] = getValByPath(this.target,prp);
             if (tweenDesc.to[prp]===undefined) tweenDesc.to[prp] = getValByPath(this.target,prp);
         });
-        return tweenDesc;
+        return tweenDesc as TweenDescriptionNormalized;
     };
 
 
@@ -103,17 +112,18 @@ export class Tween {
         if (this.completed) return;
         this.currTime = time;
         if (!this.startedTime) this.startedTime = time;
-        let curTweenTime = time - this.startedTime;
+        let curTweenTime:number = time - this.startedTime;
         if (curTweenTime>this.tweenTime) {
             this._complete();
             return;
         }
-        let l = this.propsToChange.length;
+        let l:number = this.propsToChange.length;
         while(l--){
-            let prp = this.propsToChange[l];
-            let valFrom = this.desc.from[prp];
-            let valTo = this.desc.to[prp];
-            let valCurr = mathEx[this.easeFnName](
+            let prp:string = this.propsToChange[l];
+            let valFrom:number = this.desc.from[prp] as number;
+            let valTo:number = this.desc.to[prp] as number;
+            let fn:Function = mathEx[this.easeFnName] as Function;
+            let valCurr:number = <number>fn(
                 curTweenTime,
                 valFrom,
                 valTo - valFrom,

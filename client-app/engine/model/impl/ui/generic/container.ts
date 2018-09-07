@@ -4,6 +4,7 @@ import {MOUSE_EVENTS} from "../../../../core/control/mouse";
 import {RenderableModel} from "../../../renderableModel";
 import {DebugError} from "../../../../debugError";
 
+
 declare const DEBUG:boolean;
 
 export enum OVERFLOW {
@@ -15,8 +16,9 @@ export enum LAYOUT_SIZE {
 }
 
 export enum STATE {
-    NORMAL,ACTIVE,DISABLED
+    NORMAL = 'NORMAL',ACTIVE = 'ACTIVE',DISABLED = 'DISABLED'
 }
+
 
 export abstract class Container extends RenderableModel {
 
@@ -37,8 +39,11 @@ export abstract class Container extends RenderableModel {
 
     drawingRect:Rect = new Rect();
 
+    maxWidth: number = 0;
+    maxHeight: number = 0;
 
-    private bgByState :{[state:number]:Container} = {};
+
+    protected bgByState :{[state:string]:Container} = {};
     private state     :STATE = STATE.NORMAL;
     private _screenRect = new Rect();
 
@@ -187,7 +192,7 @@ export abstract class Container extends RenderableModel {
         }
     }
 
-    private getBgByState():Container {
+    protected getBgByState():Container {
         let possibleBg:Container = this.bgByState[this.state];
         if (!possibleBg) possibleBg = this.background;
         return possibleBg;

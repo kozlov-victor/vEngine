@@ -10,7 +10,7 @@ export class Timer {
         this.callback = callback;
     }
 
-    onUpdate(time){
+    onUpdate(time:number){
         if (!this.lastTime) this.lastTime = time;
         let delta:number = time - this.lastTime;
         if (delta !==0 && delta>this.interval) {
