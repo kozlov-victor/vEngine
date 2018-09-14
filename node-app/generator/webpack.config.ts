@@ -11,15 +11,22 @@ interface GeneratorParams {
     embedResources: boolean
 }
 
+const getBool = (val:any):boolean=> {
+   return !!val;
+};
+
+const dirname = path.dirname(nodeRequire.main.filename);
+
 export const configFn = (params:GeneratorParams)=>{
+
 
     let config:any = {
         entry: {
-            bundle:`./workspace/${params.projectName}/generated/src/index.ts`,
+            bundle:`./workspace/${params.projectName}/virtual/index.ts`,
             debug: ['./client-app/debug/debug.ts','./client-app/debug/devConsole.ts']
         },
         output: {
-            path: path.resolve(`./workspace/${params.projectName}/generated/tmp`),
+            path: path.resolve(`./workspace/${params.projectName}/virtual`),
             filename:'[name].js'
         },
         mode: 'production',
@@ -32,6 +39,7 @@ export const configFn = (params:GeneratorParams)=>{
                     test: /\.ts$/,
                     loader: "awesome-typescript-loader", // ts-loader awesome-typescript-loader
                     options: {
+                        useWebpackText: true,
                         // getCustomTransformers: program => ({
                         //     before: [
                         //         function(){
@@ -44,15 +52,6 @@ export const configFn = (params:GeneratorParams)=>{
                     }
                 },
                 {
-                    test: /\.js$/,
-                    exclude: /node_modules/,
-                    loader: "babel-loader",
-                    query: {
-                        presets: ['es2015'],
-                        plugins: []
-                    }
-                },
-                {
                     test: /\.(frag|vert)$/,
                     loader: 'text-loader',
                     options: {
@@ -62,22 +61,26 @@ export const configFn = (params:GeneratorParams)=>{
             ]
         },
         resolve: {
-            extensions: ['.js','.ts'],
+            extensions: ['.ts'],
             modules: [
-                path.resolve('node_modules')
-            ]
+                path.resolve(dirname, 'node_modules'),
+                path.resolve(dirname, 'client-app')
+            ],
+            alias: {
+                '@engine': path.resolve(dirname, 'client-app/engine/')
+            },
         },
         optimization: {
-            minimize: !!params.minify
+            minimize: getBool(params.minify)
         },
         plugins: [
             new webpack.DefinePlugin({
                 BUILD_AT: new Date().getTime(),
                 IN_EDITOR: false,
-                DEBUG: !!params.debug,
+                DEBUG: getBool(params.debug),
                 PROJECT_NAME: JSON.stringify(params.projectName),
-                EMBED_RESOURCES: !!params.embedResources
-            }),
+                EMBED_RESOURCES: getBool(params.embedResources),
+            })
             //new HardSourceWebpackPlugin()
         ],
     };

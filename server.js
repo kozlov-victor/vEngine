@@ -9,12 +9,6 @@
 /******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
 /******/ 		}
-
-
-
-
-
-
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -309,28 +303,33 @@ function __importDefault(mod) {
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var fns_1 = __webpack_require__(2);
 var fs = fns_1.nodeRequire('fs');
 var path = fns_1.nodeRequire('path');
-var FS = (function () {
-    function FS() {
-    }
-    FS.prototype.copyFile = function (source, target) {
+var FS = function () {
+    function FS() {}
+    FS.prototype.copyFile = function (source, target, modifier) {
+        if (modifier === void 0) {
+            modifier = null;
+        }
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
-                return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                return [2, new Promise(function (resolve, reject) {
+                    return tslib_1.__awaiter(_this, void 0, void 0, function () {
                         function done(err) {
                             if (err) {
                                 console.error('copyFile error', err);
                                 reject(err);
-                            }
-                            else
+                            } else {
                                 resolve();
+                            }
                         }
                         var pathArr, targetPath, exists, ws, rs;
+                        var _this = this;
                         return tslib_1.__generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
@@ -355,7 +354,26 @@ var FS = (function () {
                                         done(err);
                                     });
                                     ws.on("close", function () {
-                                        done();
+                                        return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                            var content;
+                                            return tslib_1.__generator(this, function (_a) {
+                                                switch (_a.label) {
+                                                    case 0:
+                                                        if (!modifier) return [3, 3];
+                                                        return [4, this.readFile(target)];
+                                                    case 1:
+                                                        content = _a.sent();
+                                                        content = modifier(content);
+                                                        return [4, this.createFile(target, content)];
+                                                    case 2:
+                                                        _a.sent();
+                                                        _a.label = 3;
+                                                    case 3:
+                                                        done();
+                                                        return [2];
+                                                }
+                                            });
+                                        });
                                     });
                                     ws.on("error", function (err) {
                                         done(err);
@@ -364,7 +382,8 @@ var FS = (function () {
                                     return [2];
                             }
                         });
-                    }); })];
+                    });
+                })];
             });
         });
     };
@@ -372,10 +391,10 @@ var FS = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
-                        fs.exists(target, function (exists) {
-                            resolve(exists);
-                        });
-                    })];
+                    fs.exists(target, function (exists) {
+                        resolve(exists);
+                    });
+                })];
             });
         });
     };
@@ -384,20 +403,18 @@ var FS = (function () {
             var exists;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.exists(source)];
+                    case 0:
+                        return [4, this.exists(source)];
                     case 1:
                         exists = _a.sent();
-                        if (exists)
-                            return [2, new Promise(function (resolve, reject) {
-                                    fs.unlink(source, function (error) {
-                                        if (error) {
-                                            console.error('deleteFile error', error);
-                                            reject(error);
-                                        }
-                                        else
-                                            resolve();
-                                    });
-                                })];
+                        if (exists) return [2, new Promise(function (resolve, reject) {
+                            fs.unlink(source, function (error) {
+                                if (error) {
+                                    console.error('deleteFile error', error);
+                                    reject(error);
+                                } else resolve();
+                            });
+                        })];
                         return [2];
                 }
             });
@@ -407,27 +424,39 @@ var FS = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
-                        fs.readFile(path, asBin ? undefined : "utf8", function (err, content) {
-                            if (err) {
-                                console.error('readFile error', err);
-                                reject(err);
-                            }
-                            else
-                                resolve(content);
-                        });
-                    })];
+                    fs.readFile(path, asBin ? undefined : "utf8", function (err, content) {
+                        if (err) {
+                            console.error('readFile error', err);
+                            reject(err);
+                        } else resolve(content);
+                    });
+                })];
             });
         });
     };
     FS.prototype.createFile = function (path, content) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var fullPathArr, pathToCreate, exists;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.deleteFile(path)];
+                    case 0:
+                        fullPathArr = path.split('/');
+                        fullPathArr.pop();
+                        pathToCreate = fullPathArr.join('/');
+                        return [4, this.exists(pathToCreate)];
                     case 1:
+                        exists = _a.sent();
+                        if (!!exists) return [3, 3];
+                        return [4, this.createFolder(pathToCreate)];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        return [4, this.deleteFile(path)];
+                    case 4:
                         _a.sent();
                         return [4, this.writeFile(path, content || '')];
-                    case 2:
+                    case 5:
                         _a.sent();
                         return [2];
                 }
@@ -440,29 +469,29 @@ var FS = (function () {
             return tslib_1.__generator(this, function (_a) {
                 opts = asBin ? undefined : { encoding: "utf-8" };
                 return [2, new Promise(function (resolve, reject) {
-                        fs.writeFile(path, content, opts, function (err) {
-                            if (err) {
-                                console.error('writeFile error', err);
-                                reject(err);
-                            }
-                            else
-                                resolve();
-                        });
-                    })];
+                    fs.writeFile(path, content, opts, function (err) {
+                        if (err) {
+                            console.error('writeFile error', err);
+                            reject(err);
+                        } else resolve();
+                    });
+                })];
             });
         });
     };
-    FS.prototype._copyFilesToFolder = function (source, target) {
+    FS.prototype._copyFilesToFolder = function (source, target, modifier) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var exists;
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.exists(target)];
+                    case 0:
+                        return [4, this.exists(target)];
                     case 1:
                         exists = _a.sent();
-                        return [2, new Promise(function (resolve, reject) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                var targetFile, isDir;
+                        return [2, new Promise(function (resolve, reject) {
+                            return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                var targetFile, isDir, format;
                                 return tslib_1.__generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0:
@@ -471,27 +500,26 @@ var FS = (function () {
                                             return [4, this._isDirectory(target)];
                                         case 1:
                                             isDir = _a.sent();
-                                            if (isDir)
-                                                targetFile = path.join(target, path.basename(source));
-                                            fs.readFile(source, function (err, file) {
-                                                if (err)
-                                                    reject(err);
-                                                else
+                                            if (isDir) targetFile = path.join(target, path.basename(source));
+                                            format = modifier ? 'utf8' : undefined;
+                                            fs.readFile(source, format, function (err, file) {
+                                                if (err) reject(err);else {
+                                                    if (modifier) file = modifier(file);
                                                     fs.writeFile(targetFile, file, function (error) {
-                                                        if (error)
-                                                            reject(error);
-                                                        else
-                                                            resolve();
+                                                        if (error) reject(error);else resolve();
                                                     });
+                                                }
                                             });
                                             return [3, 3];
                                         case 2:
                                             reject(target + " not exists");
                                             _a.label = 3;
-                                        case 3: return [2];
+                                        case 3:
+                                            return [2];
                                     }
                                 });
-                            }); })];
+                            });
+                        })];
                 }
             });
         });
@@ -501,93 +529,95 @@ var FS = (function () {
             var exists;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.exists(path)];
+                    case 0:
+                        return [4, this.exists(path)];
                     case 1:
                         exists = _a.sent();
-                        if (!exists)
-                            return [2, false];
+                        if (!exists) return [2, false];
                         return [2, new Promise(function (resolve, reject) {
-                                fs.lstat(path, function (err, stat) {
-                                    if (err)
-                                        reject(err);
-                                    else
-                                        resolve(stat.isDirectory());
-                                });
-                            })];
+                            fs.lstat(path, function (err, stat) {
+                                if (err) reject(err);else resolve(stat.isDirectory());
+                            });
+                        })];
                 }
             });
         });
     };
-    FS.prototype.copyFolder = function (source, target) {
+    FS.prototype.copyFolder = function (source, target, modifier) {
+        if (modifier === void 0) {
+            modifier = null;
+        }
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
-                        var targetFolder = path.join(target, path.basename(source));
-                        Promise.resolve().then(function () {
-                            return _this.exists(targetFolder);
-                        }).then(function (exists) {
-                            if (!exists)
-                                return new Promise(function (resolve, reject) {
-                                    fs.mkdir(targetFolder, function (error) {
-                                        if (error) {
-                                            console.error('copyFolder targetFolder error', targetFolder);
-                                            console.error('copyFolder mkdir error', error);
-                                            reject(error);
-                                        }
-                                        else
-                                            resolve();
-                                    });
-                                });
-                        }).then(function () {
-                            return new Promise(function (resolve, reject) {
-                                fs.readdir(source, function (err, files) {
-                                    if (err) {
-                                        console.error('readdir source error', source);
-                                        console.error('copyFolder readdir error', err);
-                                        reject(err);
-                                    }
-                                    else
-                                        resolve(files);
-                                });
+                    var targetFolder = path.join(target, path.basename(source));
+                    Promise.resolve().then(function () {
+                        return _this.exists(targetFolder);
+                    }).then(function (exists) {
+                        if (!exists) return new Promise(function (resolve, reject) {
+                            fs.mkdir(targetFolder, function (error) {
+                                if (error) {
+                                    console.error('copyFolder targetFolder error', targetFolder);
+                                    console.error('copyFolder mkdir error', error);
+                                    reject(error);
+                                } else resolve();
                             });
-                        }).then(function (files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                        });
+                    }).then(function () {
+                        return new Promise(function (resolve, reject) {
+                            fs.readdir(source, function (err, files) {
+                                if (err) {
+                                    console.error('readdir source error', source);
+                                    console.error('copyFolder readdir error', err);
+                                    reject(err);
+                                } else resolve(files);
+                            });
+                        });
+                    }).then(function (files) {
+                        return tslib_1.__awaiter(_this, void 0, void 0, function () {
                             var _this = this;
                             return tslib_1.__generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4, fns_1.forEach(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                            var curSource, isDirectory;
-                                            return tslib_1.__generator(this, function (_a) {
-                                                switch (_a.label) {
-                                                    case 0:
-                                                        curSource = path.join(source, file);
-                                                        return [4, this._isDirectory(curSource)];
-                                                    case 1:
-                                                        isDirectory = _a.sent();
-                                                        if (!isDirectory) return [3, 3];
-                                                        return [4, this.copyFolder(curSource, targetFolder)];
-                                                    case 2:
-                                                        _a.sent();
-                                                        return [3, 5];
-                                                    case 3: return [4, this._copyFilesToFolder(curSource, targetFolder)];
-                                                    case 4:
-                                                        _a.sent();
-                                                        _a.label = 5;
-                                                    case 5: return [2];
-                                                }
+                                    case 0:
+                                        return [4, fns_1.forEach(files, function (file) {
+                                            return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                                var curSource, isDirectory;
+                                                return tslib_1.__generator(this, function (_a) {
+                                                    switch (_a.label) {
+                                                        case 0:
+                                                            curSource = path.join(source, file);
+                                                            return [4, this._isDirectory(curSource)];
+                                                        case 1:
+                                                            isDirectory = _a.sent();
+                                                            if (!isDirectory) return [3, 3];
+                                                            return [4, this.copyFolder(curSource, targetFolder, modifier)];
+                                                        case 2:
+                                                            _a.sent();
+                                                            return [3, 5];
+                                                        case 3:
+                                                            return [4, this._copyFilesToFolder(curSource, targetFolder, modifier)];
+                                                        case 4:
+                                                            _a.sent();
+                                                            _a.label = 5;
+                                                        case 5:
+                                                            return [2];
+                                                    }
+                                                });
                                             });
-                                        }); })];
+                                        })];
                                     case 1:
                                         _a.sent();
                                         resolve();
                                         return [2];
                                 }
                             });
-                        }); }).catch(function (err) {
-                            console.error('copyFolder catch error', err);
-                            reject(err);
                         });
-                    })];
+                    }).catch(function (err) {
+                        console.error('copyFolder catch error', err);
+                        reject(err);
+                    });
+                })];
             });
         });
     };
@@ -596,8 +626,9 @@ var FS = (function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
-                        try {
-                            fs.readdir(path, function (error, files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                    try {
+                        fs.readdir(path, function (error, files) {
+                            return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                 var _this = this;
                                 return tslib_1.__generator(this, function (_a) {
                                     switch (_a.label) {
@@ -606,11 +637,13 @@ var FS = (function () {
                                                 console.error(error);
                                                 return [2, reject(error)];
                                             }
-                                            return [4, fns_1.forEach(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                            return [4, fns_1.forEach(files, function (file) {
+                                                return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                                     var isDir, fullPath, content, splitted, ext, nameNoExt;
                                                     return tslib_1.__generator(this, function (_a) {
                                                         switch (_a.label) {
-                                                            case 0: return [4, this._isDirectory(path + '/' + file)];
+                                                            case 0:
+                                                                return [4, this._isDirectory(path + '/' + file)];
                                                             case 1:
                                                                 isDir = _a.sent();
                                                                 if (!isDir) return [3, 4];
@@ -619,11 +652,13 @@ var FS = (function () {
                                                             case 2:
                                                                 _a.sent();
                                                                 _a.label = 3;
-                                                            case 3: return [3, 6];
+                                                            case 3:
+                                                                return [3, 6];
                                                             case 4:
-                                                                fullPath = (path + '/' + file).split('/').filter(function (s) { return !!s.length; }).join('/');
-                                                                if (path.indexOf('/') == 0)
-                                                                    fullPath = '/' + fullPath;
+                                                                fullPath = (path + '/' + file).split('/').filter(function (s) {
+                                                                    return !!s.length;
+                                                                }).join('/');
+                                                                if (path.indexOf('/') == 0) fullPath = '/' + fullPath;
                                                                 return [4, this.readFile(fullPath, contentType)];
                                                             case 5:
                                                                 content = _a.sent();
@@ -635,28 +670,32 @@ var FS = (function () {
                                                                 }
                                                                 res.push({ name: file, fullName: fullPath, content: content, ext: ext, nameNoExt: nameNoExt });
                                                                 _a.label = 6;
-                                                            case 6: return [2];
+                                                            case 6:
+                                                                return [2];
                                                         }
                                                     });
-                                                }); })];
+                                                });
+                                            })];
                                         case 1:
                                             _a.sent();
                                             resolve(res);
                                             return [2];
                                     }
                                 });
-                            }); });
-                        }
-                        catch (e) {
-                            reject(e);
-                        }
-                    })];
+                            });
+                        });
+                    } catch (e) {
+                        reject(e);
+                    }
+                })];
             });
         });
     };
     FS.prototype.readDir = function (path, contentType, deep) {
-        if (deep === void 0) { deep = true; }
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
+        if (deep === void 0) {
+            deep = true;
+        }
+        return tslib_1.__awaiter(this, void 0, Promise, function () {
             var res;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
@@ -675,29 +714,33 @@ var FS = (function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
-                        fs.readdir(srcpath, function (error, files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                    fs.readdir(srcpath, function (error, files) {
+                        return tslib_1.__awaiter(_this, void 0, void 0, function () {
                             var e_1;
                             var _this = this;
                             return tslib_1.__generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        _a.trys.push([0, 2, , 3]);
+                                        _a.trys.push([0, 2,, 3]);
                                         if (error) {
                                             console.error('getDirList error', error);
                                             reject(error);
                                             return [2];
                                         }
-                                        return [4, fns_1.filter(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                        return [4, fns_1.filter(files, function (file) {
+                                            return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                                 var isDir;
                                                 return tslib_1.__generator(this, function (_a) {
                                                     switch (_a.label) {
-                                                        case 0: return [4, this._isDirectory(path.join(srcpath, file))];
+                                                        case 0:
+                                                            return [4, this._isDirectory(path.join(srcpath, file))];
                                                         case 1:
                                                             isDir = _a.sent();
                                                             return [2, isDir];
                                                     }
                                                 });
-                                            }); })];
+                                            });
+                                        })];
                                     case 1:
                                         files = _a.sent();
                                         resolve(files);
@@ -706,11 +749,13 @@ var FS = (function () {
                                         e_1 = _a.sent();
                                         reject(e_1);
                                         return [3, 3];
-                                    case 3: return [2];
+                                    case 3:
+                                        return [2];
                                 }
                             });
-                        }); });
-                    })];
+                        });
+                    });
+                })];
             });
         });
     };
@@ -721,37 +766,35 @@ var FS = (function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        rmdir = function (path) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                            return tslib_1.__generator(this, function (_a) {
-                                return [2, new Promise(function (resolve, reject) {
+                        rmdir = function (path) {
+                            return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                return tslib_1.__generator(this, function (_a) {
+                                    return [2, new Promise(function (resolve, reject) {
                                         fs.rmdir(path, function (error) {
-                                            if (error)
-                                                reject(error);
-                                            else
-                                                resolve();
+                                            if (error) reject(error);else resolve();
                                         });
                                     })];
+                                });
                             });
-                        }); };
-                        unlink = function (path) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                            return tslib_1.__generator(this, function (_a) {
-                                return [2, new Promise(function (resolve, reject) {
+                        };
+                        unlink = function (path) {
+                            return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                return tslib_1.__generator(this, function (_a) {
+                                    return [2, new Promise(function (resolve, reject) {
                                         fs.unlink(path, function (error) {
-                                            if (error)
-                                                reject(error);
-                                            else
-                                                resolve();
+                                            if (error) reject(error);else resolve();
                                         });
                                     })];
+                                });
                             });
-                        }); };
+                        };
                         return [4, this.exists(path)];
                     case 1:
                         exists = _a.sent();
-                        if (!exists)
-                            return [2];
+                        if (!exists) return [2];
                         return [2, new Promise(function (resolve, reject) {
-                                fs.readdir(path, function (error, files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                            fs.readdir(path, function (error, files) {
+                                return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                     var e_2;
                                     var _this = this;
                                     return tslib_1.__generator(this, function (_a) {
@@ -764,8 +807,9 @@ var FS = (function () {
                                                 }
                                                 _a.label = 1;
                                             case 1:
-                                                _a.trys.push([1, 4, , 5]);
-                                                return [4, fns_1.forEach(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                                _a.trys.push([1, 4,, 5]);
+                                                return [4, fns_1.forEach(files, function (file) {
+                                                    return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                                         var curPath, isDir;
                                                         return tslib_1.__generator(this, function (_a) {
                                                             switch (_a.label) {
@@ -779,14 +823,17 @@ var FS = (function () {
                                                                 case 2:
                                                                     _a.sent();
                                                                     return [3, 5];
-                                                                case 3: return [4, unlink(curPath)];
+                                                                case 3:
+                                                                    return [4, unlink(curPath)];
                                                                 case 4:
                                                                     _a.sent();
                                                                     _a.label = 5;
-                                                                case 5: return [2];
+                                                                case 5:
+                                                                    return [2];
                                                             }
                                                         });
-                                                    }); })];
+                                                    });
+                                                })];
                                             case 2:
                                                 _a.sent();
                                                 return [4, rmdir(path)];
@@ -798,11 +845,13 @@ var FS = (function () {
                                                 e_2 = _a.sent();
                                                 reject(e_2);
                                                 return [3, 5];
-                                            case 5: return [2];
+                                            case 5:
+                                                return [2];
                                         }
                                     });
-                                }); });
-                            })];
+                                });
+                            });
+                        })];
                 }
             });
         });
@@ -814,29 +863,29 @@ var FS = (function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.deleteFolder(path)];
+                    case 0:
+                        return [4, this.deleteFolder(path)];
                     case 1:
                         _a.sent();
-                        mkdir = function (path) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                            return tslib_1.__generator(this, function (_a) {
-                                return [2, new Promise(function (resolve, reject) {
+                        mkdir = function (path) {
+                            return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                return tslib_1.__generator(this, function (_a) {
+                                    return [2, new Promise(function (resolve, reject) {
                                         fs.mkdir(path, function (error) {
-                                            if (error && error.code !== 'EEXIST')
-                                                reject(error);
-                                            else
-                                                resolve();
+                                            if (error && error.code !== 'EEXIST') reject(error);else resolve();
                                         });
                                     })];
+                                });
                             });
-                        }); };
+                        };
                         pathSeq = '';
-                        return [4, fns_1.forEach(path.split('/'), function (fldr) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                        return [4, fns_1.forEach(path.split('/'), function (fldr) {
+                            return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                 var exists;
                                 return tslib_1.__generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0:
-                                            if (!fldr)
-                                                return [2];
+                                            if (!fldr) return [2];
                                             pathSeq += fldr;
                                             return [4, this.exists(pathSeq)];
                                         case 1:
@@ -851,7 +900,8 @@ var FS = (function () {
                                             return [2];
                                     }
                                 });
-                            }); })];
+                            });
+                        })];
                     case 2:
                         _a.sent();
                         if (!path) return [3, 4];
@@ -859,7 +909,8 @@ var FS = (function () {
                     case 3:
                         _a.sent();
                         _a.label = 4;
-                    case 4: return [2];
+                    case 4:
+                        return [2];
                 }
             });
         });
@@ -868,28 +919,26 @@ var FS = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
-                        fs.rename(oldName, newName, function (error) {
-                            if (error) {
-                                console.error('rename error', error);
-                                reject(error);
-                            }
-                            else
-                                resolve();
-                        });
-                    })];
+                    fs.rename(oldName, newName, function (error) {
+                        if (error) {
+                            console.error('rename error', error);
+                            reject(error);
+                        } else resolve();
+                    });
+                })];
             });
         });
     };
     return FS;
-}());
+}();
 exports.default = new FS();
-
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
@@ -902,13 +951,22 @@ function filter(arr, callback) {
             switch (_a.label) {
                 case 0:
                     fail = Symbol();
-                    return [4, Promise.all(arr.map(function (item) { return tslib_1.__awaiter(_this, void 0, void 0, function () { return tslib_1.__generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0: return [4, callback(item)];
-                                case 1: return [2, (_a.sent()) ? item : fail];
-                            }
-                        }); }); }))];
-                case 1: return [2, (_a.sent()).filter(function (i) { return i !== fail; })];
+                    return [4, Promise.all(arr.map(function (item) {
+                        return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                            return tslib_1.__generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        return [4, callback(item)];
+                                    case 1:
+                                        return [2, _a.sent() ? item : fail];
+                                }
+                            });
+                        });
+                    }))];
+                case 1:
+                    return [2, _a.sent().filter(function (i) {
+                        return i !== fail;
+                    })];
             }
         });
     });
@@ -931,13 +989,13 @@ function forEach(array, callback) {
                 case 3:
                     index++;
                     return [3, 1];
-                case 4: return [2];
+                case 4:
+                    return [2];
             }
         });
     });
 }
 exports.forEach = forEach;
-
 
 /***/ }),
 /* 3 */
@@ -945,14 +1003,16 @@ exports.forEach = forEach;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var decorateTarget = function (target, methodName, requestType, responseType) {
-    if (requestType === void 0) { requestType = 'get'; }
+    if (requestType === void 0) {
+        requestType = 'get';
+    }
     target.meta = target.meta || {};
     target.meta[methodName] = target.meta[methodName] || {};
     target.meta[methodName].requestType = requestType;
-    if (responseType)
-        target.meta[methodName].responseType = responseType;
+    if (responseType) target.meta[methodName].responseType = responseType;
 };
 exports.Post = function () {
     return function (target, methodName, descriptor) {
@@ -974,7 +1034,6 @@ exports.View = function () {
         decorateTarget(target, methodName, undefined, 'view');
     };
 };
-
 
 /***/ }),
 /* 4 */
@@ -1008,12 +1067,12 @@ module.exports = g;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var fs_1 = __webpack_require__(1);
-var DataSourceHelper = (function () {
-    function DataSourceHelper() {
-    }
+var DataSourceHelper = function () {
+    function DataSourceHelper() {}
     DataSourceHelper.prototype.loadModel = function (path) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var _a, _b;
@@ -1022,8 +1081,10 @@ var DataSourceHelper = (function () {
                     case 0:
                         _b = (_a = JSON).parse;
                         return [4, fs_1.default.readFile(path)];
-                    case 1: return [4, _b.apply(_a, [_c.sent()])];
-                    case 2: return [2, _c.sent()];
+                    case 1:
+                        return [4, _b.apply(_a, [_c.sent()])];
+                    case 2:
+                        return [2, _c.sent()];
                 }
             });
         });
@@ -1032,7 +1093,8 @@ var DataSourceHelper = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, fs_1.default.writeFile(path, JSON.stringify(model, null, 4))];
+                    case 0:
+                        return [4, fs_1.default.writeFile(path, JSON.stringify(model, null, 4))];
                     case 1:
                         _a.sent();
                         return [2];
@@ -1060,9 +1122,8 @@ var DataSourceHelper = (function () {
         });
     };
     return DataSourceHelper;
-}());
+}();
 exports.dataSourceHelper = new DataSourceHelper();
-
 
 /***/ }),
 /* 6 */
@@ -1070,16 +1131,18 @@ exports.dataSourceHelper = new DataSourceHelper();
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var fns_1 = __webpack_require__(2);
-var WsService = (function () {
+var WsService = function () {
     function WsService() {
         this.connections = [];
     }
     WsService.prototype.send = function (clientId, data) {
-        var connectionItem = this.connections.find(function (c) { return c.clientId == clientId; });
-        if (!connectionItem)
-            return false;
+        var connectionItem = this.connections.find(function (c) {
+            return c.clientId == clientId;
+        });
+        if (!connectionItem) return false;
         connectionItem.connection.sendUTF(JSON.stringify(data));
         return true;
     };
@@ -1107,17 +1170,18 @@ var WsService = (function () {
                 }
             });
             connection.on('close', function (connection) {
-                var index = _this.connections.findIndex(function (it) { return it.connection === connection; });
+                var index = _this.connections.findIndex(function (it) {
+                    return it.connection === connection;
+                });
                 var conn = _this.connections.splice(index, 1);
                 console.log('closed', conn.clientId);
             });
         });
     };
     return WsService;
-}());
+}();
 exports.WsService = WsService;
 exports.wsService = new WsService();
-
 
 /***/ }),
 /* 7 */
@@ -1132,15 +1196,15 @@ module.exports = __webpack_require__(8);
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var expressApp_1 = __webpack_require__(9);
 var wsService_1 = __webpack_require__(6);
 global.process.on('uncaughtException', function (e) {
     console.log(e);
 });
-var Server = (function () {
-    function Server() {
-    }
+var Server = function () {
+    function Server() {}
     Server.prototype.start = function () {
         var PORT = 9000;
         console.log('app started at', new Date());
@@ -1154,11 +1218,10 @@ var Server = (function () {
         return server;
     };
     return Server;
-}());
+}();
 var server = new Server();
 var httpServer = server.start();
 wsService_1.wsService.start(httpServer);
-
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(4)))
 
 /***/ }),
@@ -1166,6 +1229,7 @@ wsService_1.wsService.start(httpServer);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
@@ -1180,7 +1244,7 @@ var exphbs = fns_1.nodeRequire('express-handlebars');
 var session = fns_1.nodeRequire('express-session');
 var bodyParser = fns_1.nodeRequire('body-parser');
 var multipart = fns_1.nodeRequire('connect-multiparty')();
-var ExpressApp = (function () {
+var ExpressApp = function () {
     function ExpressApp() {
         new hbsSettings_1.HbsSettings();
         this.initApp();
@@ -1210,8 +1274,7 @@ var ExpressApp = (function () {
         return this.app;
     };
     ExpressApp.prototype.setHeader = function (res, responseObj) {
-        if (typeof responseObj == 'object')
-            res.setHeader('Content-Type', 'application/json');
+        if (typeof responseObj == 'object') res.setHeader('Content-Type', 'application/json');
     };
     ExpressApp.prototype.sendError = function (response, error) {
         response.statusCode = 500;
@@ -1225,8 +1288,7 @@ var ExpressApp = (function () {
                 result = result || {};
                 result.params = params;
                 response.render(opts.controllerPath, result);
-            }
-            else {
+            } else {
                 _this.setHeader(response, result);
                 response.send(result);
             }
@@ -1234,8 +1296,7 @@ var ExpressApp = (function () {
         var codeResult;
         try {
             codeResult = opts.ctrl[opts.methodName](params, response);
-        }
-        catch (error) {
+        } catch (error) {
             return this.sendError(response, error);
         }
         if (codeResult && codeResult.then) {
@@ -1244,8 +1305,7 @@ var ExpressApp = (function () {
             }).catch(function (error) {
                 _this.sendError(response, error);
             });
-        }
-        else {
+        } else {
             callback(codeResult);
         }
     };
@@ -1268,28 +1328,30 @@ var ExpressApp = (function () {
     };
     ExpressApp.prototype.processMultiPartRequest = function (opts) {
         var _this = this;
-        this.app.post(opts.pathName + "/" + opts.methodName, multipart, function (req, res) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-            var pathToUploadedFile, params, file;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        pathToUploadedFile = req.files && req.files.file && req.files.file.path;
-                        params = req.body;
-                        return [4, fs_1.default.readFile(pathToUploadedFile, true)];
-                    case 1:
-                        file = _a.sent();
-                        return [4, fs_1.default.deleteFile(pathToUploadedFile)];
-                    case 2:
-                        _a.sent();
-                        params.file = file;
-                        if (params.fileName && params.fileName.splice && params.fileName[0]) {
-                            params.fileName = params.fileName[0];
-                        }
-                        this.createResponse(opts, res, params);
-                        return [2];
-                }
+        this.app.post(opts.pathName + "/" + opts.methodName, multipart, function (req, res) {
+            return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                var pathToUploadedFile, params, file;
+                return tslib_1.__generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            pathToUploadedFile = req.files && req.files.file && req.files.file.path;
+                            params = req.body;
+                            return [4, fs_1.default.readFile(pathToUploadedFile, true)];
+                        case 1:
+                            file = _a.sent();
+                            return [4, fs_1.default.deleteFile(pathToUploadedFile)];
+                        case 2:
+                            _a.sent();
+                            params.file = file;
+                            if (params.fileName && params.fileName.splice && params.fileName[0]) {
+                                params.fileName = params.fileName[0];
+                            }
+                            this.createResponse(opts, res, params);
+                            return [2];
+                    }
+                });
             });
-        }); });
+        });
         console.log("mapped: " + opts.requestType + ": " + opts.pathName + "/" + opts.methodName);
     };
     ExpressApp.prototype.setUpControllers = function () {
@@ -1305,17 +1367,13 @@ var ExpressApp = (function () {
                 var pathName = '';
                 if (controllerName == 'index') {
                     pathName = '';
-                    if (methodName == 'index')
-                        methodName = '';
-                }
-                else
-                    pathName = '/' + controllerName;
+                    if (methodName == 'index') methodName = '';
+                } else pathName = '/' + controllerName;
                 var controllerPath = controllerName + "/" + methodName;
                 var opts = { ctrl: ctrl, requestType: requestType, responseType: responseType, pathName: pathName, controllerPath: controllerPath, methodName: methodName };
                 if (requestType == 'multipart') {
                     _this.processMultiPartRequest(opts);
-                }
-                else {
+                } else {
                     _this.processCommonRequest(opts);
                 }
             });
@@ -1323,15 +1381,13 @@ var ExpressApp = (function () {
     };
     ExpressApp.prototype.handleErrors = function () {
         this.app.use(function (err, req, res, next) {
-            if (err)
-                console.error(err);
+            if (err) console.error(err);
             res.status(500).send('error 500: ' + (err.message || err));
         });
     };
     return ExpressApp;
-}());
+}();
 exports.ExpressApp = ExpressApp;
-
 
 /***/ }),
 /* 10 */
@@ -1339,12 +1395,13 @@ exports.ExpressApp = ExpressApp;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var fns_1 = __webpack_require__(2);
 var fs = fns_1.nodeRequire('fs');
 var handlebars = fns_1.nodeRequire('handlebars');
 var typescript = fns_1.nodeRequire('typescript');
-var HbsSettings = (function () {
+var HbsSettings = function () {
     function HbsSettings() {
         var _this = this;
         this.cache = {};
@@ -1360,18 +1417,12 @@ var HbsSettings = (function () {
         handlebars.registerHelper('include', function (name, value, context) {
             var fileSource = fs.readFileSync("./node-app/mvc/views/" + name, { encoding: 'utf-8' });
             if (name.endsWith('.ts')) {
-                if (_this.cache[fileSource])
-                    return _this.cache[fileSource];
-                _this.cache[fileSource] =
-                    '<script>\n' +
-                        typescript.transpileModule(fileSource, {
-                            compilerOptions: { declaration: true, module: typescript.ModuleKind.CommonJS }
-                        }).outputText +
-                        '</script>\n';
+                if (_this.cache[fileSource]) return _this.cache[fileSource];
+                _this.cache[fileSource] = '<script>\n' + typescript.transpileModule(fileSource, {
+                    compilerOptions: { declaration: true, module: typescript.ModuleKind.CommonJS }
+                }).outputText + '</script>\n';
                 return _this.cache[fileSource];
-            }
-            else
-                return fileSource;
+            } else return fileSource;
         });
         handlebars.registerHelper('script', function (name, value, context) {
             var appMeta = JSON.parse(fs.readFileSync('./app-meta.json'));
@@ -1383,9 +1434,8 @@ var HbsSettings = (function () {
         });
     }
     return HbsSettings;
-}());
+}();
 exports.HbsSettings = HbsSettings;
-
 
 /***/ }),
 /* 11 */
@@ -1393,18 +1443,13 @@ exports.HbsSettings = HbsSettings;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var fileSystemController_1 = __webpack_require__(12);
 var indexController_1 = __webpack_require__(13);
 var projectController_1 = __webpack_require__(14);
 var resourceController_1 = __webpack_require__(18);
-exports.all = [
-    indexController_1.IndexController,
-    fileSystemController_1.FileSystemController,
-    projectController_1.ProjectController,
-    resourceController_1.ResourceController
-];
-
+exports.all = [indexController_1.IndexController, fileSystemController_1.FileSystemController, projectController_1.ProjectController, resourceController_1.ResourceController];
 
 /***/ }),
 /* 12 */
@@ -1412,18 +1457,19 @@ exports.all = [
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var decorators_1 = __webpack_require__(3);
 var fs_1 = __webpack_require__(1);
-var FileSystemController = (function () {
-    function FileSystemController() {
-    }
+var FileSystemController = function () {
+    function FileSystemController() {}
     FileSystemController.prototype.renameFolder = function (params) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, fs_1.default.rename(params.oldName, params.newName)];
+                    case 0:
+                        return [4, fs_1.default.rename(params.oldName, params.newName)];
                     case 1:
                         _a.sent();
                         return [2, { success: true }];
@@ -1435,7 +1481,8 @@ var FileSystemController = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, fs_1.default.deleteFolder(params.name)];
+                    case 0:
+                        return [4, fs_1.default.deleteFolder(params.name)];
                     case 1:
                         _a.sent();
                         return [2, { success: true }];
@@ -1448,8 +1495,7 @@ var FileSystemController = (function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!params.projectName)
-                            throw 'project name not specified';
+                        if (!params.projectName) throw 'project name not specified';
                         return [4, fs_1.default.writeFile("workspace/" + params.projectName + "/" + params.path, params.content)];
                     case 1:
                         _a.sent();
@@ -1463,8 +1509,7 @@ var FileSystemController = (function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!params.projectName)
-                            throw 'project name not specified';
+                        if (!params.projectName) throw 'project name not specified';
                         return [4, fs_1.default.deleteFile("workspace/" + params.projectName + "/" + params.path)];
                     case 1:
                         _a.sent();
@@ -1477,7 +1522,8 @@ var FileSystemController = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, fs_1.default.writeFile("workspace/" + params.projectName + "/" + params.path, params.file, true)];
+                    case 0:
+                        return [4, fs_1.default.writeFile("workspace/" + params.projectName + "/" + params.path, params.file, true)];
                     case 1:
                         _a.sent();
                         return [2, { success: true }];
@@ -1490,36 +1536,23 @@ var FileSystemController = (function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!params.projectName)
-                            throw 'project name not specified';
+                        if (!params.projectName) throw 'project name not specified';
                         return [4, fs_1.default.readFile("workspace/" + params.projectName + "/" + params.path)];
-                    case 1: return [2, _a.sent()];
+                    case 1:
+                        return [2, _a.sent()];
                 }
             });
         });
     };
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "renameFolder", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "deleteFolder", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "createFile", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "removeFile", null);
-    tslib_1.__decorate([
-        decorators_1.Multipart()
-    ], FileSystemController.prototype, "uploadFile", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], FileSystemController.prototype, "readFile", null);
+    tslib_1.__decorate([decorators_1.Post()], FileSystemController.prototype, "renameFolder", null);
+    tslib_1.__decorate([decorators_1.Post()], FileSystemController.prototype, "deleteFolder", null);
+    tslib_1.__decorate([decorators_1.Post()], FileSystemController.prototype, "createFile", null);
+    tslib_1.__decorate([decorators_1.Post()], FileSystemController.prototype, "removeFile", null);
+    tslib_1.__decorate([decorators_1.Multipart()], FileSystemController.prototype, "uploadFile", null);
+    tslib_1.__decorate([decorators_1.Post()], FileSystemController.prototype, "readFile", null);
     return FileSystemController;
-}());
+}();
 exports.FileSystemController = FileSystemController;
-
 
 /***/ }),
 /* 13 */
@@ -1527,12 +1560,12 @@ exports.FileSystemController = FileSystemController;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var decorators_1 = __webpack_require__(3);
-var IndexController = (function () {
-    function IndexController() {
-    }
+var IndexController = function () {
+    function IndexController() {}
     IndexController.prototype.index = function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
@@ -1540,20 +1573,12 @@ var IndexController = (function () {
             });
         });
     };
-    IndexController.prototype.editor = function () {
-    };
-    tslib_1.__decorate([
-        decorators_1.Get(),
-        decorators_1.View()
-    ], IndexController.prototype, "index", null);
-    tslib_1.__decorate([
-        decorators_1.Get(),
-        decorators_1.View()
-    ], IndexController.prototype, "editor", null);
+    IndexController.prototype.editor = function () {};
+    tslib_1.__decorate([decorators_1.Get(), decorators_1.View()], IndexController.prototype, "index", null);
+    tslib_1.__decorate([decorators_1.Get(), decorators_1.View()], IndexController.prototype, "editor", null);
     return IndexController;
-}());
+}();
 exports.IndexController = IndexController;
-
 
 /***/ }),
 /* 14 */
@@ -1561,23 +1586,26 @@ exports.IndexController = IndexController;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var decorators_1 = __webpack_require__(3);
 var fs_1 = __webpack_require__(1);
 var projectService_1 = __webpack_require__(15);
-var ProjectController = (function () {
-    function ProjectController() {
-    }
+var ProjectController = function () {
+    function ProjectController() {}
     ProjectController.prototype.getAll = function (params) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var list;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, fs_1.default.getDirList('./workspace')];
+                    case 0:
+                        return [4, fs_1.default.getDirList('./workspace')];
                     case 1:
                         list = _a.sent();
-                        return [2, list.map(function (it) { return ({ name: it }); })];
+                        return [2, list.map(function (it) {
+                            return { name: it };
+                        })];
                 }
             });
         });
@@ -1586,8 +1614,10 @@ var ProjectController = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, projectService_1.projectService.createProject(params.projectName)];
-                    case 1: return [2, _a.sent()];
+                    case 0:
+                        return [4, projectService_1.projectService.createProject(params.projectName)];
+                    case 1:
+                        return [2, _a.sent()];
                 }
             });
         });
@@ -1596,25 +1626,20 @@ var ProjectController = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, projectService_1.projectService.exist(params.projectName)];
-                    case 1: return [2, _a.sent()];
+                    case 0:
+                        return [4, projectService_1.projectService.exist(params.projectName)];
+                    case 1:
+                        return [2, _a.sent()];
                 }
             });
         });
     };
-    tslib_1.__decorate([
-        decorators_1.Get()
-    ], ProjectController.prototype, "getAll", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ProjectController.prototype, "create", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ProjectController.prototype, "exist", null);
+    tslib_1.__decorate([decorators_1.Get()], ProjectController.prototype, "getAll", null);
+    tslib_1.__decorate([decorators_1.Post()], ProjectController.prototype, "create", null);
+    tslib_1.__decorate([decorators_1.Post()], ProjectController.prototype, "exist", null);
     return ProjectController;
-}());
+}();
 exports.ProjectController = ProjectController;
-
 
 /***/ }),
 /* 15 */
@@ -1622,15 +1647,15 @@ exports.ProjectController = ProjectController;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var fs_1 = __webpack_require__(1);
 var dataSourceHelper_1 = __webpack_require__(5);
 var codeTemplates_1 = __webpack_require__(16);
 var consts_1 = __webpack_require__(17);
-var ProjectService = (function () {
-    function ProjectService() {
-    }
+var ProjectService = function () {
+    function ProjectService() {}
     ProjectService.prototype.createProject = function (projectName) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var mainSceneName, mainSceneId, mainLayerId, initialRepoStructure, mainSceneScript;
@@ -1641,26 +1666,20 @@ var ProjectService = (function () {
                         mainSceneId = 1;
                         mainLayerId = ++mainSceneId;
                         initialRepoStructure = {
-                            Scene: [
-                                {
-                                    id: mainSceneId,
-                                    name: mainSceneName,
-                                    type: 'Scene',
-                                    layers: [
-                                        {
-                                            type: 'Layer',
-                                            id: mainLayerId
-                                        }
-                                    ],
-                                }
-                            ],
-                            Layer: [
-                                {
-                                    id: mainLayerId,
-                                    name: 'layer1',
-                                    type: 'Layer'
-                                }
-                            ]
+                            Scene: [{
+                                id: mainSceneId,
+                                name: mainSceneName,
+                                type: 'Scene',
+                                layers: [{
+                                    type: 'Layer',
+                                    id: mainLayerId
+                                }]
+                            }],
+                            Layer: [{
+                                id: mainLayerId,
+                                name: 'mainLayer',
+                                type: 'Layer'
+                            }]
                         };
                         return [4, fs_1.default.createFolder("workspace/" + projectName + "/resources")];
                     case 1:
@@ -1668,11 +1687,11 @@ var ProjectService = (function () {
                         return [4, fs_1.default.createFolder("workspace/" + projectName + "/scripts/custom")];
                     case 2:
                         _a.sent();
-                        return [4, fs_1.default.createFile("workspace/" + projectName + "/scripts/custom/appLib.js", codeTemplates_1.getLibCodeScript('AppLib'))];
+                        return [4, fs_1.default.createFile("workspace/" + projectName + "/scripts/custom/appLib.ts", codeTemplates_1.getLibCodeScript('AppLib'))];
                     case 3:
                         _a.sent();
                         mainSceneScript = codeTemplates_1.getDefaultCodeScript(mainSceneName[0].toUpperCase() + mainSceneName.substr(1));
-                        return [4, fs_1.default.createFile("workspace/" + projectName + "/scripts/" + mainSceneName + ".js", mainSceneScript)];
+                        return [4, fs_1.default.createFile("workspace/" + projectName + "/scripts/" + mainSceneName + ".ts", mainSceneScript)];
                     case 4:
                         _a.sent();
                         dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + projectName + "/repository.json", initialRepoStructure);
@@ -1693,16 +1712,17 @@ var ProjectService = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, fs_1.default.exists("workspace/" + projectName)];
-                    case 1: return [2, _a.sent()];
+                    case 0:
+                        return [4, fs_1.default.exists("workspace/" + projectName)];
+                    case 1:
+                        return [2, _a.sent()];
                 }
             });
         });
     };
     return ProjectService;
-}());
+}();
 exports.projectService = new ProjectService();
-
 
 /***/ }),
 /* 16 */
@@ -1710,20 +1730,21 @@ exports.projectService = new ProjectService();
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDefaultCodeScript = function (name) {
-    return "\n\nexport class " + name + "Behaviour {\n\n    onCreate(){\n\n    }\n\n    onUpdate(){\n\n    }\n\n    onDestroy(){\n\n    }\n\n}\n";
+    return "\n\nexport class " + name + "Behaviour {\n\n    public onCreate(){\n\n    }\n\n    public onUpdate(){\n\n    }\n\n    public onDestroy(){\n\n    }\n\n}\n";
 };
 exports.getLibCodeScript = function (name) {
     return "\n\nexport class " + name + " {\n\n}";
 };
-
 
 /***/ }),
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var SCALE_STRATEGY;
@@ -1733,12 +1754,12 @@ var SCALE_STRATEGY;
     SCALE_STRATEGY[SCALE_STRATEGY["STRETCH"] = 2] = "STRETCH";
 })(SCALE_STRATEGY = exports.SCALE_STRATEGY || (exports.SCALE_STRATEGY = {}));
 
-
 /***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
@@ -1747,9 +1768,8 @@ var fs_1 = __webpack_require__(1);
 var resourceService_1 = __webpack_require__(19);
 var generatorService_1 = __webpack_require__(20);
 var dataSourceHelper_1 = __webpack_require__(5);
-var ResourceController = (function () {
-    function ResourceController() {
-    }
+var ResourceController = function () {
+    function ResourceController() {}
     ResourceController.prototype.getAll = function (params) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var result, repository, gameProps, _a, _b;
@@ -1772,7 +1792,9 @@ var ResourceController = (function () {
                         _b = result;
                         return [4, fs_1.default.readDir("workspace/" + params.projectName + "/scripts/custom/")];
                     case 4:
-                        _b.customScripts = (_c.sent()).map(function (it) { return it.name; });
+                        _b.customScripts = _c.sent().map(function (it) {
+                            return it.name;
+                        });
                         return [2, result];
                 }
             });
@@ -1783,12 +1805,12 @@ var ResourceController = (function () {
             var repository, model, createdId, objectToUpdateIndex;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, dataSourceHelper_1.dataSourceHelper.loadModel("workspace/" + params.projectName + "/repository.json")];
+                    case 0:
+                        return [4, dataSourceHelper_1.dataSourceHelper.loadModel("workspace/" + params.projectName + "/repository.json")];
                     case 1:
                         repository = _a.sent();
                         model = params.model;
-                        if (!repository[model.type])
-                            repository[model.type] = [];
+                        if (!repository[model.type]) repository[model.type] = [];
                         if (!!model.id) return [3, 3];
                         return [4, dataSourceHelper_1.dataSourceHelper.uuid(params.projectName)];
                     case 2:
@@ -1797,21 +1819,20 @@ var ResourceController = (function () {
                         repository[model.type].push(model);
                         return [3, 4];
                     case 3:
-                        objectToUpdateIndex = repository[model.type].findIndex(function (it) { return it.id == model.id; });
-                        if (objectToUpdateIndex == -1)
-                            throw "can not find object with type " + model.type + " and id " + model.id;
+                        objectToUpdateIndex = repository[model.type].findIndex(function (it) {
+                            return it.id == model.id;
+                        });
+                        if (objectToUpdateIndex == -1) throw "can not find object with type " + model.type + " and id " + model.id;
                         repository[model.type][objectToUpdateIndex] = model;
                         _a.label = 4;
                     case 4:
                         Object.keys(repository).forEach(function (key) {
-                            if (repository[key].splice && !repository[key].length)
-                                delete repository[key];
+                            if (repository[key].splice && !repository[key].length) delete repository[key];
                         });
                         return [4, dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + params.projectName + "/repository.json", repository)];
                     case 5:
                         _a.sent();
-                        if (createdId)
-                            return [2, { created: true, id: createdId }];
+                        if (createdId) return [2, { created: true, id: createdId }];
                         return [2, { updated: true }];
                 }
             });
@@ -1843,13 +1864,15 @@ var ResourceController = (function () {
             var repository, model, objectToRemoveIndex;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, dataSourceHelper_1.dataSourceHelper.loadModel("workspace/" + params.projectName + "/repository.json")];
+                    case 0:
+                        return [4, dataSourceHelper_1.dataSourceHelper.loadModel("workspace/" + params.projectName + "/repository.json")];
                     case 1:
                         repository = _a.sent();
                         model = params.model;
-                        objectToRemoveIndex = repository[model.type].findIndex(function (it) { return it.id == model.id; });
-                        if (objectToRemoveIndex == -1)
-                            throw "can not find object with type " + model.type + " and id " + model.id;
+                        objectToRemoveIndex = repository[model.type].findIndex(function (it) {
+                            return it.id == model.id;
+                        });
+                        if (objectToRemoveIndex == -1) throw "can not find object with type " + model.type + " and id " + model.id;
                         repository[model.type].splice(objectToRemoveIndex, 1);
                         return [4, dataSourceHelper_1.dataSourceHelper.saveModel("workspace/" + params.projectName + "/repository.json", repository)];
                     case 2:
@@ -1863,7 +1886,8 @@ var ResourceController = (function () {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, generatorService_1.generatorService.generate(params, response)];
+                    case 0:
+                        return [4, generatorService_1.generatorService.generate(params, response)];
                     case 1:
                         _a.sent();
                         return [2];
@@ -1874,28 +1898,15 @@ var ResourceController = (function () {
     ResourceController.prototype.saveTile = function (params, callback) {
         return resourceService_1.resourceService.saveTile(params.projectName, params.model);
     };
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "getAll", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "save", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "saveGameProps", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "remove", null);
-    tslib_1.__decorate([
-        decorators_1.Get()
-    ], ResourceController.prototype, "generate", null);
-    tslib_1.__decorate([
-        decorators_1.Post()
-    ], ResourceController.prototype, "saveTile", null);
+    tslib_1.__decorate([decorators_1.Post()], ResourceController.prototype, "getAll", null);
+    tslib_1.__decorate([decorators_1.Post()], ResourceController.prototype, "save", null);
+    tslib_1.__decorate([decorators_1.Post()], ResourceController.prototype, "saveGameProps", null);
+    tslib_1.__decorate([decorators_1.Post()], ResourceController.prototype, "remove", null);
+    tslib_1.__decorate([decorators_1.Get()], ResourceController.prototype, "generate", null);
+    tslib_1.__decorate([decorators_1.Post()], ResourceController.prototype, "saveTile", null);
     return ResourceController;
-}());
+}();
 exports.ResourceController = ResourceController;
-
 
 /***/ }),
 /* 19 */
@@ -1903,31 +1914,29 @@ exports.ResourceController = ResourceController;
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var dataSourceHelper_1 = __webpack_require__(5);
-var ResourceService = (function () {
-    function ResourceService() {
-    }
+var ResourceService = function () {
+    function ResourceService() {}
     ResourceService.prototype.getCommonBehaviourAttrs = function (projectName) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!projectName)
-                            throw 'project name is not specified';
+                        if (!projectName) throw 'project name is not specified';
                         return [4, dataSourceHelper_1.dataSourceHelper.loadModel('client-app/engine/commonBehaviour/impl/desc/desc.json')];
-                    case 1: return [2, _a.sent()];
+                    case 1:
+                        return [2, _a.sent()];
                 }
             });
         });
     };
-    ResourceService.prototype.saveTile = function (projectName, model) {
-    };
+    ResourceService.prototype.saveTile = function (projectName, model) {};
     return ResourceService;
-}());
+}();
 exports.resourceService = new ResourceService();
-
 
 /***/ }),
 /* 20 */
@@ -1935,17 +1944,20 @@ exports.resourceService = new ResourceService();
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer, global) {
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
 var fns_1 = __webpack_require__(2);
-var webpack = fns_1.nodeRequire('webpack');
-var ProgressPlugin = fns_1.nodeRequire('webpack/lib/ProgressPlugin');
 var fs_1 = __webpack_require__(1);
 var webpack_config_1 = __webpack_require__(25);
 var termToHtml_1 = __webpack_require__(26);
 var wsService_1 = __webpack_require__(6);
 var debugError_1 = __webpack_require__(27);
-var GeneratorService = (function () {
+var webpack = fns_1.nodeRequire('webpack');
+var path = fns_1.nodeRequire('path');
+var ProgressPlugin = fns_1.nodeRequire('webpack/lib/ProgressPlugin');
+var ENGINE_ROOT = path.dirname(fns_1.nodeRequire.main.filename).split('\\').join('/') + '/client-app/engine';
+var GeneratorService = function () {
     function GeneratorService() {
         this.cnt = 0;
         this.compilerCache = {};
@@ -1957,12 +1969,11 @@ var GeneratorService = (function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!error)
-                            error = '';
+                        if (!error) error = '';
                         console.log('compiling error', error);
                         return [4, fs_1.default.readFile('./node-app/generator/error.html')];
                     case 1:
-                        content = (_a.sent());
+                        content = _a.sent();
                         content = content.replace('${error}', termToHtml_1.termToHtml(error));
                         return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/index.html", content)];
                     case 2:
@@ -1978,11 +1989,10 @@ var GeneratorService = (function () {
         var lastMsg = '';
         var cb = null;
         compiler.apply(new ProgressPlugin(function (percentage, msg) {
-            var m = (~~(percentage * 100)) + '% ' + msg;
+            var m = ~~(percentage * 100) + '% ' + msg;
             if (lastMsg !== m) {
                 lastMsg = m;
-                if (cb)
-                    cb(m);
+                if (cb) cb(m);
             }
         }));
         return {
@@ -2001,13 +2011,16 @@ var GeneratorService = (function () {
                 switch (_a.label) {
                     case 0:
                         console.log('clear folders');
-                        return [4, fs_1.default.deleteFolder("workspace/" + params.projectName + "/generated/")];
+                        return [4, fs_1.default.deleteFolder("workspace/" + params.projectName + "/virtual/")];
                     case 1:
                         _a.sent();
                         return [2];
                 }
             });
         });
+    };
+    GeneratorService.prototype._replaceRoot = function (src) {
+        return src.split('@engine').join(ENGINE_ROOT);
     };
     GeneratorService.prototype.createFolders = function (params) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -2018,7 +2031,7 @@ var GeneratorService = (function () {
                         return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/out/")];
                     case 1:
                         _a.sent();
-                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/generated/src/app")];
+                        return [4, fs_1.default.createFolder("workspace/" + params.projectName + "/virtual/")];
                     case 2:
                         _a.sent();
                         return [2];
@@ -2027,32 +2040,34 @@ var GeneratorService = (function () {
         });
     };
     GeneratorService.prototype.getMediaTypeByExtension = function (extension) {
-        if (['png', 'jpg', 'jpeg', 'bmp'].indexOf(extension) > -1)
-            return 'image';
-        if (['mp3', 'ogg'].indexOf(extension) > -1)
-            return 'audio';
+        if (['png', 'jpg', 'jpeg', 'bmp'].indexOf(extension) > -1) return 'image';
+        if (['mp3', 'ogg'].indexOf(extension) > -1) return 'audio';
         throw new debugError_1.DebugError("unsupported format " + extension);
     };
     GeneratorService.prototype.generateData = function (params) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var allScripts, allScriptCode, repository, _a, _b, gameProps, _c, _d, embeddedResources;
+            var allBehaviours, allBehavioursCode, repository, _a, _b, gameProps, _c, _d, embeddedResources;
             var _this = this;
             return tslib_1.__generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
                         console.log('generating data', params);
-                        return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/scripts", "workspace/" + params.projectName + "/generated/src/app/")];
-                    case 1:
-                        _e.sent();
                         return [4, fs_1.default.readDir("workspace/" + params.projectName + "/scripts", undefined, false)];
-                    case 2:
-                        allScripts = (_e.sent()).map(function (it) { return it.name.split('.')[0]; });
-                        allScriptCode = '';
-                        allScripts.forEach(function (scriptName) {
-                            allScriptCode += "export {" + scriptName[0].toUpperCase() + scriptName.substr(1) + "Behaviour} from './" + scriptName + "'\n";
+                    case 1:
+                        allBehaviours = _e.sent().map(function (it) {
+                            return it.name.split('.')[0];
                         });
-                        allScriptCode = allScriptCode.split('  ').join('');
-                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/generated/src/app/scripts/allScripts.js", allScriptCode)];
+                        allBehavioursCode = '';
+                        allBehaviours.forEach(function (scriptName) {
+                            allBehavioursCode += "export {" + scriptName[0].toUpperCase() + scriptName.substr(1) + "Behaviour} from './scripts/" + scriptName + "'\n";
+                        });
+                        allBehavioursCode = allBehavioursCode.split('  ').join('');
+                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/virtual/allBehaviours.ts", allBehavioursCode)];
+                    case 2:
+                        _e.sent();
+                        return [4, fs_1.default.copyFolder("workspace/" + params.projectName + "/scripts", "workspace/" + params.projectName + "/virtual/", function (source) {
+                            return _this._replaceRoot(source);
+                        })];
                     case 3:
                         _e.sent();
                         _b = (_a = JSON).parse;
@@ -2063,13 +2078,15 @@ var GeneratorService = (function () {
                         return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/gameProps.json")];
                     case 5:
                         gameProps = _d.apply(_c, [_e.sent()]);
-                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/repository.ts", "export let repository:any = \n\t" + JSON.stringify(repository, null, 4) + ";")];
+                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/virtual/repository.ts", "export let repository:any = \n\t" + JSON.stringify(repository, null, 4) + ";")];
                     case 6:
                         _e.sent();
-                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/gameProps.ts", "export let gameProps:any = \n\t" + JSON.stringify(gameProps, null, 4) + ";")];
+                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/virtual/gameProps.ts", "export let gameProps:any = \n\t" + JSON.stringify(gameProps, null, 4) + ";")];
                     case 7:
                         _e.sent();
-                        return [4, fs_1.default.copyFile('node-app/generator/index.tpl', "workspace/" + params.projectName + "/generated/src/index.ts")];
+                        return [4, fs_1.default.copyFile('node-app/generator/index.tpl', "workspace/" + params.projectName + "/virtual/index.ts", function (source) {
+                            return _this._replaceRoot(source);
+                        })];
                     case 8:
                         _e.sent();
                         embeddedResources = {};
@@ -2078,14 +2095,15 @@ var GeneratorService = (function () {
                     case 9:
                         _e.sent();
                         return [3, 12];
-                    case 10: return [4, fs_1.default.readDir("workspace/" + params.projectName + "/resources", 'binary')];
+                    case 10:
+                        return [4, fs_1.default.readDir("workspace/" + params.projectName + "/resources", 'binary')];
                     case 11:
-                        (_e.sent()).forEach(function (file) {
-                            embeddedResources["resources/" + file.name] =
-                                "data:" + _this.getMediaTypeByExtension(file.ext) + "/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
+                        _e.sent().forEach(function (file) {
+                            embeddedResources["resources/" + file.name] = "data:" + _this.getMediaTypeByExtension(file.ext) + "/" + file.ext + ";base64," + new Buffer(file.content).toString('base64');
                         });
                         _e.label = 12;
-                    case 12: return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/generated/src/app/embeddedResources.ts", "export let embeddedResources:any = \n\t" + JSON.stringify(embeddedResources, null, 4) + ";")];
+                    case 12:
+                        return [4, fs_1.default.createFile("./workspace/" + params.projectName + "/virtual/embeddedResources.ts", "export let embeddedResources:any = \n\t" + JSON.stringify(embeddedResources, null, 4) + ";")];
                     case 13:
                         _e.sent();
                         return [2];
@@ -2098,16 +2116,17 @@ var GeneratorService = (function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
-                        console.log('compiling');
-                        wsService_1.wsService.send(params.clientId, { message: 'compiling', success: true });
-                        var compiler = _this.getCompiler(params);
-                        response.setHeader('Content-Type', 'text/html');
-                        compiler.onProgress(function (msg) {
-                            global.process.stdout.write("\r                                                             ");
-                            global.process.stdout.write("\r" + msg);
-                            wsService_1.wsService.send(params.clientId, { message: msg, success: true });
-                        });
-                        compiler.nativeCompiler.run(function (err, data) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                    console.log('compiling');
+                    wsService_1.wsService.send(params.clientId, { message: 'compiling', success: true });
+                    var compiler = _this.getCompiler(params);
+                    response.setHeader('Content-Type', 'text/html');
+                    compiler.onProgress(function (msg) {
+                        global.process.stdout.write("\r                                                             ");
+                        global.process.stdout.write("\r" + msg);
+                        wsService_1.wsService.send(params.clientId, { message: msg, success: true });
+                    });
+                    compiler.nativeCompiler.run(function (err, data) {
+                        return tslib_1.__awaiter(_this, void 0, void 0, function () {
                             var errorMsg, indexHtml, debugJs, appBundleJs;
                             return tslib_1.__generator(this, function (_a) {
                                 switch (_a.label) {
@@ -2117,23 +2136,18 @@ var GeneratorService = (function () {
                                         return [4, GeneratorService._createError(params, err)];
                                     case 1:
                                         _a.sent();
-                                        response.end();
                                         reject(err);
-                                        return [3, 11];
+                                        return [3, 10];
                                     case 2:
                                         if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 3];
                                         console.error("compiled with " + data.compilation.errors.length + " error(s)");
                                         errorMsg = data.compilation.errors.map(function (err) {
-                                            var msg = (err.details || err.message || err.toString());
-                                            if (err.file)
-                                                msg += "\n\t at file " + err.file;
-                                            else if (err.module && err.module && err.module.resource)
-                                                msg += "\n\t at file " + err.module.resource;
+                                            var msg = err.details || err.message || err.toString();
+                                            if (err.file) msg += "\n\t at file " + err.file;else if (err.module && err.module && err.module.resource) msg += "\n\t at file " + err.module.resource;
                                             return msg;
                                         }).join('\n\t---------\t\n');
-                                        response.end();
                                         reject(errorMsg);
-                                        return [3, 11];
+                                        return [3, 10];
                                     case 3:
                                         console.log('creating index.html');
                                         return [4, fs_1.default.readFile('./node-app/generator/index.html')];
@@ -2141,9 +2155,9 @@ var GeneratorService = (function () {
                                         indexHtml = _a.sent();
                                         debugJs = '';
                                         if (!params.debug) return [3, 6];
-                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/generated/tmp/debug.js")];
+                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/virtual/debug.js")];
                                     case 5:
-                                        debugJs = (_a.sent());
+                                        debugJs = _a.sent();
                                         _a.label = 6;
                                     case 6:
                                         indexHtml = indexHtml.replace('${debug}', params.debug ? "<script>" + debugJs + "</script>" : '');
@@ -2153,24 +2167,22 @@ var GeneratorService = (function () {
                                     case 7:
                                         _a.sent();
                                         console.log('creating bundle');
-                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/generated/tmp/bundle.js")];
+                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/virtual/bundle.js")];
                                     case 8:
                                         appBundleJs = _a.sent();
                                         return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/bundle.js", appBundleJs)];
                                     case 9:
                                         _a.sent();
-                                        return [4, fs_1.default.deleteFolder("./workspace/" + params.projectName + "/generated/")];
-                                    case 10:
-                                        _a.sent();
-                                        response.end();
                                         console.log('completed');
                                         resolve();
-                                        _a.label = 11;
-                                    case 11: return [2];
+                                        _a.label = 10;
+                                    case 10:
+                                        return [2];
                                 }
                             });
-                        }); });
-                    })];
+                        });
+                    });
+                })];
             });
         });
     };
@@ -2187,7 +2199,7 @@ var GeneratorService = (function () {
                         }
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 8]);
+                        _a.trys.push([1, 6,, 8]);
                         this.processCache[params.projectName] = true;
                         return [4, this.clearFolders(params)];
                     case 2:
@@ -2210,18 +2222,16 @@ var GeneratorService = (function () {
                         return [4, GeneratorService._createError(params, e_1.toString())];
                     case 7:
                         _a.sent();
-                        response.write("error<br>");
-                        response.end();
                         return [3, 8];
-                    case 8: return [2];
+                    case 8:
+                        return [2];
                 }
             });
         });
     };
     return GeneratorService;
-}());
+}();
 exports.generatorService = new GeneratorService();
-
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(21).Buffer, __webpack_require__(4)))
 
 /***/ }),
@@ -4286,18 +4296,23 @@ module.exports = Array.isArray || function (arr) {
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var fns_1 = __webpack_require__(2);
 var path = fns_1.nodeRequire('path');
 var webpack = fns_1.nodeRequire('webpack');
+var getBool = function (val) {
+    return !!val;
+};
+var dirname = path.dirname(fns_1.nodeRequire.main.filename);
 exports.configFn = function (params) {
     var config = {
         entry: {
-            bundle: "./workspace/" + params.projectName + "/generated/src/index.ts",
+            bundle: "./workspace/" + params.projectName + "/virtual/index.ts",
             debug: ['./client-app/debug/debug.ts', './client-app/debug/devConsole.ts']
         },
         output: {
-            path: path.resolve("./workspace/" + params.projectName + "/generated/tmp"),
+            path: path.resolve("./workspace/" + params.projectName + "/virtual"),
             filename: '[name].js'
         },
         mode: 'production',
@@ -4305,54 +4320,41 @@ exports.configFn = function (params) {
             modules: ['node_modules', 'node_tools/loaders']
         },
         module: {
-            rules: [
-                {
-                    test: /\.ts$/,
-                    loader: "awesome-typescript-loader",
-                    options: {
-                        configFileName: "./node-app/generator/tsconfig.json"
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    exclude: /node_modules/,
-                    loader: "babel-loader",
-                    query: {
-                        presets: ['es2015'],
-                        plugins: []
-                    }
-                },
-                {
-                    test: /\.(frag|vert)$/,
-                    loader: 'text-loader',
-                    options: {
-                        minimize: true
-                    }
-                },
-            ]
+            rules: [{
+                test: /\.ts$/,
+                loader: "awesome-typescript-loader",
+                options: {
+                    useWebpackText: true,
+                    configFileName: "./node-app/generator/tsconfig.json"
+                }
+            }, {
+                test: /\.(frag|vert)$/,
+                loader: 'text-loader',
+                options: {
+                    minimize: true
+                }
+            }]
         },
         resolve: {
-            extensions: ['.js', '.ts'],
-            modules: [
-                path.resolve('node_modules')
-            ]
+            extensions: ['.ts'],
+            modules: [path.resolve(dirname, 'node_modules'), path.resolve(dirname, 'client-app')],
+            alias: {
+                '@engine': path.resolve(dirname, 'client-app/engine/')
+            }
         },
         optimization: {
-            minimize: !!params.minify
+            minimize: getBool(params.minify)
         },
-        plugins: [
-            new webpack.DefinePlugin({
-                BUILD_AT: new Date().getTime(),
-                IN_EDITOR: false,
-                DEBUG: !!params.debug,
-                PROJECT_NAME: JSON.stringify(params.projectName),
-                EMBED_RESOURCES: !!params.embedResources
-            }),
-        ],
+        plugins: [new webpack.DefinePlugin({
+            BUILD_AT: new Date().getTime(),
+            IN_EDITOR: false,
+            DEBUG: getBool(params.debug),
+            PROJECT_NAME: JSON.stringify(params.projectName),
+            EMBED_RESOURCES: getBool(params.embedResources)
+        })]
     };
     return config;
 };
-
 
 /***/ }),
 /* 26 */
@@ -4360,10 +4362,9 @@ exports.configFn = function (params) {
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
-var defaultColors = ['#000', '#D00', '#00CF12', '#C2CB00', '#3100CA',
-    '#E100C6', '#00CBCB', '#C7C7C7', '#686868', '#FF5959', '#00FF6B',
-    '#FAFF5C', '#775AFF', '#FF47FE', '#0FF', '#FFF'];
+var defaultColors = ['#000', '#D00', '#00CF12', '#C2CB00', '#3100CA', '#E100C6', '#00CBCB', '#C7C7C7', '#686868', '#FF5959', '#00FF6B', '#be7f1c', '#775AFF', '#FF47FE', '#0FF', '#FFF'];
 exports.termToHtml = function (text, options) {
     options = options || {};
     var colors = options.colors || defaultColors;
@@ -4387,51 +4388,38 @@ exports.termToHtml = function (text, options) {
                 state.bold = false;
                 state.underline = false;
                 state.negative = false;
-            }
-            else if (code === 1) {
+            } else if (code === 1) {
                 state.bold = true;
-            }
-            else if (code === 4) {
+            } else if (code === 4) {
                 state.underline = true;
-            }
-            else if (code === 7) {
+            } else if (code === 7) {
                 state.negative = true;
-            }
-            else if (code === 21) {
+            } else if (code === 21) {
                 state.bold = false;
-            }
-            else if (code === 24) {
+            } else if (code === 24) {
                 state.underline = false;
-            }
-            else if (code === 27) {
+            } else if (code === 27) {
                 state.negative = false;
-            }
-            else if (code >= 30 && code <= 37) {
+            } else if (code >= 30 && code <= 37) {
                 state.fg = code - 30;
-            }
-            else if (code === 39) {
+            } else if (code === 39) {
                 state.fg = -1;
-            }
-            else if (code >= 40 && code <= 47) {
+            } else if (code >= 40 && code <= 47) {
                 state.bg = code - 40;
-            }
-            else if (code === 49) {
+            } else if (code === 49) {
                 state.bg = -1;
-            }
-            else if (code >= 90 && code <= 97) {
+            } else if (code >= 90 && code <= 97) {
                 state.fg = code - 90 + 8;
-            }
-            else if (code >= 100 && code <= 107) {
+            } else if (code >= 100 && code <= 107) {
                 state.bg = code - 100 + 8;
             }
         });
-        var bold = +(state.bold) * 8;
+        var bold = +state.bold * 8;
         var fg, bg;
         if (state.negative) {
             fg = state.bg | bold;
             bg = state.fg;
-        }
-        else {
+        } else {
             fg = state.fg | bold;
             bg = state.bg;
         }
@@ -4450,20 +4438,15 @@ exports.termToHtml = function (text, options) {
         if (state.underline) {
             style += 'text-decoration:underline';
         }
-        var html = text.
-            replace(/&/g, '&amp;').
-            replace(/</g, '&lt;').
-            replace(/>/g, '&gt;');
+        var html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         if (style) {
             return '<span style="' + style + '">' + html + '</span>';
-        }
-        else {
+        } else {
             return html;
         }
     });
     return text.replace(/\u001B\[.*?[A-Za-z]/g, '');
 };
-
 
 /***/ }),
 /* 27 */
@@ -4471,25 +4454,24 @@ exports.termToHtml = function (text, options) {
 
 "use strict";
 
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = __webpack_require__(0);
-var DebugError = (function (_super) {
+var DebugError = function (_super) {
     tslib_1.__extends(DebugError, _super);
     function DebugError(message) {
         var _this = _super.call(this, message) || this;
         _this.name = 'DebugError';
         if (Error.captureStackTrace) {
             Error.captureStackTrace(_this, _this.constructor);
-        }
-        else {
-            _this.stack = (new Error()).stack;
+        } else {
+            _this.stack = new Error().stack;
         }
         return _this;
     }
     return DebugError;
-}(Error));
+}(Error);
 exports.DebugError = DebugError;
-
 
 /***/ })
 /******/ ]);

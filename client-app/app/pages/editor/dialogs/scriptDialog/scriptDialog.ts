@@ -25,15 +25,15 @@ export class ScriptDialog extends BaseComponent {
         let name = Utils.decapitalise(getRawName(editData.currScriptInEdit.name));
 
         if (!editData.currScriptInEdit.id) {
-            this.editData.customScripts.push({name:`${name}.js`});
+            this.editData.customScripts.push({name:`${name}.ts`});
                 await this.restFileSystem.createFile(
-                    `scripts/custom/${name}.js`,
+                    `scripts/custom/${name}.ts`,
                    getLibCodeScript(Utils.capitalise(name)))
         } else {
-            this.editData.customScripts[editData.currScriptInEdit.index].name = `${name}.js`;
+            this.editData.customScripts[editData.currScriptInEdit.index].name = `${name}.ts`;
             await this.restFileSystem.renameFolder(
-                `workspace/${editData.projectName}/scripts/custom/${getRawName(editData.currScriptInEdit.oldName)}.js`,
-                `workspace/${editData.projectName}/scripts/custom/${name}.js`,
+                `workspace/${editData.projectName}/scripts/custom/${getRawName(editData.currScriptInEdit.oldName)}.ts`,
+                `workspace/${editData.projectName}/scripts/custom/${name}.ts`,
             )
         }
         RF.getComponentById('scriptModal').close();

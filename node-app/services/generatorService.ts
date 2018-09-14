@@ -1,16 +1,16 @@
 
 import {nodeRequire} from "../base/fns";
-
-const webpack = nodeRequire('webpack');
-
-
-const ProgressPlugin = nodeRequire('webpack/lib/ProgressPlugin');
-
 import fs from '../base/fs';
 import {configFn} from '../generator/webpack.config';
 import {termToHtml} from './termToHtml';
 import {wsService} from "./ws/wsService";
-import {DebugError} from "../../client-app/engine/debugError";
+import {DebugError} from "@engine/debugError";
+
+const webpack = nodeRequire('webpack');
+const path = nodeRequire('path');
+
+const ProgressPlugin = nodeRequire('webpack/lib/ProgressPlugin');
+const ENGINE_ROOT = path.dirname(nodeRequire.main.filename).split('\\').join('/') + '/client-app/engine';
 
 class GeneratorService {
 
@@ -49,22 +49,23 @@ class GeneratorService {
     }
 
     getCompiler(params){
-        // let key = JSON.stringify(params);
-        // if (!this.compilerCache[key]) this.compilerCache[key] = GeneratorService.createCompiler(params);
-        // return this.compilerCache[key];
         return GeneratorService.createCompiler(params);
     }
 
 
     private async clearFolders(params){
        console.log('clear folders');
-       await fs.deleteFolder(`workspace/${params.projectName}/generated/`);
+       await fs.deleteFolder(`workspace/${params.projectName}/virtual/`);
+    }
+
+    private _replaceRoot(src){
+        return src.split('@engine').join(ENGINE_ROOT);
     }
 
     private async createFolders(params){
         console.log('creating folders');
         await fs.createFolder(`workspace/${params.projectName}/out/`);
-        await fs.createFolder(`workspace/${params.projectName}/generated/src/app`);
+        await fs.createFolder(`workspace/${params.projectName}/virtual/`);
     }
 
     private getMediaTypeByExtension(extension:string){
@@ -75,27 +76,39 @@ class GeneratorService {
 
     private async generateData(params) {
         console.log('generating data',params);
-        await fs.copyFolder(`workspace/${params.projectName}/scripts`,`workspace/${params.projectName}/generated/src/app/`);
-        let allScripts = (await fs.readDir(`workspace/${params.projectName}/scripts`,undefined,false)).map(it=>it.name.split('.')[0]);
-        let allScriptCode = '';
-        allScripts.forEach(scriptName=>{
-            allScriptCode+=`export {${scriptName[0].toUpperCase()}${scriptName.substr(1)}Behaviour} from './${scriptName}'\n`
+        let allBehaviours = (await fs.readDir(`workspace/${params.projectName}/scripts`,undefined,false)).map(it=>it.name.split('.')[0]);
+        let allBehavioursCode = '';
+        allBehaviours.forEach(scriptName=>{
+            allBehavioursCode+=`export {${scriptName[0].toUpperCase()}${scriptName.substr(1)}Behaviour} from './scripts/${scriptName}'\n`
         });
-        allScriptCode = allScriptCode.split('  ').join('');
-        await fs.createFile(`workspace/${params.projectName}/generated/src/app/scripts/allScripts.js`,allScriptCode);
+        allBehavioursCode = allBehavioursCode.split('  ').join('');
+        await fs.createFile(`workspace/${params.projectName}/virtual/allBehaviours.ts`,allBehavioursCode);
+        await fs.copyFolder(
+            `workspace/${params.projectName}/scripts`,
+            `workspace/${params.projectName}/virtual/`,
+            (source)=>{
+                return this._replaceRoot(source);
+            }
+        );
 
         let repository =  JSON.parse(await fs.readFile(`./workspace/${params.projectName}/repository.json`) as string);
         let gameProps =  JSON.parse(await fs.readFile(`./workspace/${params.projectName}/gameProps.json`) as string);
         await fs.createFile(
-            `./workspace/${params.projectName}/generated/src/app/repository.ts`,
+            `./workspace/${params.projectName}/virtual/repository.ts`,
             `export let repository:any = \n\t${JSON.stringify(repository,null,4)};`)
         ;
         await fs.createFile(
-            `./workspace/${params.projectName}/generated/src/app/gameProps.ts`,
+            `./workspace/${params.projectName}/virtual/gameProps.ts`,
             `export let gameProps:any = \n\t${JSON.stringify(gameProps,null,4)};`)
         ;
 
-        await fs.copyFile('node-app/generator/index.tpl',`workspace/${params.projectName}/generated/src/index.ts`);
+        await fs.copyFile(
+            'node-app/generator/index.tpl',
+            `workspace/${params.projectName}/virtual/index.ts`,
+            (source)=>{
+                return this._replaceRoot(source);
+            }
+        );
 
         let embeddedResources = {};
         if (!params.embedResources) {
@@ -108,7 +121,7 @@ class GeneratorService {
             });
         }
         await fs.createFile(
-            `./workspace/${params.projectName}/generated/src/app/embeddedResources.ts`,
+            `./workspace/${params.projectName}/virtual/embeddedResources.ts`,
             `export let embeddedResources:any = \n\t${JSON.stringify(embeddedResources,null,4)};`)
         ;
 
@@ -130,7 +143,6 @@ class GeneratorService {
                 if (err) {
                     console.error('compiler run error: ',err);
                     await GeneratorService._createError(params,err);
-                    response.end();
                     reject(err);
                 }
                 else {
@@ -143,24 +155,22 @@ class GeneratorService {
                                 msg+=`\n\t at file ${err.module.resource}`;
                             return msg;
                         }).join('\n\t---------\t\n');
-                        response.end();
                         reject(errorMsg);
                     } else {
 
                         console.log('creating index.html');
                         let indexHtml:string = await fs.readFile('./node-app/generator/index.html') as string;
                         let debugJs:string = '';
-                        if (params.debug) debugJs = await fs.readFile(`./workspace/${params.projectName}/generated/tmp/debug.js`) as string;
+                        if (params.debug) debugJs = await fs.readFile(`./workspace/${params.projectName}/virtual/debug.js`) as string;
                         indexHtml = indexHtml.replace('${debug}',params.debug?`<script>${debugJs}</script>`:'');
                         indexHtml = indexHtml.replace('${hash}',(this.cnt++).toString());
                         indexHtml = indexHtml.replace('${projectName}',params.projectName);
                         await fs.createFile(`workspace/${params.projectName}/out/index.html`,indexHtml);
 
                         console.log('creating bundle');
-                        let appBundleJs = await fs.readFile(`./workspace/${params.projectName}/generated/tmp/bundle.js`);
+                        let appBundleJs = await fs.readFile(`./workspace/${params.projectName}/virtual/bundle.js`);
                         await fs.createFile(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
-                        await fs.deleteFolder(`./workspace/${params.projectName}/generated/`);
-                        response.end();
+                        await fs.deleteFolder(`./workspace/${params.projectName}/virtual/`);
                         console.log('completed');
                         resolve();
                     }
@@ -188,8 +198,6 @@ class GeneratorService {
             delete this.processCache[params.projectName];
             console.error('generator error',e);
             await GeneratorService._createError(params,e.toString());
-            response.write("error<br>");
-            response.end();
         }
     }
 

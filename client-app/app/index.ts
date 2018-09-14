@@ -1,10 +1,10 @@
 
 
-import 'engine/core/misc/polyfills'
-import 'app/vendor/polyfills';
+import '../engine/core/misc/polyfills'
+import './vendor/polyfills';
 
-import 'app/vendor/split'
-import 'app/vendor/reactiveForms'
+import './vendor/split'
+import './vendor/reactiveForms'
 
 import {AppModal} from './components/modal/modal'
 import {Collapsible} from './components/collapsible/collapsible'

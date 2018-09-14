@@ -20,7 +20,7 @@ export class SceneDialog extends BaseComponent {
             this.editData.game.repository.addObject(s);
             let name = this.utils.capitalise(this.editData.currSceneInEdit.name);
             await this.restFileSystem.createFile(
-                `scripts/${s.name}.js`,
+                `scripts/${s.name}.ts`,
                getDefaultCodeScript(name))
         } else {
             s.updateCloner();

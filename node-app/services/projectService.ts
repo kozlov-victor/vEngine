@@ -27,7 +27,7 @@ class ProjectService {
             Layer: [
                 {
                     id: mainLayerId,
-                    name: 'layer1',
+                    name: 'mainLayer',
                     type: 'Layer'
                 }
             ]
@@ -35,9 +35,9 @@ class ProjectService {
 
         await fs.createFolder(`workspace/${projectName}/resources`);
         await fs.createFolder(`workspace/${projectName}/scripts/custom`);
-        await fs.createFile(`workspace/${projectName}/scripts/custom/appLib.js`,getLibCodeScript('AppLib'));
+        await fs.createFile(`workspace/${projectName}/scripts/custom/appLib.ts`,getLibCodeScript('AppLib'));
         let mainSceneScript:string = getDefaultCodeScript(mainSceneName[0].toUpperCase()+mainSceneName.substr(1));
-        await fs.createFile(`workspace/${projectName}/scripts/${mainSceneName}.js`,mainSceneScript);
+        await fs.createFile(`workspace/${projectName}/scripts/${mainSceneName}.ts`,mainSceneScript);
 
         dataSourceHelper.saveModel(`workspace/${projectName}/repository.json`,initialRepoStructure);
         dataSourceHelper.saveModel(

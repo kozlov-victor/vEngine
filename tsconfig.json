@@ -15,9 +15,20 @@
         "strict": false,
         "noImplicitAny": false,
         "noEmitOnError": true,
-        "removeComments": true
+        "removeComments": true,
+        "baseUrl": ".",
+        "paths": {
+            "@engine/*": ["client-app/engine/*"]
+        }
     },
     "exclude": [
         "node_modules"
-    ]
+    ],
+    "awesomeTypescriptLoaderOptions": {
+      "transpileOnly": false,
+      "useBabel": true,
+      "useCache": true,
+      "cacheDirectory": "./node_modules/.cache/awesome-typescript-loader",
+      "useTranspileModule": true
+    }
 }

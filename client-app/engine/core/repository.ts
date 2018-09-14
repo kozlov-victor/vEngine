@@ -9,6 +9,7 @@ import {CommonObject} from "../model/commonObject";
 export class Repository {
 
     embeddedResources:{[path:string]:any};
+    allBehaviours: {[key:string]:any} = {};
 
     private _game:Game;
     private descriptions:any;

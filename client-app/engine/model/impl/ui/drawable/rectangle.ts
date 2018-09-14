@@ -20,7 +20,7 @@ export class Rectangle extends Container {
     draw(){
         let r:AbstractRenderer = this.game.renderer;
         let rect = this.getRect();
-        this.drawingRect.setXYWH(rect.x,rect.y,rect.width,rect.height);
+        this.drawingRect.setXYWH(0,0,rect.width,rect.height);
         if (this.fillColor) {
             r.fillRect(this.drawingRect,this.fillColor);
         }

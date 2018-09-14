@@ -5,7 +5,7 @@
 
 let defaultColors = [ '#000', '#D00', '#00CF12', '#C2CB00', '#3100CA',
     '#E100C6', '#00CBCB', '#C7C7C7', '#686868', '#FF5959', '#00FF6B',
-    '#FAFF5C', '#775AFF', '#FF47FE', '#0FF', '#FFF' ];
+    '#be7f1c', '#775AFF', '#FF47FE', '#0FF', '#FFF' ];
 
 export const termToHtml = (text, options?)=> {
     options = options || {};

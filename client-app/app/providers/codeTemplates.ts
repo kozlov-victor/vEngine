@@ -4,15 +4,15 @@ return `
 
 export class ${name}Behaviour {
 
-    onCreate(){
+    public onCreate(){
 
     }
 
-    onUpdate(){
+    public onUpdate(){
 
     }
 
-    onDestroy(){
+    public onDestroy(){
 
     }
 

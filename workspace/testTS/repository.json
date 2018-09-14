@@ -1,0 +1,22 @@
+{
+    "Scene": [
+        {
+            "id": 2,
+            "name": "mainScene",
+            "type": "Scene",
+            "layers": [
+                {
+                    "type": "Layer",
+                    "id": 2
+                }
+            ]
+        }
+    ],
+    "Layer": [
+        {
+            "id": 2,
+            "name": "mainLayer",
+            "type": "Layer"
+        }
+    ]
+}

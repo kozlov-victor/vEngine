@@ -151,10 +151,10 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var size_1 = __webpack_require__(18);
-var point2d_1 = __webpack_require__(7);
-var objectPool_1 = __webpack_require__(13);
-var global_1 = __webpack_require__(3);
-var observableEntity_1 = __webpack_require__(30);
+var point2d_1 = __webpack_require__(6);
+var objectPool_1 = __webpack_require__(12);
+var global_1 = __webpack_require__(2);
+var observableEntity_1 = __webpack_require__(31);
 var Rect = function (_super) {
     __extends(Rect, _super);
     function Rect(x, y, width, height, onChangedFn) {
@@ -273,89 +273,7 @@ global_1._global['Rect'] = Rect;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(13);
-var global_1 = __webpack_require__(3);
-var Color = function () {
-    function Color(r, g, b, a) {
-        this._arr = null;
-        this.setRGBA(r, g, b, a);
-    }
-    Color.prototype.normalizeToZeroOne = function () {
-        this.rNorm = this.r / 0xff;
-        this.gNorm = this.g / 0xff;
-        this.bNorm = this.b / 0xff;
-        this.aNorm = this.a / 0xff;
-    };
-    Color.prototype.setRGBA = function (r, g, b, a) {
-        if (a === void 0) {
-            a = 255;
-        }
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
-        this.normalizeToZeroOne();
-    };
-    Color.prototype.setRGB = function (r, g, b) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = 255;
-        this.normalizeToZeroOne();
-    };
-    Color.prototype.setR = function (val) {
-        this.r = val;
-        this.normalizeToZeroOne();
-    };
-    Color.prototype.setG = function (val) {
-        this.g = val;
-        this.normalizeToZeroOne();
-    };
-    Color.prototype.setB = function (val) {
-        this.b = val;
-        this.normalizeToZeroOne();
-    };
-    Color.prototype.setA = function (val) {
-        this.a = val;
-        this.normalizeToZeroOne();
-    };
-    Color.prototype.clone = function () {
-        return new Color(this.r, this.g, this.b, this.a);
-    };
-    Color.getFromPool = function () {
-        if (Color.objectPool === undefined) Color.objectPool = new objectPool_1.ObjectPool(Color);
-        return Color.objectPool.getNextObject();
-    };
-    Color.RGB = function (r, g, b, a) {
-        var c = new Color(0, 0, 0);
-        c.setRGBA(r, g, b, a);
-        return c;
-    };
-    Color.prototype.asGL = function () {
-        if (this._arr === null) this._arr = new Array(3);
-        this._arr[0] = this.rNorm;
-        this._arr[1] = this.gNorm;
-        this._arr[2] = this.bNorm;
-        this._arr[3] = this.aNorm;
-        return this._arr;
-    };
-    Color.prototype.asCSS = function () {
-        return "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
-    };
-    Color.prototype.toJSON = function () {
-        return { r: this.r, g: this.g, b: this.b, a: this.a };
-    };
-    Color.prototype.fromJSON = function (json) {
-        this.setRGBA(json.r, json.g, json.b, json.a);
-    };
-    Color.WHITE = Color.RGB(255, 255, 255);
-    Color.GREY = Color.RGB(127, 127, 127);
-    Color.BLACK = Color.RGB(0, 0, 0);
-    Color.NONE = Color.RGB(0, 0, 0, 0);
-    return Color;
-}();
-exports.Color = Color;
-global_1._global['Color'] = Color;
+exports._global = {};
 
 /***/ }),
 /* 3 */
@@ -365,18 +283,8 @@ global_1._global['Color'] = Color;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._global = {};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var mat4 = __webpack_require__(16);
-var point2d_1 = __webpack_require__(7);
+var mat4 = __webpack_require__(15);
+var point2d_1 = __webpack_require__(6);
 exports.isPointInRect = function (point, rect, angle) {
     return point.x > rect.x && point.x < rect.x + rect.width && point.y > rect.y && point.y < rect.y + rect.height;
 };
@@ -607,7 +515,7 @@ exports.easeInOutBounce = function (t, b, c, d) {
 };
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -673,7 +581,7 @@ var ShaderProgram = function () {
 exports.ShaderProgram = ShaderProgram;
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -699,7 +607,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var rect_1 = __webpack_require__(1);
 var mouse_1 = __webpack_require__(27);
-var renderableModel_1 = __webpack_require__(32);
+var renderableModel_1 = __webpack_require__(33);
 var debugError_1 = __webpack_require__(0);
 var OVERFLOW;
 (function (OVERFLOW) {
@@ -888,7 +796,7 @@ var Container = function (_super) {
 exports.Container = Container;
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -912,9 +820,9 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(13);
-var observableEntity_1 = __webpack_require__(30);
-var global_1 = __webpack_require__(3);
+var objectPool_1 = __webpack_require__(12);
+var observableEntity_1 = __webpack_require__(31);
+var global_1 = __webpack_require__(2);
 var Point2d = function (_super) {
     __extends(Point2d, _super);
     function Point2d(x, y, onChangedFn) {
@@ -1032,6 +940,98 @@ var Point2d = function (_super) {
 }(observableEntity_1.ObservableEntity);
 exports.Point2d = Point2d;
 global_1._global['Point2d'] = Point2d;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var objectPool_1 = __webpack_require__(12);
+var global_1 = __webpack_require__(2);
+var Color = function () {
+    function Color(r, g, b, a) {
+        this._arr = null;
+        this.setRGBA(r, g, b, a);
+    }
+    Color.prototype.normalizeToZeroOne = function () {
+        this.rNorm = this.r / 0xff;
+        this.gNorm = this.g / 0xff;
+        this.bNorm = this.b / 0xff;
+        this.aNorm = this.a / 0xff;
+    };
+    Color.prototype.setRGBA = function (r, g, b, a) {
+        if (a === void 0) {
+            a = 255;
+        }
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+        this.normalizeToZeroOne();
+    };
+    Color.prototype.setRGB = function (r, g, b) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = 255;
+        this.normalizeToZeroOne();
+    };
+    Color.prototype.setR = function (val) {
+        this.r = val;
+        this.normalizeToZeroOne();
+    };
+    Color.prototype.setG = function (val) {
+        this.g = val;
+        this.normalizeToZeroOne();
+    };
+    Color.prototype.setB = function (val) {
+        this.b = val;
+        this.normalizeToZeroOne();
+    };
+    Color.prototype.setA = function (val) {
+        this.a = val;
+        this.normalizeToZeroOne();
+    };
+    Color.prototype.clone = function () {
+        return new Color(this.r, this.g, this.b, this.a);
+    };
+    Color.getFromPool = function () {
+        if (Color.objectPool === undefined) Color.objectPool = new objectPool_1.ObjectPool(Color);
+        return Color.objectPool.getNextObject();
+    };
+    Color.RGB = function (r, g, b, a) {
+        var c = new Color(0, 0, 0);
+        c.setRGBA(r, g, b, a);
+        return c;
+    };
+    Color.prototype.asGL = function () {
+        if (this._arr === null) this._arr = new Array(3);
+        this._arr[0] = this.rNorm;
+        this._arr[1] = this.gNorm;
+        this._arr[2] = this.bNorm;
+        this._arr[3] = this.aNorm;
+        return this._arr;
+    };
+    Color.prototype.asCSS = function () {
+        return "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
+    };
+    Color.prototype.toJSON = function () {
+        return { r: this.r, g: this.g, b: this.b, a: this.a };
+    };
+    Color.prototype.fromJSON = function (json) {
+        this.setRGBA(json.r, json.g, json.b, json.a);
+    };
+    Color.WHITE = Color.RGB(255, 255, 255);
+    Color.GREY = Color.RGB(127, 127, 127);
+    Color.BLACK = Color.RGB(0, 0, 0);
+    Color.NONE = Color.RGB(0, 0, 0, 0);
+    return Color;
+}();
+exports.Color = Color;
+global_1._global['Color'] = Color;
 
 /***/ }),
 /* 8 */
@@ -1440,8 +1440,8 @@ exports.Transient = function (params) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
-var vertexBuffer_1 = __webpack_require__(65);
-var indexBuffer_1 = __webpack_require__(66);
+var vertexBuffer_1 = __webpack_require__(64);
+var indexBuffer_1 = __webpack_require__(65);
 var BufferInfo = function () {
     function BufferInfo(gl, description) {
         this.posVertexBuffer = null;
@@ -1518,59 +1518,6 @@ exports.BufferInfo = BufferInfo;
 "use strict";
 
 
-var __extends = this && this.__extends || function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
-            d.__proto__ = b;
-        } || function (d, b) {
-            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-}();
-Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(2);
-var global_1 = __webpack_require__(3);
-var container_1 = __webpack_require__(6);
-var Rectangle = function (_super) {
-    __extends(Rectangle, _super);
-    function Rectangle(game) {
-        var _this = _super.call(this, game) || this;
-        _this.color = color_1.Color.BLACK.clone();
-        _this.lineWidth = 1;
-        _this.fillColor = color_1.Color.RGB(100, 100, 100);
-        _this.width = 16;
-        _this.height = 16;
-        return _this;
-    }
-    Rectangle.prototype.draw = function () {
-        var r = this.game.renderer;
-        var rect = this.getRect();
-        this.drawingRect.setXYWH(0, 0, rect.width, rect.height);
-        if (this.fillColor) {
-            r.fillRect(this.drawingRect, this.fillColor);
-        }
-        r.drawRect(this.drawingRect, this.color, this.lineWidth);
-    };
-    return Rectangle;
-}(container_1.Container);
-exports.Rectangle = Rectangle;
-global_1._global['Rectangle'] = Rectangle;
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
 var ObjectPool = function () {
@@ -1593,7 +1540,7 @@ var ObjectPool = function () {
 exports.ObjectPool = ObjectPool;
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1624,13 +1571,13 @@ var __decorate = this && this.__decorate || function (decorators, target, key, d
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var timer_1 = __webpack_require__(54);
-var commonObject_1 = __webpack_require__(15);
+var timer_1 = __webpack_require__(53);
+var commonObject_1 = __webpack_require__(14);
 var tween_1 = __webpack_require__(22);
-var eventEmitter_1 = __webpack_require__(33);
+var eventEmitter_1 = __webpack_require__(34);
 var decorators_1 = __webpack_require__(10);
 var rect_1 = __webpack_require__(1);
-var point2d_1 = __webpack_require__(7);
+var point2d_1 = __webpack_require__(6);
 var debugError_1 = __webpack_require__(0);
 var BaseModel = function (_super) {
     __extends(BaseModel, _super);
@@ -1706,7 +1653,7 @@ var BaseModel = function (_super) {
 exports.BaseModel = BaseModel;
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1868,7 +1815,7 @@ var CommonObject = function () {
 exports.CommonObject = CommonObject;
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2007,7 +1954,7 @@ exports.inverse = function (m) {
 exports.IDENTITY = exports.makeIdentity();
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2032,7 +1979,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgramUtils_1 = __webpack_require__(8);
-var shaderGenerator_1 = __webpack_require__(36);
+var shaderGenerator_1 = __webpack_require__(37);
 var TexShaderGenerator = function (_super) {
     __extends(TexShaderGenerator, _super);
     function TexShaderGenerator() {
@@ -2054,6 +2001,59 @@ var TexShaderGenerator = function (_super) {
 exports.TexShaderGenerator = TexShaderGenerator;
 
 /***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = this && this.__extends || function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = __webpack_require__(7);
+var global_1 = __webpack_require__(2);
+var container_1 = __webpack_require__(5);
+var Rectangle = function (_super) {
+    __extends(Rectangle, _super);
+    function Rectangle(game) {
+        var _this = _super.call(this, game) || this;
+        _this.color = color_1.Color.BLACK.clone();
+        _this.lineWidth = 1;
+        _this.fillColor = color_1.Color.RGB(100, 100, 100);
+        _this.width = 16;
+        _this.height = 16;
+        return _this;
+    }
+    Rectangle.prototype.draw = function () {
+        var r = this.game.renderer;
+        var rect = this.getRect();
+        this.drawingRect.setXYWH(0, 0, rect.width, rect.height);
+        if (this.fillColor) {
+            r.fillRect(this.drawingRect, this.fillColor);
+        }
+        r.drawRect(this.drawingRect, this.color, this.lineWidth);
+    };
+    return Rectangle;
+}(container_1.Container);
+exports.Rectangle = Rectangle;
+global_1._global['Rectangle'] = Rectangle;
+
+/***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2061,7 +2061,7 @@ exports.TexShaderGenerator = TexShaderGenerator;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(13);
+var objectPool_1 = __webpack_require__(12);
 var Size = function () {
     function Size(width, height) {
         if (width === void 0) {
@@ -2120,10 +2120,10 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var plane_1 = __webpack_require__(24);
-var shaderProgram_1 = __webpack_require__(5);
+var shaderProgram_1 = __webpack_require__(4);
 var abstractDrawer_1 = __webpack_require__(9);
 var bufferInfo_1 = __webpack_require__(11);
-var texShaderGenerator_1 = __webpack_require__(17);
+var texShaderGenerator_1 = __webpack_require__(16);
 var SpriteRectDrawer = function (_super) {
     __extends(SpriteRectDrawer, _super);
     function SpriteRectDrawer(gl, program) {
@@ -2489,7 +2489,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(14);
+var baseModel_1 = __webpack_require__(13);
 var Resource = function (_super) {
     __extends(Resource, _super);
     function Resource() {
@@ -2533,8 +2533,8 @@ exports.Resource = Resource;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var mathEx = __webpack_require__(4);
-var global_1 = __webpack_require__(3);
+var mathEx = __webpack_require__(3);
+var global_1 = __webpack_require__(2);
 var accessByPath = function (obj, path) {
     var pathArr = path.split('.');
     if (pathArr.length === 1) return { targetObj: obj, targetKey: path };
@@ -2760,7 +2760,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgramUtils_1 = __webpack_require__(8);
-var shaderGenerator_1 = __webpack_require__(36);
+var shaderGenerator_1 = __webpack_require__(37);
 var ColorShaderGenerator = function (_super) {
     __extends(ColorShaderGenerator, _super);
     function ColorShaderGenerator() {
@@ -2802,9 +2802,9 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var mathEx = __webpack_require__(4);
-var point2d_1 = __webpack_require__(7);
-var objectPool_1 = __webpack_require__(13);
+var mathEx = __webpack_require__(3);
+var point2d_1 = __webpack_require__(6);
+var objectPool_1 = __webpack_require__(12);
 var rect_1 = __webpack_require__(1);
 var MousePoint = function (_super) {
     __extends(MousePoint, _super);
@@ -3035,11 +3035,236 @@ var __extends = this && this.__extends || function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 }();
+var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
+    var c = arguments.length,
+        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
+        d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var gameObjectProto_1 = __webpack_require__(29);
-var commonBehaviours = __webpack_require__(55);
-var global_1 = __webpack_require__(3);
-var noop_1 = __webpack_require__(35);
+var gameObject3d_1 = __webpack_require__(52);
+__webpack_require__(60);
+var baseAbstractBehaviour_1 = __webpack_require__(23);
+var rendererFactory_1 = __webpack_require__(61);
+var repository_1 = __webpack_require__(89);
+var mouse_1 = __webpack_require__(27);
+var keyboard_1 = __webpack_require__(100);
+var gamePad_1 = __webpack_require__(101);
+var decorators_1 = __webpack_require__(10);
+var commonObject_1 = __webpack_require__(14);
+var camera_1 = __webpack_require__(49);
+var consts_1 = __webpack_require__(45);
+var point2d_1 = __webpack_require__(6);
+var lightArray_1 = __webpack_require__(38);
+var uiBuilder_1 = __webpack_require__(102);
+var colliderEngine_1 = __webpack_require__(103);
+var MathEx = __webpack_require__(3);
+var global_1 = __webpack_require__(2);
+var debugError_1 = __webpack_require__(0);
+var audioPlayer_1 = __webpack_require__(50);
+var Game = function (_super) {
+    __extends(Game, _super);
+    function Game() {
+        var _this = _super.call(this) || this;
+        _this._lastTime = 0;
+        _this._currTime = 0;
+        _this._deltaTime = 0;
+        _this._currentScene = null;
+        _this._running = false;
+        _this._destroyed = false;
+        _this.renderer = null;
+        _this.scale = new point2d_1.Point2d(1, 1);
+        _this.pos = new point2d_1.Point2d(0, 0);
+        _this.width = 0;
+        _this.height = 0;
+        _this.gravityConstant = 0;
+        _this.fps = 0;
+        _this.gamePad = null;
+        _this.scaleStrategy = consts_1.SCALE_STRATEGY.FIT;
+        _this.startSceneId = 0;
+        _this.preloadingSceneId = 0;
+        _this._revalidated = false;
+        _this.__global__ = global_1._global;
+        _this._cnt = 0;
+        _this['GameObject3d'] = gameObject3d_1.GameObject3d;
+        _this.repository = new repository_1.Repository(_this);
+        _this.mouse = new mouse_1.Mouse(_this);
+        _this.keyboard = new keyboard_1.Keyboard(_this);
+        _this.keyboard.listenTo();
+        _this.gamePad = new gamePad_1.GamePad(_this);
+        _this.collider = new colliderEngine_1.ColliderEngine(_this);
+        _this.camera = new camera_1.Camera(_this);
+        _this.lightArray = new lightArray_1.LightArray(_this);
+        _this.uiBuilder = new uiBuilder_1.UIBuilder(_this);
+        _this.audioPlayer = new audioPlayer_1.AudioPlayer(_this);
+        if (true) window['game'] = _this;
+        _this.__global__['MathEx'] = MathEx;
+        return _this;
+    }
+    Game_1 = Game;
+    Game.prototype.revalidate = function () {
+        this.renderer = rendererFactory_1.RendererFactory.getRenderer(this);
+        this.mouse.listenTo(this.renderer.container);
+        this.camera.revalidate();
+        this._revalidated = true;
+    };
+    Game.prototype.getTime = function () {
+        return this._lastTime;
+    };
+    Game.prototype.getDeltaTime = function () {
+        return this._deltaTime;
+    };
+    Game.prototype.log = function (args) {
+        this.renderer.log(args);
+    };
+    Game.prototype.debug2 = function () {
+        var val = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            val[_i] = arguments[_i];
+        }
+        this._cnt++;
+        console.log.apply(console, val);
+        if (this._cnt > 10) throw new debugError_1.DebugError('too many logs');
+    };
+    Game.prototype.runScene = function (scene) {
+        var _this = this;
+        this._currentScene = scene;
+        if (true && !this._revalidated) throw new debugError_1.DebugError("game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly");
+        if (scene.prepared) {
+            return;
+        }
+        if (true) {
+            var allBehaviours_1 = this.repository.allBehaviours;
+            var sceneBhScriptName = "" + scene.name[0].toUpperCase() + scene.name.substr(1) + "Behaviour";
+            var BhClass = allBehaviours_1[sceneBhScriptName];
+            if (sceneBhScriptName) scene.setIndividualBehaviour(new BhClass());
+            scene.layers.forEach(function (l) {
+                l.children.forEach(function (go) {
+                    go.setCommonBehaviour();
+                    var scriptName = go.name && "" + go.name[0].toUpperCase() + go.name.substr(1) + "Behaviour";
+                    var BhClass = allBehaviours_1[scriptName];
+                    if (BhClass && !go.getIndividualBehaviour()) go.setIndividualBehaviour(new BhClass());
+                });
+            });
+        }
+        scene.preload(function () {
+            scene.onShow();
+            scene.prepared = true;
+            if (!_this._running) {
+                _this.update();
+                _this._running = true;
+            }
+        });
+    };
+    Game.prototype.getCurrScene = function () {
+        return this._currentScene;
+    };
+    Game.prototype.setCurrScene = function (scene) {
+        this._currentScene = scene;
+    };
+    Game.prototype.update = function () {
+        if (this._destroyed) return;
+        this._lastTime = this._currTime;
+        this._currTime = Date.now();
+        var currTimeCopy = this._currTime;
+        if (!this._lastTime) this._lastTime = this._currTime;
+        this._deltaTime = this._currTime - this._lastTime;
+        if (true) {
+            this.fps = ~~(1000 / this._deltaTime);
+            var renderError = this.renderer.getError();
+            if (renderError) throw new debugError_1.DebugError("render error with code " + renderError);
+        }
+        var dTime = Math.min(this._deltaTime, Game_1.UPDATE_TIME_RATE);
+        var numOfLoops = ~~(this._deltaTime / Game_1.UPDATE_TIME_RATE) || 1;
+        var currTime = this._currTime - numOfLoops * Game_1.UPDATE_TIME_RATE;
+        var loopCnt = 0;
+        do {
+            this._currentScene && this._currentScene.update(currTime, dTime);
+            this.collider.collisionArcade();
+            this.keyboard.update();
+            this.gamePad.update();
+            this.audioPlayer.update(currTime, dTime);
+            currTime += Game_1.UPDATE_TIME_RATE;
+            loopCnt++;
+            if (loopCnt > 10) {
+                this._lastTime = this._currTime = currTimeCopy;
+                break;
+            }
+        } while (loopCnt < numOfLoops);
+        this._currentScene && this._currentScene.render();
+        requestAnimationFrame(this.update.bind(this));
+    };
+    Game.prototype.destroy = function () {
+        var _this = this;
+        this._destroyed = true;
+        var delta = 16;
+        var lastTimeout = setTimeout(function () {}, 0);
+        var lastInterval = setInterval(function () {}, 0);
+        var lastMaxVal = Math.max(lastTimeout, lastInterval) + delta;
+        for (var i = 0; i < lastMaxVal; i++) {
+            clearInterval(i);
+            clearTimeout(i);
+        }
+        this.keyboard.destroy();
+        this.mouse.destroy();
+        this.renderer.cancelFullScreen();
+        baseAbstractBehaviour_1.BaseAbstractBehaviour.destroyAll();
+        var tid = setTimeout(function () {
+            _this.renderer.destroy();
+        }, 200);
+    };
+    var Game_1;
+    Game.UPDATE_TIME_RATE = 20;
+    Game = Game_1 = __decorate([decorators_1.Transient({
+        repository: true,
+        renderer: true,
+        mouse: true,
+        keyboard: true,
+        gamePad: true,
+        collider: true,
+        camera: true,
+        fps: true,
+        destroyed: true,
+        lightArray: true,
+        uiBuilder: true,
+        scale: true,
+        pos: true,
+        audioPlayer: true
+    })], Game);
+    return Game;
+}(commonObject_1.CommonObject);
+exports.Game = Game;
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = this && this.__extends || function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var gameObjectProto_1 = __webpack_require__(30);
+var commonBehaviours = __webpack_require__(54);
+var global_1 = __webpack_require__(2);
+var noop_1 = __webpack_require__(36);
 var GameObject = function (_super) {
     __extends(GameObject, _super);
     function GameObject(game) {
@@ -3109,7 +3334,7 @@ exports.GameObject = GameObject;
 global_1._global['GameObject'] = GameObject;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3133,11 +3358,11 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var point2d_1 = __webpack_require__(7);
+var point2d_1 = __webpack_require__(6);
 var rect_1 = __webpack_require__(1);
-var shaderMaterial_1 = __webpack_require__(31);
-var renderableModel_1 = __webpack_require__(32);
-var global_1 = __webpack_require__(3);
+var shaderMaterial_1 = __webpack_require__(32);
+var renderableModel_1 = __webpack_require__(33);
+var global_1 = __webpack_require__(2);
 var cloneId = 0;
 var GameObjectProto = function (_super) {
     __extends(GameObjectProto, _super);
@@ -3242,7 +3467,7 @@ exports.GameObjectProto = GameObjectProto;
 global_1._global['GameObjectProto'] = GameObjectProto;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3297,14 +3522,14 @@ var ObservableEntity = function () {
 exports.ObservableEntity = ObservableEntity;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(2);
+var color_1 = __webpack_require__(7);
 var ShaderMaterial = function () {
     function ShaderMaterial() {
         this.ambient = color_1.Color.BLACK.clone();
@@ -3324,7 +3549,7 @@ var ShaderMaterial = function () {
 exports.ShaderMaterial = ShaderMaterial;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3349,7 +3574,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var resource_1 = __webpack_require__(21);
-var matEx = __webpack_require__(4);
+var matEx = __webpack_require__(3);
 var debugError_1 = __webpack_require__(0);
 var RenderableModel = function (_super) {
     __extends(RenderableModel, _super);
@@ -3434,7 +3659,7 @@ var RenderableModel = function (_super) {
 exports.RenderableModel = RenderableModel;
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3486,7 +3711,7 @@ var EventEmitter = function () {
 exports.EventEmitter = EventEmitter;
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3551,7 +3776,7 @@ var Moveable = function (_super) {
 exports.Moveable = Moveable;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3561,7 +3786,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.noop = function () {};
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3650,7 +3875,7 @@ var ShaderGenerator = function () {
 exports.ShaderGenerator = ShaderGenerator;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3658,7 +3883,7 @@ exports.ShaderGenerator = ShaderGenerator;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
-var pointLight_1 = __webpack_require__(67);
+var pointLight_1 = __webpack_require__(66);
 var LightArray = function () {
     function LightArray(game) {
         if (true && !game) throw new debugError_1.DebugError("game instance is not passed to LightArray constructor");
@@ -3682,7 +3907,7 @@ var LightArray = function () {
 exports.LightArray = LightArray;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3697,7 +3922,7 @@ var __decorate = this && this.__decorate || function (decorators, target, key, d
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
-var color_1 = __webpack_require__(2);
+var color_1 = __webpack_require__(7);
 var decorators_1 = __webpack_require__(10);
 var AbstractLight = function () {
     function AbstractLight(game) {
@@ -3714,7 +3939,7 @@ var AbstractLight = function () {
 exports.AbstractLight = AbstractLight;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3722,7 +3947,7 @@ exports.AbstractLight = AbstractLight;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
-var texture_1 = __webpack_require__(40);
+var texture_1 = __webpack_require__(41);
 var FrameBuffer = function () {
     function FrameBuffer(gl, width, height) {
         if (true && !gl) throw new debugError_1.DebugError("can not create FrameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)");
@@ -3774,7 +3999,7 @@ var FrameBuffer = function () {
 exports.FrameBuffer = FrameBuffer;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3782,7 +4007,7 @@ exports.FrameBuffer = FrameBuffer;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
-var frameBuffer_1 = __webpack_require__(39);
+var frameBuffer_1 = __webpack_require__(40);
 var size_1 = __webpack_require__(18);
 var isPowerOf2 = function (value) {
     return (value & value - 1) === 0;
@@ -3935,58 +4160,6 @@ var Texture = function () {
 exports.Texture = Texture;
 
 /***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var shaderProgram_1 = __webpack_require__(5);
-var spriteRectDrawer_1 = __webpack_require__(19);
-var mat4 = __webpack_require__(16);
-var texShaderGenerator_1 = __webpack_require__(17);
-var debugError_1 = __webpack_require__(0);
-var makePositionMatrix = function (dstX, dstY, dstWidth, dstHeight) {
-    var projectionMatrix = mat4.ortho(0, dstWidth, 0, dstHeight, -1, 1);
-    var scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
-    return mat4.matrixMultiply(scaleMatrix, projectionMatrix);
-};
-var identity = mat4.makeIdentity();
-var AbstractFilter = function () {
-    function AbstractFilter(gl) {
-        this.spriteRectDrawer = null;
-        this.uniformsToSet = {};
-        if (true && !gl) {
-            console.error(this);
-            throw new debugError_1.DebugError("can not create Filter, gl context not passed to constructor, expected: Filter(gl)");
-        }
-        this.gl = gl;
-        var gen = new texShaderGenerator_1.TexShaderGenerator();
-        this.prepare(gen);
-        this._afterPrepare(gen);
-    }
-    AbstractFilter.prototype.prepare = function (gen) {};
-    AbstractFilter.prototype._afterPrepare = function (gen) {
-        var program = new shaderProgram_1.ShaderProgram(this.gl, gen.getVertexSource(), gen.getFragmentSource());
-        this.spriteRectDrawer = new spriteRectDrawer_1.SpriteRectDrawer(this.gl, program);
-    };
-    AbstractFilter.prototype.doFilter = function (textureInfos, destFrameBuffer) {
-        if (destFrameBuffer) destFrameBuffer.bind();
-        var w = textureInfos[0].texture.size.width;
-        var h = textureInfos[0].texture.size.height;
-        this.uniformsToSet.u_textureMatrix = identity;
-        this.uniformsToSet.u_vertexMatrix = makePositionMatrix(0, 0, w, h);
-        this.spriteRectDrawer.draw(textureInfos, this.uniformsToSet, null);
-    };
-    AbstractFilter.prototype.setParam = function (name, value) {
-        this.uniformsToSet[name] = value;
-    };
-    return AbstractFilter;
-}();
-exports.AbstractFilter = AbstractFilter;
-
-/***/ }),
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4002,11 +4175,11 @@ var vscroll_1 = __webpack_require__(81);
 exports.VScroll = vscroll_1.VScroll;
 var checkBox_1 = __webpack_require__(82);
 exports.CheckBox = checkBox_1.CheckBox;
-var container_1 = __webpack_require__(6);
+var container_1 = __webpack_require__(5);
 exports.Container = container_1.Container;
 var image_1 = __webpack_require__(44);
 exports.Image = image_1.Image;
-var rectangle_1 = __webpack_require__(12);
+var rectangle_1 = __webpack_require__(17);
 exports.Rectangle = rectangle_1.Rectangle;
 var border_1 = __webpack_require__(83);
 exports.Border = border_1.Border;
@@ -4040,7 +4213,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(6);
+var container_1 = __webpack_require__(5);
 var textField_1 = __webpack_require__(20);
 var debugError_1 = __webpack_require__(0);
 var Button = function (_super) {
@@ -4121,7 +4294,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var rect_1 = __webpack_require__(1);
-var container_1 = __webpack_require__(6);
+var container_1 = __webpack_require__(5);
 var debugError_1 = __webpack_require__(0);
 var Image = function (_super) {
     __extends(Image, _super);
@@ -4202,7 +4375,7 @@ var __decorate = this && this.__decorate || function (decorators, target, key, d
 Object.defineProperty(exports, "__esModule", { value: true });
 var rect_1 = __webpack_require__(1);
 var rigidShapes_1 = __webpack_require__(47);
-var commonObject_1 = __webpack_require__(15);
+var commonObject_1 = __webpack_require__(14);
 var decorators_1 = __webpack_require__(10);
 var debugError_1 = __webpack_require__(0);
 var TileMap = function (_super) {
@@ -4802,7 +4975,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(14);
+var baseModel_1 = __webpack_require__(13);
 var Layer = function (_super) {
     __extends(Layer, _super);
     function Layer(game) {
@@ -4869,11 +5042,11 @@ exports.Layer = Layer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
 var tween_1 = __webpack_require__(22);
-var mat4 = __webpack_require__(16);
-var mathEx = __webpack_require__(4);
+var mat4 = __webpack_require__(15);
+var mathEx = __webpack_require__(3);
 var rect_1 = __webpack_require__(1);
-var point2d_1 = __webpack_require__(7);
-var mathEx_1 = __webpack_require__(4);
+var point2d_1 = __webpack_require__(6);
+var mathEx_1 = __webpack_require__(3);
 var CAMERA_MATRIX_MODE;
 (function (CAMERA_MATRIX_MODE) {
     CAMERA_MATRIX_MODE[CAMERA_MATRIX_MODE["MODE_TRANSFORM"] = 0] = "MODE_TRANSFORM";
@@ -5106,7 +5279,7 @@ exports.AudioPlayer = AudioPlayer;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var game_1 = __webpack_require__(52);
+var game_1 = __webpack_require__(28);
 var gameProps_1 = __webpack_require__(110);
 var repository_1 = __webpack_require__(111);
 var allBehaviours = __webpack_require__(112);
@@ -5143,234 +5316,9 @@ var __extends = this && this.__extends || function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 }();
-var __decorate = this && this.__decorate || function (decorators, target, key, desc) {
-    var c = arguments.length,
-        r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc,
-        d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var gameObject3d_1 = __webpack_require__(53);
-__webpack_require__(61);
-var baseAbstractBehaviour_1 = __webpack_require__(23);
-var rendererFactory_1 = __webpack_require__(62);
-var repository_1 = __webpack_require__(89);
-var mouse_1 = __webpack_require__(27);
-var keyboard_1 = __webpack_require__(100);
-var gamePad_1 = __webpack_require__(101);
-var decorators_1 = __webpack_require__(10);
-var commonObject_1 = __webpack_require__(15);
-var camera_1 = __webpack_require__(49);
-var consts_1 = __webpack_require__(45);
-var point2d_1 = __webpack_require__(7);
-var lightArray_1 = __webpack_require__(37);
-var uiBuilder_1 = __webpack_require__(102);
-var colliderEngine_1 = __webpack_require__(103);
-var MathEx = __webpack_require__(4);
-var global_1 = __webpack_require__(3);
-var debugError_1 = __webpack_require__(0);
-var audioPlayer_1 = __webpack_require__(50);
-var Game = function (_super) {
-    __extends(Game, _super);
-    function Game() {
-        var _this = _super.call(this) || this;
-        _this._lastTime = 0;
-        _this._currTime = 0;
-        _this._deltaTime = 0;
-        _this._currentScene = null;
-        _this._running = false;
-        _this._destroyed = false;
-        _this.renderer = null;
-        _this.scale = new point2d_1.Point2d(1, 1);
-        _this.pos = new point2d_1.Point2d(0, 0);
-        _this.width = 0;
-        _this.height = 0;
-        _this.gravityConstant = 0;
-        _this.fps = 0;
-        _this.gamePad = null;
-        _this.scaleStrategy = consts_1.SCALE_STRATEGY.FIT;
-        _this.startSceneId = 0;
-        _this.preloadingSceneId = 0;
-        _this._revalidated = false;
-        _this.__global__ = global_1._global;
-        _this._cnt = 0;
-        _this['GameObject3d'] = gameObject3d_1.GameObject3d;
-        _this.repository = new repository_1.Repository(_this);
-        _this.mouse = new mouse_1.Mouse(_this);
-        _this.keyboard = new keyboard_1.Keyboard(_this);
-        _this.keyboard.listenTo();
-        _this.gamePad = new gamePad_1.GamePad(_this);
-        _this.collider = new colliderEngine_1.ColliderEngine(_this);
-        _this.camera = new camera_1.Camera(_this);
-        _this.lightArray = new lightArray_1.LightArray(_this);
-        _this.uiBuilder = new uiBuilder_1.UIBuilder(_this);
-        _this.audioPlayer = new audioPlayer_1.AudioPlayer(_this);
-        if (true) window['game'] = _this;
-        _this.__global__['MathEx'] = MathEx;
-        return _this;
-    }
-    Game_1 = Game;
-    Game.prototype.revalidate = function () {
-        this.renderer = rendererFactory_1.RendererFactory.getRenderer(this);
-        this.mouse.listenTo(this.renderer.container);
-        this.camera.revalidate();
-        this._revalidated = true;
-    };
-    Game.prototype.getTime = function () {
-        return this._lastTime;
-    };
-    Game.prototype.getDeltaTime = function () {
-        return this._deltaTime;
-    };
-    Game.prototype.log = function (args) {
-        this.renderer.log(args);
-    };
-    Game.prototype.debug2 = function () {
-        var val = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            val[_i] = arguments[_i];
-        }
-        this._cnt++;
-        console.log.apply(console, val);
-        if (this._cnt > 10) throw new debugError_1.DebugError('too many logs');
-    };
-    Game.prototype.runScene = function (scene) {
-        var _this = this;
-        this._currentScene = scene;
-        if (true && !this._revalidated) throw new debugError_1.DebugError("game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly");
-        if (scene.prepared) {
-            return;
-        }
-        if (true) {
-            var allBehaviours_1 = this.repository.allBehaviours;
-            var sceneBhScriptName = "" + scene.name[0].toUpperCase() + scene.name.substr(1) + "Behaviour";
-            var BhClass = allBehaviours_1[sceneBhScriptName];
-            if (sceneBhScriptName) scene.setIndividualBehaviour(new BhClass());
-            scene.layers.forEach(function (l) {
-                l.children.forEach(function (go) {
-                    go.setCommonBehaviour();
-                    var scriptName = go.name && "" + go.name[0].toUpperCase() + go.name.substr(1) + "Behaviour";
-                    var BhClass = allBehaviours_1[scriptName];
-                    if (BhClass && !go.getIndividualBehaviour()) go.setIndividualBehaviour(new BhClass());
-                });
-            });
-        }
-        scene.preload(function () {
-            scene.onShow();
-            scene.prepared = true;
-            if (!_this._running) {
-                _this.update();
-                _this._running = true;
-            }
-        });
-    };
-    Game.prototype.getCurrScene = function () {
-        return this._currentScene;
-    };
-    Game.prototype.setCurrScene = function (scene) {
-        this._currentScene = scene;
-    };
-    Game.prototype.update = function () {
-        if (this._destroyed) return;
-        this._lastTime = this._currTime;
-        this._currTime = Date.now();
-        var currTimeCopy = this._currTime;
-        if (!this._lastTime) this._lastTime = this._currTime;
-        this._deltaTime = this._currTime - this._lastTime;
-        if (true) {
-            this.fps = ~~(1000 / this._deltaTime);
-            var renderError = this.renderer.getError();
-            if (renderError) throw new debugError_1.DebugError("render error with code " + renderError);
-        }
-        var dTime = Math.min(this._deltaTime, Game_1.UPDATE_TIME_RATE);
-        var numOfLoops = ~~(this._deltaTime / Game_1.UPDATE_TIME_RATE) || 1;
-        var currTime = this._currTime - numOfLoops * Game_1.UPDATE_TIME_RATE;
-        var loopCnt = 0;
-        do {
-            this._currentScene && this._currentScene.update(currTime, dTime);
-            this.collider.collisionArcade();
-            this.keyboard.update();
-            this.gamePad.update();
-            this.audioPlayer.update(currTime, dTime);
-            currTime += Game_1.UPDATE_TIME_RATE;
-            loopCnt++;
-            if (loopCnt > 10) {
-                this._lastTime = this._currTime = currTimeCopy;
-                break;
-            }
-        } while (loopCnt < numOfLoops);
-        this._currentScene && this._currentScene.render();
-        requestAnimationFrame(this.update.bind(this));
-    };
-    Game.prototype.destroy = function () {
-        var _this = this;
-        this._destroyed = true;
-        var delta = 16;
-        var lastTimeout = setTimeout(function () {}, 0);
-        var lastInterval = setInterval(function () {}, 0);
-        var lastMaxVal = Math.max(lastTimeout, lastInterval) + delta;
-        for (var i = 0; i < lastMaxVal; i++) {
-            clearInterval(i);
-            clearTimeout(i);
-        }
-        this.keyboard.destroy();
-        this.mouse.destroy();
-        this.renderer.cancelFullScreen();
-        baseAbstractBehaviour_1.BaseAbstractBehaviour.destroyAll();
-        var tid = setTimeout(function () {
-            _this.renderer.destroy();
-        }, 200);
-    };
-    var Game_1;
-    Game.UPDATE_TIME_RATE = 20;
-    Game = Game_1 = __decorate([decorators_1.Transient({
-        repository: true,
-        renderer: true,
-        mouse: true,
-        keyboard: true,
-        gamePad: true,
-        collider: true,
-        camera: true,
-        fps: true,
-        destroyed: true,
-        lightArray: true,
-        uiBuilder: true,
-        scale: true,
-        pos: true,
-        audioPlayer: true
-    })], Game);
-    return Game;
-}(commonObject_1.CommonObject);
-exports.Game = Game;
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __extends = this && this.__extends || function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
-            d.__proto__ = b;
-        } || function (d, b) {
-            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-}();
-Object.defineProperty(exports, "__esModule", { value: true });
-var gameObject_1 = __webpack_require__(28);
-var global_1 = __webpack_require__(3);
+var gameObject_1 = __webpack_require__(29);
+var global_1 = __webpack_require__(2);
 var GameObject3d = function (_super) {
     __extends(GameObject3d, _super);
     function GameObject3d() {
@@ -5393,7 +5341,7 @@ exports.GameObject3d = GameObject3d;
 global_1._global['GameObject3d'] = gameObject_1.GameObject;
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5419,22 +5367,22 @@ var Timer = function () {
 exports.Timer = Timer;
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var draggable_1 = __webpack_require__(56);
+var draggable_1 = __webpack_require__(55);
 exports.Draggable = draggable_1.DraggableBehaviour;
-var control4Dir_1 = __webpack_require__(57);
+var control4Dir_1 = __webpack_require__(56);
 exports.Control4Dir = control4Dir_1.Control4Dir;
-var control2Dir_1 = __webpack_require__(59);
+var control2Dir_1 = __webpack_require__(58);
 exports.Control2Dir = control2Dir_1.Control2Dir;
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5537,7 +5485,7 @@ var DraggableBehaviour = function (_super) {
 exports.DraggableBehaviour = DraggableBehaviour;
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5561,7 +5509,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var move4Dir_1 = __webpack_require__(58);
+var move4Dir_1 = __webpack_require__(57);
 var Parameters = function () {
     function Parameters() {
         this.velocity = 100;
@@ -5620,6 +5568,51 @@ var Control4Dir = function (_super) {
 exports.Control4Dir = Control4Dir;
 
 /***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = this && this.__extends || function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var moveable_1 = __webpack_require__(35);
+var Move4Dir = function (_super) {
+    __extends(Move4Dir, _super);
+    function Move4Dir(game) {
+        return _super.call(this, game) || this;
+    }
+    Move4Dir.prototype.manage = function (gameObject, parameters) {
+        this.setDirs(Move4Dir.DIRS);
+        _super.prototype.manage.call(this, gameObject, parameters);
+    };
+    Move4Dir.prototype.stop = function () {
+        _super.prototype.stop.call(this);
+        this.gameObject.rigidBody.mVelocity.x = 0;
+        this.gameObject.rigidBody.mVelocity.y = 0;
+    };
+    Move4Dir.DIRS = ['Left', 'Right', 'Up', 'Down'];
+    return Move4Dir;
+}(moveable_1.Moveable);
+exports.Move4Dir = Move4Dir;
+
+/***/ }),
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5644,52 +5637,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var moveable_1 = __webpack_require__(34);
-var Move4Dir = function (_super) {
-    __extends(Move4Dir, _super);
-    function Move4Dir(game) {
-        return _super.call(this, game) || this;
-    }
-    Move4Dir.prototype.manage = function (gameObject, parameters) {
-        this.setDirs(Move4Dir.DIRS);
-        _super.prototype.manage.call(this, gameObject, parameters);
-    };
-    Move4Dir.prototype.stop = function () {
-        _super.prototype.stop.call(this);
-        this.gameObject.rigidBody.mVelocity.x = 0;
-        this.gameObject.rigidBody.mVelocity.y = 0;
-    };
-    Move4Dir.DIRS = ['Left', 'Right', 'Up', 'Down'];
-    return Move4Dir;
-}(moveable_1.Moveable);
-exports.Move4Dir = Move4Dir;
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __extends = this && this.__extends || function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
-            d.__proto__ = b;
-        } || function (d, b) {
-            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-}();
-Object.defineProperty(exports, "__esModule", { value: true });
-var move2Dir_1 = __webpack_require__(60);
+var move2Dir_1 = __webpack_require__(59);
 var Parameters = function () {
     function Parameters() {
         this.velocity = 100;
@@ -5732,7 +5680,7 @@ var Control2Dir = function (_super) {
 exports.Control2Dir = Control2Dir;
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5756,7 +5704,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var moveable_1 = __webpack_require__(34);
+var moveable_1 = __webpack_require__(35);
 var Move2Dir = function (_super) {
     __extends(Move2Dir, _super);
     function Move2Dir(game) {
@@ -5777,7 +5725,7 @@ var Move2Dir = function (_super) {
 exports.Move2Dir = Move2Dir;
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports) {
 
 Array.prototype['remove'] = function (callback) {
@@ -5822,14 +5770,14 @@ if (!Array.prototype['find']) {
 }
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var webGlRenderer_1 = __webpack_require__(63);
+var webGlRenderer_1 = __webpack_require__(62);
 var debugError_1 = __webpack_require__(0);
 var RendererFactory = function () {
     function RendererFactory() {}
@@ -5842,7 +5790,7 @@ var RendererFactory = function () {
 exports.RendererFactory = RendererFactory;
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5867,21 +5815,21 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
-var spriteRectLightDrawer_1 = __webpack_require__(64);
+var spriteRectLightDrawer_1 = __webpack_require__(63);
 var spriteRectDrawer_1 = __webpack_require__(19);
-var tiledSpriteRectDrawer_1 = __webpack_require__(68);
-var colorRectDrawer_1 = __webpack_require__(69);
+var tiledSpriteRectDrawer_1 = __webpack_require__(67);
+var colorRectDrawer_1 = __webpack_require__(68);
 var abstractDrawer_1 = __webpack_require__(9);
-var lineDrawer_1 = __webpack_require__(70);
-var circleDrawer_1 = __webpack_require__(72);
-var frameBuffer_1 = __webpack_require__(39);
-var matrixStack_1 = __webpack_require__(74);
-var mat4 = __webpack_require__(16);
-var texture_1 = __webpack_require__(40);
-var addBlendDrawer_1 = __webpack_require__(75);
+var lineDrawer_1 = __webpack_require__(69);
+var circleDrawer_1 = __webpack_require__(71);
+var frameBuffer_1 = __webpack_require__(40);
+var matrixStack_1 = __webpack_require__(73);
+var mat4 = __webpack_require__(15);
+var texture_1 = __webpack_require__(41);
+var addBlendDrawer_1 = __webpack_require__(74);
 var rect_1 = __webpack_require__(1);
 var abstractCanvasRenderer_1 = __webpack_require__(78);
-var shaderMaterial_1 = __webpack_require__(31);
+var shaderMaterial_1 = __webpack_require__(32);
 var size_1 = __webpack_require__(18);
 var modelDrawer_1 = __webpack_require__(88);
 var getCtx = function (el) {
@@ -6157,7 +6105,7 @@ var WebGlRenderer = function (_super) {
 exports.WebGlRenderer = WebGlRenderer;
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6182,10 +6130,10 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var spriteRectDrawer_1 = __webpack_require__(19);
-var texShaderGenerator_1 = __webpack_require__(17);
-var shaderProgram_1 = __webpack_require__(5);
+var texShaderGenerator_1 = __webpack_require__(16);
+var shaderProgram_1 = __webpack_require__(4);
 var shaderProgramUtils_1 = __webpack_require__(8);
-var lightArray_1 = __webpack_require__(37);
+var lightArray_1 = __webpack_require__(38);
 var SpriteRectLightDrawer = function (_super) {
     __extends(SpriteRectLightDrawer, _super);
     function SpriteRectLightDrawer(gl) {
@@ -6207,7 +6155,7 @@ var SpriteRectLightDrawer = function (_super) {
 exports.SpriteRectLightDrawer = SpriteRectLightDrawer;
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6271,7 +6219,7 @@ var VertexBuffer = function () {
 exports.VertexBuffer = VertexBuffer;
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6317,7 +6265,7 @@ var IndexBuffer = function () {
 exports.IndexBuffer = IndexBuffer;
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6341,8 +6289,8 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var point2d_1 = __webpack_require__(7);
-var abstractLight_1 = __webpack_require__(38);
+var point2d_1 = __webpack_require__(6);
+var abstractLight_1 = __webpack_require__(39);
 var PointLight = function (_super) {
     __extends(PointLight, _super);
     function PointLight(game) {
@@ -6373,6 +6321,59 @@ var PointLight = function (_super) {
 exports.PointLight = PointLight;
 
 /***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = this && this.__extends || function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var plane_1 = __webpack_require__(24);
+var shaderProgram_1 = __webpack_require__(4);
+var bufferInfo_1 = __webpack_require__(11);
+var abstractDrawer_1 = __webpack_require__(9);
+var shaderProgramUtils_1 = __webpack_require__(8);
+var texShaderGenerator_1 = __webpack_require__(16);
+var TiledSpriteRectDrawer = function (_super) {
+    __extends(TiledSpriteRectDrawer, _super);
+    function TiledSpriteRectDrawer(gl) {
+        var _this = _super.call(this, gl) || this;
+        _this.primitive = new plane_1.Plane();
+        var gen = new texShaderGenerator_1.TexShaderGenerator();
+        gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC2, 'u_offsetCoords');
+        gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'u_frameCoords');
+        gen.setFragmentMainFn("\n            void main(){\n                vec2 localTextCoord = mod(\n                    v_texCoord + fract(u_offsetCoords),\n                    u_frameCoords.zw\n                ) + u_frameCoords.xy;\n                gl_FragColor = texture2D(texture, localTextCoord);\n                gl_FragColor.a *= u_alpha;\n            }\n        ");
+        _this.program = new shaderProgram_1.ShaderProgram(gl, gen.getVertexSource(), gen.getFragmentSource());
+        _this.bufferInfo = new bufferInfo_1.BufferInfo(gl, {
+            posVertexInfo: { array: _this.primitive.vertexArr, type: gl.FLOAT, size: 2, attrName: 'a_position' },
+            posIndexInfo: { array: _this.primitive.indexArr },
+            texVertexInfo: { array: _this.primitive.texCoordArr, type: gl.FLOAT, size: 2, attrName: 'a_texCoord' },
+            drawMethod: _this.gl.TRIANGLE_STRIP
+        });
+        return _this;
+    }
+    return TiledSpriteRectDrawer;
+}(abstractDrawer_1.AbstractDrawer);
+exports.TiledSpriteRectDrawer = TiledSpriteRectDrawer;
+
+/***/ }),
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6398,32 +6399,27 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var plane_1 = __webpack_require__(24);
-var shaderProgram_1 = __webpack_require__(5);
+var shaderProgram_1 = __webpack_require__(4);
 var bufferInfo_1 = __webpack_require__(11);
 var abstractDrawer_1 = __webpack_require__(9);
-var shaderProgramUtils_1 = __webpack_require__(8);
-var texShaderGenerator_1 = __webpack_require__(17);
-var TiledSpriteRectDrawer = function (_super) {
-    __extends(TiledSpriteRectDrawer, _super);
-    function TiledSpriteRectDrawer(gl) {
+var colorShaderGenerator_1 = __webpack_require__(26);
+var ColorRectDrawer = function (_super) {
+    __extends(ColorRectDrawer, _super);
+    function ColorRectDrawer(gl) {
         var _this = _super.call(this, gl) || this;
         _this.primitive = new plane_1.Plane();
-        var gen = new texShaderGenerator_1.TexShaderGenerator();
-        gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC2, 'u_offsetCoords');
-        gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'u_frameCoords');
-        gen.setFragmentMainFn("\n            void main(){\n                vec2 localTextCoord = mod(\n                    v_texCoord + fract(u_offsetCoords),\n                    u_frameCoords.zw\n                ) + u_frameCoords.xy;\n                gl_FragColor = texture2D(texture, localTextCoord);\n                gl_FragColor.a *= u_alpha;\n            }\n        ");
+        var gen = new colorShaderGenerator_1.ColorShaderGenerator();
         _this.program = new shaderProgram_1.ShaderProgram(gl, gen.getVertexSource(), gen.getFragmentSource());
         _this.bufferInfo = new bufferInfo_1.BufferInfo(gl, {
             posVertexInfo: { array: _this.primitive.vertexArr, type: gl.FLOAT, size: 2, attrName: 'a_position' },
             posIndexInfo: { array: _this.primitive.indexArr },
-            texVertexInfo: { array: _this.primitive.texCoordArr, type: gl.FLOAT, size: 2, attrName: 'a_texCoord' },
             drawMethod: _this.gl.TRIANGLE_STRIP
         });
         return _this;
     }
-    return TiledSpriteRectDrawer;
+    return ColorRectDrawer;
 }(abstractDrawer_1.AbstractDrawer);
-exports.TiledSpriteRectDrawer = TiledSpriteRectDrawer;
+exports.ColorRectDrawer = ColorRectDrawer;
 
 /***/ }),
 /* 69 */
@@ -6450,56 +6446,8 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var plane_1 = __webpack_require__(24);
-var shaderProgram_1 = __webpack_require__(5);
-var bufferInfo_1 = __webpack_require__(11);
-var abstractDrawer_1 = __webpack_require__(9);
-var colorShaderGenerator_1 = __webpack_require__(26);
-var ColorRectDrawer = function (_super) {
-    __extends(ColorRectDrawer, _super);
-    function ColorRectDrawer(gl) {
-        var _this = _super.call(this, gl) || this;
-        _this.primitive = new plane_1.Plane();
-        var gen = new colorShaderGenerator_1.ColorShaderGenerator();
-        _this.program = new shaderProgram_1.ShaderProgram(gl, gen.getVertexSource(), gen.getFragmentSource());
-        _this.bufferInfo = new bufferInfo_1.BufferInfo(gl, {
-            posVertexInfo: { array: _this.primitive.vertexArr, type: gl.FLOAT, size: 2, attrName: 'a_position' },
-            posIndexInfo: { array: _this.primitive.indexArr },
-            drawMethod: _this.gl.TRIANGLE_STRIP
-        });
-        return _this;
-    }
-    return ColorRectDrawer;
-}(abstractDrawer_1.AbstractDrawer);
-exports.ColorRectDrawer = ColorRectDrawer;
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __extends = this && this.__extends || function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
-            d.__proto__ = b;
-        } || function (d, b) {
-            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-}();
-Object.defineProperty(exports, "__esModule", { value: true });
-var line_1 = __webpack_require__(71);
-var shaderProgram_1 = __webpack_require__(5);
+var line_1 = __webpack_require__(70);
+var shaderProgram_1 = __webpack_require__(4);
 var bufferInfo_1 = __webpack_require__(11);
 var abstractDrawer_1 = __webpack_require__(9);
 var colorShaderGenerator_1 = __webpack_require__(26);
@@ -6521,7 +6469,7 @@ var LineDrawer = function (_super) {
 exports.LineDrawer = LineDrawer;
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6559,7 +6507,7 @@ var Line = function (_super) {
 exports.Line = Line;
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6583,8 +6531,8 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var circle_1 = __webpack_require__(73);
-var shaderProgram_1 = __webpack_require__(5);
+var circle_1 = __webpack_require__(72);
+var shaderProgram_1 = __webpack_require__(4);
 var abstractDrawer_1 = __webpack_require__(9);
 var bufferInfo_1 = __webpack_require__(11);
 var colorShaderGenerator_1 = __webpack_require__(26);
@@ -6606,7 +6554,7 @@ var CircleDrawer = function (_super) {
 exports.CircleDrawer = CircleDrawer;
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6652,14 +6600,14 @@ var Circle = function (_super) {
 exports.Circle = Circle;
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var mat4 = __webpack_require__(16);
+var mat4 = __webpack_require__(15);
 var MatrixStack = function () {
     function MatrixStack() {
         this.stack = [];
@@ -6720,7 +6668,7 @@ var MatrixStack = function () {
 exports.MatrixStack = MatrixStack;
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6744,7 +6692,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractBlendDrawer_1 = __webpack_require__(76);
+var abstractBlendDrawer_1 = __webpack_require__(75);
 var AddBlendDrawer = function (_super) {
     __extends(AddBlendDrawer, _super);
     function AddBlendDrawer(gl) {
@@ -6758,7 +6706,7 @@ var AddBlendDrawer = function (_super) {
 exports.AddBlendDrawer = AddBlendDrawer;
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6767,9 +6715,9 @@ exports.AddBlendDrawer = AddBlendDrawer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var spriteRectDrawer_1 = __webpack_require__(19);
 var shaderProgramUtils_1 = __webpack_require__(8);
-var texShaderGenerator_1 = __webpack_require__(17);
-var shaderProgram_1 = __webpack_require__(5);
-var simpleCopyFilter_1 = __webpack_require__(77);
+var texShaderGenerator_1 = __webpack_require__(16);
+var shaderProgram_1 = __webpack_require__(4);
+var simpleCopyFilter_1 = __webpack_require__(76);
 var AbstractBlendDrawer = function () {
     function AbstractBlendDrawer(gl) {
         this.gl = gl;
@@ -6796,7 +6744,7 @@ var AbstractBlendDrawer = function () {
 exports.AbstractBlendDrawer = AbstractBlendDrawer;
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6820,7 +6768,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractFilter_1 = __webpack_require__(41);
+var abstractFilter_1 = __webpack_require__(77);
 var shaderProgramUtils_1 = __webpack_require__(8);
 var SimpleCopyFilter = function (_super) {
     __extends(SimpleCopyFilter, _super);
@@ -6834,6 +6782,58 @@ var SimpleCopyFilter = function (_super) {
     return SimpleCopyFilter;
 }(abstractFilter_1.AbstractFilter);
 exports.SimpleCopyFilter = SimpleCopyFilter;
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var shaderProgram_1 = __webpack_require__(4);
+var spriteRectDrawer_1 = __webpack_require__(19);
+var mat4 = __webpack_require__(15);
+var texShaderGenerator_1 = __webpack_require__(16);
+var debugError_1 = __webpack_require__(0);
+var makePositionMatrix = function (dstX, dstY, dstWidth, dstHeight) {
+    var projectionMatrix = mat4.ortho(0, dstWidth, 0, dstHeight, -1, 1);
+    var scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
+    return mat4.matrixMultiply(scaleMatrix, projectionMatrix);
+};
+var identity = mat4.makeIdentity();
+var AbstractFilter = function () {
+    function AbstractFilter(gl) {
+        this.spriteRectDrawer = null;
+        this.uniformsToSet = {};
+        if (true && !gl) {
+            console.error(this);
+            throw new debugError_1.DebugError("can not create Filter, gl context not passed to constructor, expected: Filter(gl)");
+        }
+        this.gl = gl;
+        var gen = new texShaderGenerator_1.TexShaderGenerator();
+        this.prepare(gen);
+        this._afterPrepare(gen);
+    }
+    AbstractFilter.prototype.prepare = function (gen) {};
+    AbstractFilter.prototype._afterPrepare = function (gen) {
+        var program = new shaderProgram_1.ShaderProgram(this.gl, gen.getVertexSource(), gen.getFragmentSource());
+        this.spriteRectDrawer = new spriteRectDrawer_1.SpriteRectDrawer(this.gl, program);
+    };
+    AbstractFilter.prototype.doFilter = function (textureInfos, destFrameBuffer) {
+        if (destFrameBuffer) destFrameBuffer.bind();
+        var w = textureInfos[0].texture.size.width;
+        var h = textureInfos[0].texture.size.height;
+        this.uniformsToSet.u_textureMatrix = identity;
+        this.uniformsToSet.u_vertexMatrix = makePositionMatrix(0, 0, w, h);
+        this.spriteRectDrawer.draw(textureInfos, this.uniformsToSet, null);
+    };
+    AbstractFilter.prototype.setParam = function (name, value) {
+        this.uniformsToSet[name] = value;
+    };
+    return AbstractFilter;
+}();
+exports.AbstractFilter = AbstractFilter;
 
 /***/ }),
 /* 78 */
@@ -7087,8 +7087,8 @@ var __decorate = this && this.__decorate || function (decorators, target, key, d
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mouse_1 = __webpack_require__(27);
-var container_1 = __webpack_require__(6);
-var mathEx_1 = __webpack_require__(4);
+var container_1 = __webpack_require__(5);
+var mathEx_1 = __webpack_require__(3);
 var decorators_1 = __webpack_require__(10);
 var vScroll_1 = __webpack_require__(86);
 var ScrollInfo = function () {
@@ -7256,9 +7256,9 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(6);
-var rectangle_1 = __webpack_require__(12);
-var color_1 = __webpack_require__(2);
+var container_1 = __webpack_require__(5);
+var rectangle_1 = __webpack_require__(17);
+var color_1 = __webpack_require__(7);
 var VScroll = function (_super) {
     __extends(VScroll, _super);
     function VScroll(game) {
@@ -7321,9 +7321,9 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(6);
-var rectangle_1 = __webpack_require__(12);
-var color_1 = __webpack_require__(2);
+var container_1 = __webpack_require__(5);
+var rectangle_1 = __webpack_require__(17);
+var color_1 = __webpack_require__(7);
 var CheckBox = function (_super) {
     __extends(CheckBox, _super);
     function CheckBox(game) {
@@ -7389,8 +7389,8 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var rectangle_1 = __webpack_require__(12);
-var color_1 = __webpack_require__(2);
+var rectangle_1 = __webpack_require__(17);
+var color_1 = __webpack_require__(7);
 var Border = function (_super) {
     __extends(Border, _super);
     function Border(game) {
@@ -7495,7 +7495,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(6);
+var container_1 = __webpack_require__(5);
 var AbsoluteLayout = function (_super) {
     __extends(AbsoluteLayout, _super);
     function AbsoluteLayout(game) {
@@ -7561,9 +7561,9 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(6);
-var rectangle_1 = __webpack_require__(12);
-var color_1 = __webpack_require__(2);
+var container_1 = __webpack_require__(5);
+var rectangle_1 = __webpack_require__(17);
+var color_1 = __webpack_require__(7);
 var VScroll = function (_super) {
     __extends(VScroll, _super);
     function VScroll(game) {
@@ -7644,7 +7644,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var shaderProgram_1 = __webpack_require__(5);
+var shaderProgram_1 = __webpack_require__(4);
 var abstractDrawer_1 = __webpack_require__(9);
 var bufferInfo_1 = __webpack_require__(11);
 var debugError_1 = __webpack_require__(0);
@@ -7818,9 +7818,9 @@ var frameAnimation_1 = __webpack_require__(91);
 exports.FrameAnimation = frameAnimation_1.FrameAnimation;
 var spriteSheet_1 = __webpack_require__(92);
 exports.SpriteSheet = spriteSheet_1.SpriteSheet;
-var gameObjectProto_1 = __webpack_require__(29);
+var gameObjectProto_1 = __webpack_require__(30);
 exports.GameObjectProto = gameObjectProto_1.GameObjectProto;
-var gameObject_1 = __webpack_require__(28);
+var gameObject_1 = __webpack_require__(29);
 exports.GameObject = gameObject_1.GameObject;
 var commonBehaviour_1 = __webpack_require__(93);
 exports.CommonBehaviour = commonBehaviour_1.CommonBehaviour;
@@ -7873,9 +7873,9 @@ var __decorate = this && this.__decorate || function (decorators, target, key, d
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var commonObject_1 = __webpack_require__(15);
+var commonObject_1 = __webpack_require__(14);
 var decorators_1 = __webpack_require__(10);
-var eventEmitter_1 = __webpack_require__(33);
+var eventEmitter_1 = __webpack_require__(34);
 var FrameAnimation = function (_super) {
     __extends(FrameAnimation, _super);
     function FrameAnimation(game) {
@@ -8040,7 +8040,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(14);
+var baseModel_1 = __webpack_require__(13);
 var CommonBehaviour = function (_super) {
     __extends(CommonBehaviour, _super);
     function CommonBehaviour(game) {
@@ -8079,8 +8079,8 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(14);
-var mathEx = __webpack_require__(4);
+var baseModel_1 = __webpack_require__(13);
+var mathEx = __webpack_require__(3);
 var r = function (obj) {
     return mathEx.random(obj.from, obj.to);
 };
@@ -8171,13 +8171,13 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var noop_1 = __webpack_require__(35);
-var baseModel_1 = __webpack_require__(14);
+var noop_1 = __webpack_require__(36);
+var baseModel_1 = __webpack_require__(13);
 var loadingQueue_1 = __webpack_require__(96);
 var tileMap_1 = __webpack_require__(46);
 var layer_1 = __webpack_require__(48);
 var ambientLight_1 = __webpack_require__(97);
-var color_1 = __webpack_require__(2);
+var color_1 = __webpack_require__(7);
 var camera_1 = __webpack_require__(49);
 var debugError_1 = __webpack_require__(0);
 var Scene = function (_super) {
@@ -8437,7 +8437,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractLight_1 = __webpack_require__(38);
+var abstractLight_1 = __webpack_require__(39);
 var AmbientLight = function (_super) {
     __extends(AmbientLight, _super);
     function AmbientLight(game) {
@@ -8479,7 +8479,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
-var commonObject_1 = __webpack_require__(15);
+var commonObject_1 = __webpack_require__(14);
 var Sound = function (_super) {
     __extends(Sound, _super);
     function Sound(game) {
@@ -8853,7 +8853,7 @@ exports.UIBuilder = UIBuilder;
 Object.defineProperty(exports, "__esModule", { value: true });
 var rigidShapes_1 = __webpack_require__(47);
 var rect_1 = __webpack_require__(1);
-var mathEx = __webpack_require__(4);
+var mathEx = __webpack_require__(3);
 var ColliderEngine = function () {
     function ColliderEngine(game) {
         this.relaxationCount = 15;
@@ -9323,12 +9323,11 @@ exports.AudioNode = AudioNode;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.gameProps = {
-    "width": 1024,
+    "width": 800,
     "height": 600,
     "scaleStrategy": 1,
-    "startSceneId": 33,
-    "gravityConstant": 0,
-    "preloadingSceneId": 0
+    "startSceneId": 2,
+    "gravityConstant": 0
 };
 
 /***/ }),
@@ -9342,2933 +9341,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.repository = {
     "Scene": [{
         "id": 2,
-        "name": "introScene",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
+        "name": "mainScene",
         "type": "Scene",
         "layers": [{
             "type": "Layer",
             "id": 2
-        }],
-        "colorBG": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "tileMap": {
-            "type": "TileMap",
-            "data": [],
-            "width": 0,
-            "height": 0,
-            "blendMode": ""
-        },
-        "ambientLight": {
-            "intensity": 1,
-            "direction": [1, 1, 1]
-        },
-        "uiLayer": {
-            "width": 0,
-            "height": 0,
-            "pos": {
-                "x": 0,
-                "y": 0
-            },
-            "scale": {
-                "x": 1,
-                "y": 1
-            },
-            "anchor": {
-                "x": 0,
-                "y": 0
-            },
-            "angle": 0,
-            "alpha": 1,
-            "fixedToCamera": false,
-            "rigid": false,
-            "type": "Layer",
-            "children": []
-        }
-    }, {
-        "id": 13,
-        "name": "descScene",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "type": "Scene",
-        "layers": [{
-            "type": "Layer",
-            "id": 14
-        }],
-        "colorBG": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "tileMap": {
-            "type": "TileMap",
-            "data": [],
-            "width": 0,
-            "height": 0,
-            "blendMode": ""
-        },
-        "ambientLight": {
-            "intensity": 1
-        },
-        "uiLayer": {
-            "width": 0,
-            "height": 0,
-            "pos": {
-                "x": 0,
-                "y": 0
-            },
-            "scale": {
-                "x": 1,
-                "y": 1
-            },
-            "anchor": {
-                "x": 0,
-                "y": 0
-            },
-            "angle": 0,
-            "alpha": 1,
-            "filters": [],
-            "acceptLight": false,
-            "fixedToCamera": false,
-            "rigid": false,
-            "type": "Layer",
-            "children": []
-        }
-    }, {
-        "id": 33,
-        "name": "setFieldScene",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "type": "Scene",
-        "layers": [{
-            "type": "Layer",
-            "id": 42
-        }, {
-            "type": "Layer",
-            "id": 34
-        }],
-        "colorBG": {
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "a": 255
-        },
-        "tileMap": {
-            "type": "TileMap",
-            "data": [],
-            "width": 0,
-            "height": 0,
-            "blendMode": ""
-        },
-        "uiLayer": {
-            "width": 0,
-            "height": 0,
-            "pos": {
-                "x": 0,
-                "y": 0
-            },
-            "scale": {
-                "x": 1,
-                "y": 1
-            },
-            "anchor": {
-                "x": 0,
-                "y": 0
-            },
-            "angle": 0,
-            "alpha": 1,
-            "filters": [],
-            "acceptLight": false,
-            "fixedToCamera": false,
-            "rigid": false,
-            "type": "Layer",
-            "children": []
-        }
-    }],
-    "Layer": [{
-        "name": "layer1",
-        "type": "Layer",
-        "id": 2
-    }, {
-        "name": "mainLayer",
-        "type": "Layer",
-        "id": 14
-    }, {
-        "name": "bg",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "type": "Layer",
-        "id": 42
-    }, {
-        "id": 34,
-        "name": "main",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "type": "Layer",
-        "children": [{
-            "type": "GameObject",
-            "id": 35
-        }, {
-            "type": "GameObject",
-            "id": 37
-        }, {
-            "type": "GameObject",
-            "id": 38
-        }, {
-            "type": "GameObject",
-            "id": 39
-        }, {
-            "type": "GameObject",
-            "id": 40
-        }, {
-            "type": "GameObject",
-            "id": 41
         }]
     }],
-    "SpriteSheet": [{
-        "name": "button",
-        "width": 400,
-        "height": 77,
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "resourceMap": {
-            "main": "resources/button.png"
-        },
-        "type": "SpriteSheet",
-        "id": 5
-    }, {
-        "name": "bg",
-        "width": 650,
-        "height": 483,
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "resourceMap": {
-            "main": "resources/bg.jpg"
-        },
-        "type": "SpriteSheet",
-        "id": 10
-    }, {
-        "name": "pirate-flag",
-        "width": 640,
-        "height": 640,
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "resourceMap": {
-            "main": "resources/pirate-flag.png"
-        },
-        "type": "SpriteSheet",
-        "id": 11
-    }, {
-        "id": 29,
-        "name": "boardCard",
-        "width": 606,
-        "height": 403,
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "resourceMap": {
-            "main": "resources/boardCard.png"
-        },
-        "type": "SpriteSheet",
-        "numOfFramesH": 3,
-        "numOfFramesV": 2
-    }],
-    "GameObjectProto": [{
-        "name": "button",
-        "width": 400,
-        "height": 77,
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "type": "GameObjectProto",
-        "spriteSheet": {
-            "id": 5,
-            "type": "SpriteSheet"
-        },
-        "shaderMaterial": {
-            "shininess": 10
-        },
-        "velocity": {
-            "x": 0,
-            "y": 0
-        },
-        "id": 6
-    }, {
-        "id": 30,
-        "name": "boardCard",
-        "width": 198,
-        "height": 198,
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "type": "GameObjectProto",
-        "spriteSheet": {
-            "id": 29,
-            "type": "SpriteSheet"
-        },
-        "commonBehaviour": [{
-            "type": "CommonBehaviour",
-            "id": 36
-        }],
-        "velocity": {
-            "x": 0,
-            "y": 0
-        }
-    }],
-    "GameObject": [{
-        "id": 7,
-        "name": "button",
-        "pos": {
-            "x": 313,
-            "y": 428
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "layerId": 2,
-        "type": "GameObject",
-        "gameObjectProto": {
-            "id": 6,
-            "type": "GameObjectProto"
-        }
-    }, {
-        "id": 32,
-        "name": "boardCard",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "layerId": 2,
-        "type": "GameObject",
-        "gameObjectProto": {
-            "id": 30,
-            "type": "GameObjectProto"
-        }
-    }, {
-        "id": 35,
-        "name": "boardCard",
-        "pos": {
-            "x": 443,
-            "y": 281
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "layerId": 34,
-        "type": "GameObject",
-        "gameObjectProto": {
-            "id": 30,
-            "type": "GameObjectProto"
-        }
-    }, {
-        "id": 37,
-        "name": "boardCard",
-        "pos": {
-            "x": 469,
-            "y": 301
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "layerId": 34,
-        "type": "GameObject",
-        "gameObjectProto": {
-            "id": 30,
-            "type": "GameObjectProto"
-        }
-    }, {
-        "id": 38,
-        "name": "boardCard",
-        "pos": {
-            "x": 495,
-            "y": 325
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "layerId": 34,
-        "type": "GameObject",
-        "gameObjectProto": {
-            "id": 30,
-            "type": "GameObjectProto"
-        }
-    }, {
-        "id": 39,
-        "name": "boardCard",
-        "pos": {
-            "x": 691,
-            "y": 236
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "layerId": 34,
-        "type": "GameObject",
-        "gameObjectProto": {
-            "id": 30,
-            "type": "GameObjectProto"
-        }
-    }, {
-        "id": 40,
-        "name": "boardCard",
-        "pos": {
-            "x": 710,
-            "y": 266
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "layerId": 34,
-        "type": "GameObject",
-        "gameObjectProto": {
-            "id": 30,
-            "type": "GameObjectProto"
-        }
-    }, {
-        "id": 41,
-        "name": "boardCard",
-        "pos": {
-            "x": 738,
-            "y": 297
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "layerId": 34,
-        "type": "GameObject",
-        "gameObjectProto": {
-            "id": 30,
-            "type": "GameObjectProto"
-        }
-    }],
-    "Font": [{
-        "id": 8,
-        "name": "scriptFont",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "resourceMap": {
-            "main": "resources/scriptFont.png"
-        },
-        "type": "Font",
-        "fontSize": 64,
-        "fontFamily": "Gabriola",
-        "fontContext": {
-            "symbols": {
-                "0": {
-                    "x": 148,
-                    "y": 76,
-                    "width": 25,
-                    "height": 64
-                },
-                "1": {
-                    "x": 182,
-                    "y": 76,
-                    "width": 14,
-                    "height": 64
-                },
-                "2": {
-                    "x": 204,
-                    "y": 76,
-                    "width": 21,
-                    "height": 64
-                },
-                "3": {
-                    "x": 233,
-                    "y": 76,
-                    "width": 21,
-                    "height": 64
-                },
-                "4": {
-                    "x": 262,
-                    "y": 76,
-                    "width": 25,
-                    "height": 64
-                },
-                "5": {
-                    "x": 4,
-                    "y": 148,
-                    "width": 21,
-                    "height": 64
-                },
-                "6": {
-                    "x": 33,
-                    "y": 148,
-                    "width": 25,
-                    "height": 64
-                },
-                "7": {
-                    "x": 67,
-                    "y": 148,
-                    "width": 24,
-                    "height": 64
-                },
-                "8": {
-                    "x": 99,
-                    "y": 148,
-                    "width": 24,
-                    "height": 64
-                },
-                "9": {
-                    "x": 132,
-                    "y": 148,
-                    "width": 25,
-                    "height": 64
-                },
-                " ": {
-                    "x": 4,
-                    "y": 4,
-                    "width": 11,
-                    "height": 64
-                },
-                "!": {
-                    "x": 23,
-                    "y": 4,
-                    "width": 14,
-                    "height": 64
-                },
-                "\"": {
-                    "x": 45,
-                    "y": 4,
-                    "width": 16,
-                    "height": 64
-                },
-                "#": {
-                    "x": 70,
-                    "y": 4,
-                    "width": 26,
-                    "height": 64
-                },
-                "$": {
-                    "x": 105,
-                    "y": 4,
-                    "width": 24,
-                    "height": 64
-                },
-                "%": {
-                    "x": 137,
-                    "y": 4,
-                    "width": 46,
-                    "height": 64
-                },
-                "&": {
-                    "x": 191,
-                    "y": 4,
-                    "width": 34,
-                    "height": 64
-                },
-                "'": {
-                    "x": 233,
-                    "y": 4,
-                    "width": 9,
-                    "height": 64
-                },
-                "(": {
-                    "x": 251,
-                    "y": 4,
-                    "width": 15,
-                    "height": 64
-                },
-                ")": {
-                    "x": 275,
-                    "y": 4,
-                    "width": 15,
-                    "height": 64
-                },
-                "*": {
-                    "x": 4,
-                    "y": 76,
-                    "width": 17,
-                    "height": 64
-                },
-                "+": {
-                    "x": 29,
-                    "y": 76,
-                    "width": 24,
-                    "height": 64
-                },
-                ",": {
-                    "x": 62,
-                    "y": 76,
-                    "width": 10,
-                    "height": 64
-                },
-                "-": {
-                    "x": 80,
-                    "y": 76,
-                    "width": 15,
-                    "height": 64
-                },
-                ".": {
-                    "x": 104,
-                    "y": 76,
-                    "width": 10,
-                    "height": 64
-                },
-                "/": {
-                    "x": 122,
-                    "y": 76,
-                    "width": 17,
-                    "height": 64
-                },
-                ":": {
-                    "x": 165,
-                    "y": 148,
-                    "width": 11,
-                    "height": 64
-                },
-                ";": {
-                    "x": 184,
-                    "y": 148,
-                    "width": 11,
-                    "height": 64
-                },
-                "<": {
-                    "x": 203,
-                    "y": 148,
-                    "width": 24,
-                    "height": 64
-                },
-                "=": {
-                    "x": 236,
-                    "y": 148,
-                    "width": 24,
-                    "height": 64
-                },
-                ">": {
-                    "x": 269,
-                    "y": 148,
-                    "width": 24,
-                    "height": 64
-                },
-                "?": {
-                    "x": 4,
-                    "y": 220,
-                    "width": 22,
-                    "height": 64
-                },
-                "@": {
-                    "x": 34,
-                    "y": 220,
-                    "width": 43,
-                    "height": 64
-                },
-                "A": {
-                    "x": 86,
-                    "y": 220,
-                    "width": 31,
-                    "height": 64
-                },
-                "B": {
-                    "x": 125,
-                    "y": 220,
-                    "width": 28,
-                    "height": 64
-                },
-                "C": {
-                    "x": 161,
-                    "y": 220,
-                    "width": 30,
-                    "height": 64
-                },
-                "D": {
-                    "x": 200,
-                    "y": 220,
-                    "width": 34,
-                    "height": 64
-                },
-                "E": {
-                    "x": 243,
-                    "y": 220,
-                    "width": 26,
-                    "height": 64
-                },
-                "F": {
-                    "x": 278,
-                    "y": 220,
-                    "width": 24,
-                    "height": 64
-                },
-                "G": {
-                    "x": 4,
-                    "y": 292,
-                    "width": 32,
-                    "height": 64
-                },
-                "H": {
-                    "x": 44,
-                    "y": 292,
-                    "width": 35,
-                    "height": 64
-                },
-                "I": {
-                    "x": 87,
-                    "y": 292,
-                    "width": 14,
-                    "height": 64
-                },
-                "J": {
-                    "x": 109,
-                    "y": 292,
-                    "width": 14,
-                    "height": 64
-                },
-                "K": {
-                    "x": 131,
-                    "y": 292,
-                    "width": 30,
-                    "height": 64
-                },
-                "L": {
-                    "x": 169,
-                    "y": 292,
-                    "width": 25,
-                    "height": 64
-                },
-                "M": {
-                    "x": 203,
-                    "y": 292,
-                    "width": 41,
-                    "height": 64
-                },
-                "N": {
-                    "x": 252,
-                    "y": 292,
-                    "width": 33,
-                    "height": 64
-                },
-                "O": {
-                    "x": 4,
-                    "y": 364,
-                    "width": 33,
-                    "height": 64
-                },
-                "P": {
-                    "x": 45,
-                    "y": 364,
-                    "width": 26,
-                    "height": 64
-                },
-                "Q": {
-                    "x": 80,
-                    "y": 364,
-                    "width": 33,
-                    "height": 64
-                },
-                "R": {
-                    "x": 122,
-                    "y": 364,
-                    "width": 30,
-                    "height": 64
-                },
-                "S": {
-                    "x": 160,
-                    "y": 364,
-                    "width": 22,
-                    "height": 64
-                },
-                "T": {
-                    "x": 191,
-                    "y": 364,
-                    "width": 26,
-                    "height": 64
-                },
-                "U": {
-                    "x": 225,
-                    "y": 364,
-                    "width": 35,
-                    "height": 64
-                },
-                "V": {
-                    "x": 269,
-                    "y": 364,
-                    "width": 29,
-                    "height": 64
-                },
-                "W": {
-                    "x": 4,
-                    "y": 436,
-                    "width": 45,
-                    "height": 64
-                },
-                "X": {
-                    "x": 57,
-                    "y": 436,
-                    "width": 30,
-                    "height": 64
-                },
-                "Y": {
-                    "x": 96,
-                    "y": 436,
-                    "width": 26,
-                    "height": 64
-                },
-                "Z": {
-                    "x": 130,
-                    "y": 436,
-                    "width": 28,
-                    "height": 64
-                },
-                "[": {
-                    "x": 166,
-                    "y": 436,
-                    "width": 16,
-                    "height": 64
-                },
-                "\\": {
-                    "x": 191,
-                    "y": 436,
-                    "width": 17,
-                    "height": 64
-                },
-                "]": {
-                    "x": 216,
-                    "y": 436,
-                    "width": 16,
-                    "height": 64
-                },
-                "^": {
-                    "x": 241,
-                    "y": 436,
-                    "width": 23,
-                    "height": 64
-                },
-                "_": {
-                    "x": 272,
-                    "y": 436,
-                    "width": 10,
-                    "height": 64
-                },
-                "`": {
-                    "x": 290,
-                    "y": 436,
-                    "width": 12,
-                    "height": 64
-                },
-                "a": {
-                    "x": 4,
-                    "y": 508,
-                    "width": 22,
-                    "height": 64
-                },
-                "b": {
-                    "x": 34,
-                    "y": 508,
-                    "width": 25,
-                    "height": 64
-                },
-                "c": {
-                    "x": 68,
-                    "y": 508,
-                    "width": 19,
-                    "height": 64
-                },
-                "d": {
-                    "x": 96,
-                    "y": 508,
-                    "width": 27,
-                    "height": 64
-                },
-                "e": {
-                    "x": 131,
-                    "y": 508,
-                    "width": 19,
-                    "height": 64
-                },
-                "f": {
-                    "x": 158,
-                    "y": 508,
-                    "width": 14,
-                    "height": 64
-                },
-                "g": {
-                    "x": 181,
-                    "y": 508,
-                    "width": 24,
-                    "height": 64
-                },
-                "h": {
-                    "x": 213,
-                    "y": 508,
-                    "width": 26,
-                    "height": 64
-                },
-                "i": {
-                    "x": 248,
-                    "y": 508,
-                    "width": 12,
-                    "height": 64
-                },
-                "j": {
-                    "x": 268,
-                    "y": 508,
-                    "width": 11,
-                    "height": 64
-                },
-                "k": {
-                    "x": 287,
-                    "y": 508,
-                    "width": 24,
-                    "height": 64
-                },
-                "l": {
-                    "x": 4,
-                    "y": 580,
-                    "width": 12,
-                    "height": 64
-                },
-                "m": {
-                    "x": 24,
-                    "y": 580,
-                    "width": 39,
-                    "height": 64
-                },
-                "n": {
-                    "x": 72,
-                    "y": 580,
-                    "width": 27,
-                    "height": 64
-                },
-                "o": {
-                    "x": 107,
-                    "y": 580,
-                    "width": 22,
-                    "height": 64
-                },
-                "p": {
-                    "x": 138,
-                    "y": 580,
-                    "width": 26,
-                    "height": 64
-                },
-                "q": {
-                    "x": 172,
-                    "y": 580,
-                    "width": 24,
-                    "height": 64
-                },
-                "r": {
-                    "x": 205,
-                    "y": 580,
-                    "width": 18,
-                    "height": 64
-                },
-                "s": {
-                    "x": 232,
-                    "y": 580,
-                    "width": 18,
-                    "height": 64
-                },
-                "t": {
-                    "x": 259,
-                    "y": 580,
-                    "width": 15,
-                    "height": 64
-                },
-                "u": {
-                    "x": 282,
-                    "y": 580,
-                    "width": 26,
-                    "height": 64
-                },
-                "v": {
-                    "x": 4,
-                    "y": 652,
-                    "width": 20,
-                    "height": 64
-                },
-                "w": {
-                    "x": 32,
-                    "y": 652,
-                    "width": 31,
-                    "height": 64
-                },
-                "x": {
-                    "x": 72,
-                    "y": 652,
-                    "width": 24,
-                    "height": 64
-                },
-                "y": {
-                    "x": 104,
-                    "y": 652,
-                    "width": 21,
-                    "height": 64
-                },
-                "z": {
-                    "x": 134,
-                    "y": 652,
-                    "width": 21,
-                    "height": 64
-                },
-                "{": {
-                    "x": 163,
-                    "y": 652,
-                    "width": 17,
-                    "height": 64
-                },
-                "|": {
-                    "x": 188,
-                    "y": 652,
-                    "width": 17,
-                    "height": 64
-                },
-                "}": {
-                    "x": 214,
-                    "y": 652,
-                    "width": 17,
-                    "height": 64
-                },
-                "~": {
-                    "x": 240,
-                    "y": 652,
-                    "width": 23,
-                    "height": 64
-                },
-                "": {
-                    "x": 271,
-                    "y": 652,
-                    "width": 32,
-                    "height": 64
-                },
-                "": {
-                    "x": 311,
-                    "y": 652,
-                    "width": 0,
-                    "height": 64
-                },
-                "": {
-                    "x": 4,
-                    "y": 724,
-                    "width": 0,
-                    "height": 64
-                },
-                "": {
-                    "x": 12,
-                    "y": 724,
-                    "width": 32,
-                    "height": 64
-                },
-                "": {
-                    "x": 52,
-                    "y": 724,
-                    "width": 32,
-                    "height": 64
-                },
-                "": {
-                    "x": 92,
-                    "y": 724,
-                    "width": 32,
-                    "height": 64
-                },
-                "": {
-                    "x": 132,
-                    "y": 724,
-                    "width": 50,
-                    "height": 64
-                },
-                "": {
-                    "x": 190,
-                    "y": 724,
-                    "width": 32,
-                    "height": 64
-                },
-                "": {
-                    "x": 230,
-                    "y": 724,
-                    "width": 32,
-                    "height": 64
-                },
-                "": {
-                    "x": 270,
-                    "y": 724,
-                    "width": 23,
-                    "height": 64
-                },
-                "": {
-                    "x": 4,
-                    "y": 796,
-                    "width": 50,
-                    "height": 64
-                },
-                "": {
-                    "x": 62,
-                    "y": 796,
-                    "width": 30,
-                    "height": 64
-                },
-                "": {
-                    "x": 101,
-                    "y": 796,
-                    "width": 32,
-                    "height": 64
-                },
-                "": {
-                    "x": 141,
-                    "y": 796,
-                    "width": 63,
-                    "height": 64
-                },
-                "": {
-                    "x": 212,
-                    "y": 796,
-                    "width": 0,
-                    "height": 64
-                },
-                "": {
-                    "x": 220,
-                    "y": 796,
-                    "width": 0,
-                    "height": 64
-                },
-                "": {
-                    "x": 228,
-                    "y": 796,
-                    "width": 0,
-                    "height": 64
-                },
-                "": {
-                    "x": 236,
-                    "y": 796,
-                    "width": 0,
-                    "height": 64
-                },
-                "": {
-                    "x": 244,
-                    "y": 796,
-                    "width": 12,
-                    "height": 64
-                },
-                "": {
-                    "x": 265,
-                    "y": 796,
-                    "width": 12,
-                    "height": 64
-                },
-                "": {
-                    "x": 286,
-                    "y": 796,
-                    "width": 26,
-                    "height": 64
-                },
-                "": {
-                    "x": 4,
-                    "y": 868,
-                    "width": 26,
-                    "height": 64
-                },
-                "": {
-                    "x": 38,
-                    "y": 868,
-                    "width": 0,
-                    "height": 64
-                },
-                "А": {
-                    "x": 46,
-                    "y": 868,
-                    "width": 31,
-                    "height": 64
-                },
-                "Б": {
-                    "x": 86,
-                    "y": 868,
-                    "width": 28,
-                    "height": 64
-                },
-                "В": {
-                    "x": 123,
-                    "y": 868,
-                    "width": 28,
-                    "height": 64
-                },
-                "Г": {
-                    "x": 159,
-                    "y": 868,
-                    "width": 24,
-                    "height": 64
-                },
-                "Д": {
-                    "x": 191,
-                    "y": 868,
-                    "width": 35,
-                    "height": 64
-                },
-                "Е": {
-                    "x": 235,
-                    "y": 868,
-                    "width": 26,
-                    "height": 64
-                },
-                "Ж": {
-                    "x": 270,
-                    "y": 868,
-                    "width": 44,
-                    "height": 64
-                },
-                "З": {
-                    "x": 4,
-                    "y": 940,
-                    "width": 26,
-                    "height": 64
-                },
-                "И": {
-                    "x": 38,
-                    "y": 940,
-                    "width": 35,
-                    "height": 64
-                },
-                "Й": {
-                    "x": 82,
-                    "y": 940,
-                    "width": 35,
-                    "height": 64
-                },
-                "К": {
-                    "x": 125,
-                    "y": 940,
-                    "width": 30,
-                    "height": 64
-                },
-                "Л": {
-                    "x": 163,
-                    "y": 940,
-                    "width": 31,
-                    "height": 64
-                },
-                "М": {
-                    "x": 203,
-                    "y": 940,
-                    "width": 41,
-                    "height": 64
-                },
-                "Н": {
-                    "x": 252,
-                    "y": 940,
-                    "width": 35,
-                    "height": 64
-                },
-                "О": {
-                    "x": 4,
-                    "y": 1012,
-                    "width": 33,
-                    "height": 64
-                },
-                "П": {
-                    "x": 45,
-                    "y": 1012,
-                    "width": 34,
-                    "height": 64
-                },
-                "Р": {
-                    "x": 88,
-                    "y": 1012,
-                    "width": 26,
-                    "height": 64
-                },
-                "С": {
-                    "x": 122,
-                    "y": 1012,
-                    "width": 30,
-                    "height": 64
-                },
-                "Т": {
-                    "x": 161,
-                    "y": 1012,
-                    "width": 26,
-                    "height": 64
-                },
-                "У": {
-                    "x": 196,
-                    "y": 1012,
-                    "width": 29,
-                    "height": 64
-                },
-                "Ф": {
-                    "x": 233,
-                    "y": 1012,
-                    "width": 33,
-                    "height": 64
-                },
-                "Х": {
-                    "x": 275,
-                    "y": 1012,
-                    "width": 30,
-                    "height": 64
-                },
-                "Ц": {
-                    "x": 4,
-                    "y": 1084,
-                    "width": 34,
-                    "height": 64
-                },
-                "Ч": {
-                    "x": 46,
-                    "y": 1084,
-                    "width": 30,
-                    "height": 64
-                },
-                "Ш": {
-                    "x": 84,
-                    "y": 1084,
-                    "width": 45,
-                    "height": 64
-                },
-                "Щ": {
-                    "x": 138,
-                    "y": 1084,
-                    "width": 45,
-                    "height": 64
-                },
-                "Ъ": {
-                    "x": 191,
-                    "y": 1084,
-                    "width": 34,
-                    "height": 64
-                },
-                "Ы": {
-                    "x": 234,
-                    "y": 1084,
-                    "width": 39,
-                    "height": 64
-                },
-                "Ь": {
-                    "x": 281,
-                    "y": 1084,
-                    "width": 27,
-                    "height": 64
-                },
-                "Э": {
-                    "x": 4,
-                    "y": 1156,
-                    "width": 30,
-                    "height": 64
-                },
-                "Ю": {
-                    "x": 42,
-                    "y": 1156,
-                    "width": 46,
-                    "height": 64
-                },
-                "Я": {
-                    "x": 97,
-                    "y": 1156,
-                    "width": 28,
-                    "height": 64
-                },
-                "а": {
-                    "x": 134,
-                    "y": 1156,
-                    "width": 22,
-                    "height": 64
-                },
-                "б": {
-                    "x": 165,
-                    "y": 1156,
-                    "width": 23,
-                    "height": 64
-                },
-                "в": {
-                    "x": 196,
-                    "y": 1156,
-                    "width": 22,
-                    "height": 64
-                },
-                "г": {
-                    "x": 226,
-                    "y": 1156,
-                    "width": 19,
-                    "height": 64
-                },
-                "д": {
-                    "x": 254,
-                    "y": 1156,
-                    "width": 23,
-                    "height": 64
-                },
-                "е": {
-                    "x": 285,
-                    "y": 1156,
-                    "width": 19,
-                    "height": 64
-                },
-                "ж": {
-                    "x": 4,
-                    "y": 1228,
-                    "width": 33,
-                    "height": 64
-                },
-                "з": {
-                    "x": 45,
-                    "y": 1228,
-                    "width": 20,
-                    "height": 64
-                },
-                "и": {
-                    "x": 73,
-                    "y": 1228,
-                    "width": 27,
-                    "height": 64
-                },
-                "й": {
-                    "x": 108,
-                    "y": 1228,
-                    "width": 27,
-                    "height": 64
-                },
-                "к": {
-                    "x": 143,
-                    "y": 1228,
-                    "width": 22,
-                    "height": 64
-                },
-                "л": {
-                    "x": 174,
-                    "y": 1228,
-                    "width": 21,
-                    "height": 64
-                },
-                "м": {
-                    "x": 204,
-                    "y": 1228,
-                    "width": 31,
-                    "height": 64
-                },
-                "н": {
-                    "x": 244,
-                    "y": 1228,
-                    "width": 27,
-                    "height": 64
-                },
-                "о": {
-                    "x": 279,
-                    "y": 1228,
-                    "width": 22,
-                    "height": 64
-                },
-                "п": {
-                    "x": 4,
-                    "y": 1300,
-                    "width": 26,
-                    "height": 64
-                },
-                "р": {
-                    "x": 38,
-                    "y": 1300,
-                    "width": 26,
-                    "height": 64
-                },
-                "с": {
-                    "x": 72,
-                    "y": 1300,
-                    "width": 19,
-                    "height": 64
-                },
-                "т": {
-                    "x": 100,
-                    "y": 1300,
-                    "width": 35,
-                    "height": 64
-                },
-                "у": {
-                    "x": 143,
-                    "y": 1300,
-                    "width": 21,
-                    "height": 64
-                },
-                "ф": {
-                    "x": 172,
-                    "y": 1300,
-                    "width": 30,
-                    "height": 64
-                },
-                "х": {
-                    "x": 210,
-                    "y": 1300,
-                    "width": 24,
-                    "height": 64
-                },
-                "ц": {
-                    "x": 243,
-                    "y": 1300,
-                    "width": 26,
-                    "height": 64
-                },
-                "ч": {
-                    "x": 277,
-                    "y": 1300,
-                    "width": 24,
-                    "height": 64
-                },
-                "ш": {
-                    "x": 4,
-                    "y": 1372,
-                    "width": 35,
-                    "height": 64
-                },
-                "щ": {
-                    "x": 47,
-                    "y": 1372,
-                    "width": 34,
-                    "height": 64
-                },
-                "ъ": {
-                    "x": 90,
-                    "y": 1372,
-                    "width": 22,
-                    "height": 64
-                },
-                "ы": {
-                    "x": 120,
-                    "y": 1372,
-                    "width": 31,
-                    "height": 64
-                },
-                "ь": {
-                    "x": 160,
-                    "y": 1372,
-                    "width": 21,
-                    "height": 64
-                },
-                "э": {
-                    "x": 190,
-                    "y": 1372,
-                    "width": 20,
-                    "height": 64
-                },
-                "ю": {
-                    "x": 219,
-                    "y": 1372,
-                    "width": 33,
-                    "height": 64
-                },
-                "я": {
-                    "x": 260,
-                    "y": 1372,
-                    "width": 23,
-                    "height": 64
-                },
-                "ѐ": {
-                    "x": 291,
-                    "y": 1372,
-                    "width": 19,
-                    "height": 64
-                },
-                "ё": {
-                    "x": 4,
-                    "y": 1444,
-                    "width": 19,
-                    "height": 64
-                },
-                "ђ": {
-                    "x": 31,
-                    "y": 1444,
-                    "width": 26,
-                    "height": 64
-                },
-                "ѓ": {
-                    "x": 65,
-                    "y": 1444,
-                    "width": 19,
-                    "height": 64
-                },
-                "є": {
-                    "x": 93,
-                    "y": 1444,
-                    "width": 19,
-                    "height": 64
-                },
-                "ѕ": {
-                    "x": 121,
-                    "y": 1444,
-                    "width": 18,
-                    "height": 64
-                },
-                "і": {
-                    "x": 147,
-                    "y": 1444,
-                    "width": 12,
-                    "height": 64
-                },
-                "ї": {
-                    "x": 167,
-                    "y": 1444,
-                    "width": 12,
-                    "height": 64
-                },
-                "ј": {
-                    "x": 188,
-                    "y": 1444,
-                    "width": 11,
-                    "height": 64
-                },
-                "љ": {
-                    "x": 207,
-                    "y": 1444,
-                    "width": 29,
-                    "height": 64
-                },
-                "њ": {
-                    "x": 245,
-                    "y": 1444,
-                    "width": 35,
-                    "height": 64
-                },
-                "ћ": {
-                    "x": 288,
-                    "y": 1444,
-                    "width": 26,
-                    "height": 64
-                }
-            },
-            "width": 320,
-            "height": 1512
-        }
-    }, {
-        "name": "cartahena_large",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "resourceMap": {
-            "main": "resources/cartahena_large.png"
-        },
-        "type": "Font",
-        "fontSize": 56,
-        "fontFamily": "Algerian",
-        "fontContext": {
-            "symbols": {
-                "0": {
-                    "x": 211,
-                    "y": 74,
-                    "width": 32,
-                    "height": 62
-                },
-                "1": {
-                    "x": 252,
-                    "y": 74,
-                    "width": 33,
-                    "height": 62
-                },
-                "2": {
-                    "x": 4,
-                    "y": 144,
-                    "width": 33,
-                    "height": 62
-                },
-                "3": {
-                    "x": 45,
-                    "y": 144,
-                    "width": 33,
-                    "height": 62
-                },
-                "4": {
-                    "x": 87,
-                    "y": 144,
-                    "width": 33,
-                    "height": 62
-                },
-                "5": {
-                    "x": 128,
-                    "y": 144,
-                    "width": 33,
-                    "height": 62
-                },
-                "6": {
-                    "x": 170,
-                    "y": 144,
-                    "width": 33,
-                    "height": 62
-                },
-                "7": {
-                    "x": 212,
-                    "y": 144,
-                    "width": 33,
-                    "height": 62
-                },
-                "8": {
-                    "x": 253,
-                    "y": 144,
-                    "width": 33,
-                    "height": 62
-                },
-                "9": {
-                    "x": 4,
-                    "y": 214,
-                    "width": 33,
-                    "height": 62
-                },
-                " ": {
-                    "x": 4,
-                    "y": 4,
-                    "width": 14,
-                    "height": 62
-                },
-                "!": {
-                    "x": 26,
-                    "y": 4,
-                    "width": 18,
-                    "height": 62
-                },
-                "\"": {
-                    "x": 52,
-                    "y": 4,
-                    "width": 18,
-                    "height": 62
-                },
-                "#": {
-                    "x": 79,
-                    "y": 4,
-                    "width": 32,
-                    "height": 62
-                },
-                "$": {
-                    "x": 119,
-                    "y": 4,
-                    "width": 32,
-                    "height": 62
-                },
-                "%": {
-                    "x": 160,
-                    "y": 4,
-                    "width": 35,
-                    "height": 62
-                },
-                "&": {
-                    "x": 203,
-                    "y": 4,
-                    "width": 44,
-                    "height": 62
-                },
-                "'": {
-                    "x": 256,
-                    "y": 4,
-                    "width": 10,
-                    "height": 62
-                },
-                "(": {
-                    "x": 275,
-                    "y": 4,
-                    "width": 24,
-                    "height": 62
-                },
-                ")": {
-                    "x": 4,
-                    "y": 74,
-                    "width": 24,
-                    "height": 62
-                },
-                "*": {
-                    "x": 36,
-                    "y": 74,
-                    "width": 19,
-                    "height": 62
-                },
-                "+": {
-                    "x": 64,
-                    "y": 74,
-                    "width": 32,
-                    "height": 62
-                },
-                ",": {
-                    "x": 105,
-                    "y": 74,
-                    "width": 14,
-                    "height": 62
-                },
-                "-": {
-                    "x": 128,
-                    "y": 74,
-                    "width": 17,
-                    "height": 62
-                },
-                ".": {
-                    "x": 153,
-                    "y": 74,
-                    "width": 14,
-                    "height": 62
-                },
-                "/": {
-                    "x": 176,
-                    "y": 74,
-                    "width": 26,
-                    "height": 62
-                },
-                ":": {
-                    "x": 45,
-                    "y": 214,
-                    "width": 14,
-                    "height": 62
-                },
-                ";": {
-                    "x": 68,
-                    "y": 214,
-                    "width": 14,
-                    "height": 62
-                },
-                "<": {
-                    "x": 91,
-                    "y": 214,
-                    "width": 28,
-                    "height": 62
-                },
-                "=": {
-                    "x": 127,
-                    "y": 214,
-                    "width": 32,
-                    "height": 62
-                },
-                ">": {
-                    "x": 168,
-                    "y": 214,
-                    "width": 28,
-                    "height": 62
-                },
-                "?": {
-                    "x": 204,
-                    "y": 214,
-                    "width": 24,
-                    "height": 62
-                },
-                "@": {
-                    "x": 236,
-                    "y": 214,
-                    "width": 40,
-                    "height": 62
-                },
-                "A": {
-                    "x": 4,
-                    "y": 284,
-                    "width": 42,
-                    "height": 62
-                },
-                "B": {
-                    "x": 54,
-                    "y": 284,
-                    "width": 36,
-                    "height": 62
-                },
-                "C": {
-                    "x": 98,
-                    "y": 284,
-                    "width": 32,
-                    "height": 62
-                },
-                "D": {
-                    "x": 139,
-                    "y": 284,
-                    "width": 33,
-                    "height": 62
-                },
-                "E": {
-                    "x": 181,
-                    "y": 284,
-                    "width": 34,
-                    "height": 62
-                },
-                "F": {
-                    "x": 223,
-                    "y": 284,
-                    "width": 30,
-                    "height": 62
-                },
-                "G": {
-                    "x": 262,
-                    "y": 284,
-                    "width": 38,
-                    "height": 62
-                },
-                "H": {
-                    "x": 4,
-                    "y": 354,
-                    "width": 35,
-                    "height": 62
-                },
-                "I": {
-                    "x": 47,
-                    "y": 354,
-                    "width": 17,
-                    "height": 62
-                },
-                "J": {
-                    "x": 72,
-                    "y": 354,
-                    "width": 28,
-                    "height": 62
-                },
-                "K": {
-                    "x": 109,
-                    "y": 354,
-                    "width": 37,
-                    "height": 62
-                },
-                "L": {
-                    "x": 154,
-                    "y": 354,
-                    "width": 30,
-                    "height": 62
-                },
-                "M": {
-                    "x": 193,
-                    "y": 354,
-                    "width": 40,
-                    "height": 62
-                },
-                "N": {
-                    "x": 242,
-                    "y": 354,
-                    "width": 33,
-                    "height": 62
-                },
-                "O": {
-                    "x": 4,
-                    "y": 424,
-                    "width": 34,
-                    "height": 62
-                },
-                "P": {
-                    "x": 46,
-                    "y": 424,
-                    "width": 33,
-                    "height": 62
-                },
-                "Q": {
-                    "x": 88,
-                    "y": 424,
-                    "width": 35,
-                    "height": 62
-                },
-                "R": {
-                    "x": 131,
-                    "y": 424,
-                    "width": 35,
-                    "height": 62
-                },
-                "S": {
-                    "x": 175,
-                    "y": 424,
-                    "width": 31,
-                    "height": 62
-                },
-                "T": {
-                    "x": 214,
-                    "y": 424,
-                    "width": 32,
-                    "height": 62
-                },
-                "U": {
-                    "x": 254,
-                    "y": 424,
-                    "width": 34,
-                    "height": 62
-                },
-                "V": {
-                    "x": 4,
-                    "y": 494,
-                    "width": 34,
-                    "height": 62
-                },
-                "W": {
-                    "x": 46,
-                    "y": 494,
-                    "width": 44,
-                    "height": 62
-                },
-                "X": {
-                    "x": 98,
-                    "y": 494,
-                    "width": 39,
-                    "height": 62
-                },
-                "Y": {
-                    "x": 146,
-                    "y": 494,
-                    "width": 35,
-                    "height": 62
-                },
-                "Z": {
-                    "x": 189,
-                    "y": 494,
-                    "width": 35,
-                    "height": 62
-                },
-                "[": {
-                    "x": 233,
-                    "y": 494,
-                    "width": 24,
-                    "height": 62
-                },
-                "\\": {
-                    "x": 266,
-                    "y": 494,
-                    "width": 28,
-                    "height": 62
-                },
-                "]": {
-                    "x": 4,
-                    "y": 564,
-                    "width": 24,
-                    "height": 62
-                },
-                "^": {
-                    "x": 36,
-                    "y": 564,
-                    "width": 28,
-                    "height": 62
-                },
-                "_": {
-                    "x": 72,
-                    "y": 564,
-                    "width": 28,
-                    "height": 62
-                },
-                "`": {
-                    "x": 108,
-                    "y": 564,
-                    "width": 28,
-                    "height": 62
-                },
-                "a": {
-                    "x": 144,
-                    "y": 564,
-                    "width": 42,
-                    "height": 62
-                },
-                "b": {
-                    "x": 194,
-                    "y": 564,
-                    "width": 36,
-                    "height": 62
-                },
-                "c": {
-                    "x": 239,
-                    "y": 564,
-                    "width": 32,
-                    "height": 62
-                },
-                "d": {
-                    "x": 279,
-                    "y": 564,
-                    "width": 33,
-                    "height": 62
-                },
-                "e": {
-                    "x": 4,
-                    "y": 634,
-                    "width": 34,
-                    "height": 62
-                },
-                "f": {
-                    "x": 46,
-                    "y": 634,
-                    "width": 30,
-                    "height": 62
-                },
-                "g": {
-                    "x": 85,
-                    "y": 634,
-                    "width": 38,
-                    "height": 62
-                },
-                "h": {
-                    "x": 131,
-                    "y": 634,
-                    "width": 35,
-                    "height": 62
-                },
-                "i": {
-                    "x": 175,
-                    "y": 634,
-                    "width": 17,
-                    "height": 62
-                },
-                "j": {
-                    "x": 200,
-                    "y": 634,
-                    "width": 28,
-                    "height": 62
-                },
-                "k": {
-                    "x": 236,
-                    "y": 634,
-                    "width": 37,
-                    "height": 62
-                },
-                "l": {
-                    "x": 282,
-                    "y": 634,
-                    "width": 30,
-                    "height": 62
-                },
-                "m": {
-                    "x": 4,
-                    "y": 704,
-                    "width": 40,
-                    "height": 62
-                },
-                "n": {
-                    "x": 52,
-                    "y": 704,
-                    "width": 33,
-                    "height": 62
-                },
-                "o": {
-                    "x": 94,
-                    "y": 704,
-                    "width": 34,
-                    "height": 62
-                },
-                "p": {
-                    "x": 137,
-                    "y": 704,
-                    "width": 33,
-                    "height": 62
-                },
-                "q": {
-                    "x": 178,
-                    "y": 704,
-                    "width": 35,
-                    "height": 62
-                },
-                "r": {
-                    "x": 222,
-                    "y": 704,
-                    "width": 35,
-                    "height": 62
-                },
-                "s": {
-                    "x": 266,
-                    "y": 704,
-                    "width": 31,
-                    "height": 62
-                },
-                "t": {
-                    "x": 4,
-                    "y": 774,
-                    "width": 32,
-                    "height": 62
-                },
-                "u": {
-                    "x": 44,
-                    "y": 774,
-                    "width": 34,
-                    "height": 62
-                },
-                "v": {
-                    "x": 86,
-                    "y": 774,
-                    "width": 34,
-                    "height": 62
-                },
-                "w": {
-                    "x": 129,
-                    "y": 774,
-                    "width": 44,
-                    "height": 62
-                },
-                "x": {
-                    "x": 181,
-                    "y": 774,
-                    "width": 39,
-                    "height": 62
-                },
-                "y": {
-                    "x": 228,
-                    "y": 774,
-                    "width": 35,
-                    "height": 62
-                },
-                "z": {
-                    "x": 272,
-                    "y": 774,
-                    "width": 35,
-                    "height": 62
-                },
-                "{": {
-                    "x": 4,
-                    "y": 844,
-                    "width": 24,
-                    "height": 62
-                },
-                "|": {
-                    "x": 36,
-                    "y": 844,
-                    "width": 28,
-                    "height": 62
-                },
-                "}": {
-                    "x": 72,
-                    "y": 844,
-                    "width": 24,
-                    "height": 62
-                },
-                "~": {
-                    "x": 105,
-                    "y": 844,
-                    "width": 37,
-                    "height": 62
-                },
-                "": {
-                    "x": 150,
-                    "y": 844,
-                    "width": 28,
-                    "height": 62
-                },
-                "": {
-                    "x": 186,
-                    "y": 844,
-                    "width": 0,
-                    "height": 62
-                },
-                "": {
-                    "x": 194,
-                    "y": 844,
-                    "width": 0,
-                    "height": 62
-                },
-                "": {
-                    "x": 202,
-                    "y": 844,
-                    "width": 28,
-                    "height": 62
-                },
-                "": {
-                    "x": 238,
-                    "y": 844,
-                    "width": 28,
-                    "height": 62
-                },
-                "": {
-                    "x": 274,
-                    "y": 844,
-                    "width": 28,
-                    "height": 62
-                },
-                "": {
-                    "x": 4,
-                    "y": 914,
-                    "width": 44,
-                    "height": 62
-                },
-                "": {
-                    "x": 56,
-                    "y": 914,
-                    "width": 28,
-                    "height": 62
-                },
-                "": {
-                    "x": 92,
-                    "y": 914,
-                    "width": 28,
-                    "height": 62
-                },
-                "": {
-                    "x": 128,
-                    "y": 914,
-                    "width": 20,
-                    "height": 62
-                },
-                "": {
-                    "x": 156,
-                    "y": 914,
-                    "width": 43,
-                    "height": 62
-                },
-                "": {
-                    "x": 208,
-                    "y": 914,
-                    "width": 27,
-                    "height": 62
-                },
-                "": {
-                    "x": 243,
-                    "y": 914,
-                    "width": 28,
-                    "height": 62
-                },
-                "": {
-                    "x": 4,
-                    "y": 984,
-                    "width": 55,
-                    "height": 62
-                },
-                "": {
-                    "x": 67,
-                    "y": 984,
-                    "width": 0,
-                    "height": 62
-                },
-                "": {
-                    "x": 75,
-                    "y": 984,
-                    "width": 0,
-                    "height": 62
-                },
-                "": {
-                    "x": 83,
-                    "y": 984,
-                    "width": 0,
-                    "height": 62
-                },
-                "": {
-                    "x": 91,
-                    "y": 984,
-                    "width": 0,
-                    "height": 62
-                },
-                "": {
-                    "x": 99,
-                    "y": 984,
-                    "width": 11,
-                    "height": 62
-                },
-                "": {
-                    "x": 119,
-                    "y": 984,
-                    "width": 11,
-                    "height": 62
-                },
-                "": {
-                    "x": 138,
-                    "y": 984,
-                    "width": 23,
-                    "height": 62
-                },
-                "": {
-                    "x": 169,
-                    "y": 984,
-                    "width": 23,
-                    "height": 62
-                },
-                "": {
-                    "x": 201,
-                    "y": 984,
-                    "width": 0,
-                    "height": 62
-                },
-                "А": {
-                    "x": 209,
-                    "y": 984,
-                    "width": 40,
-                    "height": 62
-                },
-                "Б": {
-                    "x": 257,
-                    "y": 984,
-                    "width": 32,
-                    "height": 62
-                },
-                "В": {
-                    "x": 4,
-                    "y": 1054,
-                    "width": 37,
-                    "height": 62
-                },
-                "Г": {
-                    "x": 49,
-                    "y": 1054,
-                    "width": 32,
-                    "height": 62
-                },
-                "Д": {
-                    "x": 89,
-                    "y": 1054,
-                    "width": 38,
-                    "height": 62
-                },
-                "Е": {
-                    "x": 135,
-                    "y": 1054,
-                    "width": 34,
-                    "height": 62
-                },
-                "Ж": {
-                    "x": 178,
-                    "y": 1054,
-                    "width": 50,
-                    "height": 62
-                },
-                "З": {
-                    "x": 236,
-                    "y": 1054,
-                    "width": 28,
-                    "height": 62
-                },
-                "И": {
-                    "x": 272,
-                    "y": 1054,
-                    "width": 40,
-                    "height": 62
-                },
-                "Й": {
-                    "x": 4,
-                    "y": 1124,
-                    "width": 40,
-                    "height": 62
-                },
-                "К": {
-                    "x": 52,
-                    "y": 1124,
-                    "width": 37,
-                    "height": 62
-                },
-                "Л": {
-                    "x": 97,
-                    "y": 1124,
-                    "width": 37,
-                    "height": 62
-                },
-                "М": {
-                    "x": 143,
-                    "y": 1124,
-                    "width": 49,
-                    "height": 62
-                },
-                "Н": {
-                    "x": 201,
-                    "y": 1124,
-                    "width": 40,
-                    "height": 62
-                },
-                "О": {
-                    "x": 250,
-                    "y": 1124,
-                    "width": 40,
-                    "height": 62
-                },
-                "П": {
-                    "x": 4,
-                    "y": 1194,
-                    "width": 40,
-                    "height": 62
-                },
-                "Р": {
-                    "x": 52,
-                    "y": 1194,
-                    "width": 31,
-                    "height": 62
-                },
-                "С": {
-                    "x": 91,
-                    "y": 1194,
-                    "width": 37,
-                    "height": 62
-                },
-                "Т": {
-                    "x": 136,
-                    "y": 1194,
-                    "width": 34,
-                    "height": 62
-                },
-                "У": {
-                    "x": 179,
-                    "y": 1194,
-                    "width": 39,
-                    "height": 62
-                },
-                "Ф": {
-                    "x": 226,
-                    "y": 1194,
-                    "width": 44,
-                    "height": 62
-                },
-                "Х": {
-                    "x": 4,
-                    "y": 1264,
-                    "width": 40,
-                    "height": 62
-                },
-                "Ц": {
-                    "x": 52,
-                    "y": 1264,
-                    "width": 40,
-                    "height": 62
-                },
-                "Ч": {
-                    "x": 100,
-                    "y": 1264,
-                    "width": 36,
-                    "height": 62
-                },
-                "Ш": {
-                    "x": 145,
-                    "y": 1264,
-                    "width": 56,
-                    "height": 62
-                },
-                "Щ": {
-                    "x": 209,
-                    "y": 1264,
-                    "width": 56,
-                    "height": 62
-                },
-                "Ъ": {
-                    "x": 274,
-                    "y": 1264,
-                    "width": 39,
-                    "height": 62
-                },
-                "Ы": {
-                    "x": 4,
-                    "y": 1334,
-                    "width": 48,
-                    "height": 62
-                },
-                "Ь": {
-                    "x": 60,
-                    "y": 1334,
-                    "width": 32,
-                    "height": 62
-                },
-                "Э": {
-                    "x": 100,
-                    "y": 1334,
-                    "width": 36,
-                    "height": 62
-                },
-                "Ю": {
-                    "x": 145,
-                    "y": 1334,
-                    "width": 57,
-                    "height": 62
-                },
-                "Я": {
-                    "x": 211,
-                    "y": 1334,
-                    "width": 37,
-                    "height": 62
-                },
-                "а": {
-                    "x": 256,
-                    "y": 1334,
-                    "width": 24,
-                    "height": 62
-                },
-                "б": {
-                    "x": 4,
-                    "y": 1404,
-                    "width": 28,
-                    "height": 62
-                },
-                "в": {
-                    "x": 40,
-                    "y": 1404,
-                    "width": 26,
-                    "height": 62
-                },
-                "г": {
-                    "x": 74,
-                    "y": 1404,
-                    "width": 22,
-                    "height": 62
-                },
-                "д": {
-                    "x": 105,
-                    "y": 1404,
-                    "width": 28,
-                    "height": 62
-                },
-                "е": {
-                    "x": 142,
-                    "y": 1404,
-                    "width": 24,
-                    "height": 62
-                },
-                "ж": {
-                    "x": 175,
-                    "y": 1404,
-                    "width": 38,
-                    "height": 62
-                },
-                "з": {
-                    "x": 221,
-                    "y": 1404,
-                    "width": 22,
-                    "height": 62
-                },
-                "и": {
-                    "x": 252,
-                    "y": 1404,
-                    "width": 29,
-                    "height": 62
-                },
-                "й": {
-                    "x": 4,
-                    "y": 1474,
-                    "width": 29,
-                    "height": 62
-                },
-                "к": {
-                    "x": 41,
-                    "y": 1474,
-                    "width": 27,
-                    "height": 62
-                },
-                "л": {
-                    "x": 77,
-                    "y": 1474,
-                    "width": 27,
-                    "height": 62
-                },
-                "м": {
-                    "x": 113,
-                    "y": 1474,
-                    "width": 35,
-                    "height": 62
-                },
-                "н": {
-                    "x": 156,
-                    "y": 1474,
-                    "width": 29,
-                    "height": 62
-                },
-                "о": {
-                    "x": 194,
-                    "y": 1474,
-                    "width": 28,
-                    "height": 62
-                },
-                "п": {
-                    "x": 230,
-                    "y": 1474,
-                    "width": 29,
-                    "height": 62
-                },
-                "р": {
-                    "x": 268,
-                    "y": 1474,
-                    "width": 28,
-                    "height": 62
-                },
-                "с": {
-                    "x": 4,
-                    "y": 1544,
-                    "width": 24,
-                    "height": 62
-                },
-                "т": {
-                    "x": 36,
-                    "y": 1544,
-                    "width": 24,
-                    "height": 62
-                },
-                "у": {
-                    "x": 69,
-                    "y": 1544,
-                    "width": 28,
-                    "height": 62
-                },
-                "ф": {
-                    "x": 105,
-                    "y": 1544,
-                    "width": 36,
-                    "height": 62
-                },
-                "х": {
-                    "x": 149,
-                    "y": 1544,
-                    "width": 28,
-                    "height": 62
-                },
-                "ц": {
-                    "x": 185,
-                    "y": 1544,
-                    "width": 29,
-                    "height": 62
-                },
-                "ч": {
-                    "x": 223,
-                    "y": 1544,
-                    "width": 28,
-                    "height": 62
-                },
-                "ш": {
-                    "x": 259,
-                    "y": 1544,
-                    "width": 43,
-                    "height": 62
-                },
-                "щ": {
-                    "x": 4,
-                    "y": 1614,
-                    "width": 43,
-                    "height": 62
-                },
-                "ъ": {
-                    "x": 55,
-                    "y": 1614,
-                    "width": 28,
-                    "height": 62
-                },
-                "ы": {
-                    "x": 92,
-                    "y": 1614,
-                    "width": 37,
-                    "height": 62
-                },
-                "ь": {
-                    "x": 137,
-                    "y": 1614,
-                    "width": 25,
-                    "height": 62
-                },
-                "э": {
-                    "x": 171,
-                    "y": 1614,
-                    "width": 24,
-                    "height": 62
-                },
-                "ю": {
-                    "x": 203,
-                    "y": 1614,
-                    "width": 41,
-                    "height": 62
-                },
-                "я": {
-                    "x": 253,
-                    "y": 1614,
-                    "width": 25,
-                    "height": 62
-                },
-                "ѐ": {
-                    "x": 286,
-                    "y": 1614,
-                    "width": 24,
-                    "height": 62
-                },
-                "ё": {
-                    "x": 4,
-                    "y": 1684,
-                    "width": 24,
-                    "height": 62
-                },
-                "ђ": {
-                    "x": 36,
-                    "y": 1684,
-                    "width": 27,
-                    "height": 62
-                },
-                "ѓ": {
-                    "x": 71,
-                    "y": 1684,
-                    "width": 22,
-                    "height": 62
-                },
-                "є": {
-                    "x": 102,
-                    "y": 1684,
-                    "width": 24,
-                    "height": 62
-                },
-                "ѕ": {
-                    "x": 134,
-                    "y": 1684,
-                    "width": 21,
-                    "height": 62
-                },
-                "і": {
-                    "x": 164,
-                    "y": 1684,
-                    "width": 15,
-                    "height": 62
-                },
-                "ї": {
-                    "x": 188,
-                    "y": 1684,
-                    "width": 15,
-                    "height": 62
-                },
-                "ј": {
-                    "x": 211,
-                    "y": 1684,
-                    "width": 15,
-                    "height": 62
-                },
-                "љ": {
-                    "x": 235,
-                    "y": 1684,
-                    "width": 40,
-                    "height": 62
-                },
-                "њ": {
-                    "x": 4,
-                    "y": 1754,
-                    "width": 40,
-                    "height": 62
-                },
-                "ћ": {
-                    "x": 52,
-                    "y": 1754,
-                    "width": 28,
-                    "height": 62
-                }
-            },
-            "width": 320,
-            "height": 1820
-        },
-        "id": 12
-    }],
-    "Sound": [{
-        "name": "uiSound1",
-        "type": "Sound",
-        "resourcePath": "resources/uiSound1.mp3",
-        "id": 15
-    }],
-    "CommonBehaviour": [{
-        "name": "Draggable",
-        "pos": {
-            "x": 0,
-            "y": 0
-        },
-        "scale": {
-            "x": 1,
-            "y": 1
-        },
-        "anchor": {
-            "x": 0,
-            "y": 0
-        },
-        "type": "CommonBehaviour",
-        "id": 36
+    "Layer": [{
+        "id": 2,
+        "name": "mainLayer",
+        "type": "Layer"
     }]
 };
 
@@ -12280,18 +9363,8 @@ exports.repository = {
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var boardCardSheet_1 = __webpack_require__(113);
-exports.BoardCardSheetBehaviour = boardCardSheet_1.BoardCardSheetBehaviour;
-var button_1 = __webpack_require__(114);
-exports.ButtonBehaviour = button_1.ButtonBehaviour;
-var card_1 = __webpack_require__(115);
-exports.CardBehaviour = card_1.CardBehaviour;
-var descScene_1 = __webpack_require__(116);
-exports.DescSceneBehaviour = descScene_1.DescSceneBehaviour;
-var introScene_1 = __webpack_require__(117);
-exports.IntroSceneBehaviour = introScene_1.IntroSceneBehaviour;
-var setFieldScene_1 = __webpack_require__(118);
-exports.SetFieldSceneBehaviour = setFieldScene_1.SetFieldSceneBehaviour;
+var mainScene_1 = __webpack_require__(113);
+exports.MainSceneBehaviour = mainScene_1.MainSceneBehaviour;
 
 /***/ }),
 /* 113 */
@@ -12301,373 +9374,17 @@ exports.SetFieldSceneBehaviour = setFieldScene_1.SetFieldSceneBehaviour;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var BoardCardSheetBehaviour = function () {
-    function BoardCardSheetBehaviour() {}
-    BoardCardSheetBehaviour.prototype.onCreate = function () {};
-    BoardCardSheetBehaviour.prototype.onUpdate = function () {};
-    BoardCardSheetBehaviour.prototype.onDestroy = function () {};
-    return BoardCardSheetBehaviour;
+var game_1 = __webpack_require__(28);
+var MainSceneBehaviour = function () {
+    function MainSceneBehaviour() {}
+    MainSceneBehaviour.prototype.onCreate = function () {
+        console.log(game_1.Game);
+    };
+    MainSceneBehaviour.prototype.onUpdate = function () {};
+    MainSceneBehaviour.prototype.onDestroy = function () {};
+    return MainSceneBehaviour;
 }();
-exports.BoardCardSheetBehaviour = BoardCardSheetBehaviour;
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ButtonBehaviour = function () {
-    function ButtonBehaviour() {}
-    ButtonBehaviour.prototype.onCreate = function () {};
-    ButtonBehaviour.prototype.onUpdate = function () {};
-    ButtonBehaviour.prototype.onDestroy = function () {};
-    return ButtonBehaviour;
-}();
-exports.ButtonBehaviour = ButtonBehaviour;
-
-/***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var CardBehaviour = function () {
-    function CardBehaviour() {}
-    CardBehaviour.prototype.onCreate = function () {};
-    CardBehaviour.prototype.onUpdate = function () {};
-    CardBehaviour.prototype.onDestroy = function () {};
-    return CardBehaviour;
-}();
-exports.CardBehaviour = CardBehaviour;
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var str = "\u041F\u043E\u0434\u0433\u043E\u0442\u043E\u0432\u043A\u0430 \u043A \u0438\u0433\u0440\u0435\n\u0421\u043E\u0431\u0435\u0440\u0438\u0442\u0435 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u044B\u0439 \u0445\u043E\u0434 \u0438\u0437 \u0448\u0435\u0441\u0442\u0438 \u0443\u0447\u0430\u0441\u0442\u043A\u043E\u0432 \u043F\u043E\u043B\u044F, \u0443\u0447\u0430\u0441\u0442\u043A\u0438 \u043C\u043E\u0436\u043D\u043E \u043A\u043B\u0430\u0441\u0442\u044C \u043B\u044E\u0431\u043E\u0439 \u0441\u0442\u043E\u0440\u043E\u043D\u043E\u0439 \u0438 \u0432 \u043B\u044E\u0431\u043E\u043C \u043F\u043E\u0440\u044F\u0434\u043A\u0435 - \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u044E\u0442 \u0442\u044B\u0441\u044F\u0447\u0438 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u044B\u0445 \u043A\u043E\u043C\u0431\u0438\u043D\u0430\u0446\u0438\u0439. \u0412 \u043B\u044E\u0431\u043E\u043C \u0441\u043B\u0443\u0447\u0430\u0435 \u0443 \u0432\u0430\u0441 \u0434\u043E\u043B\u0436\u0435\u043D \u043F\u043E\u043B\u0443\u0447\u0438\u0442\u044C\u0441\u044F \u0435\u0434\u0438\u043D\u044B\u0439 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u044B\u0439 \u0445\u043E\u0434 \u0441 36 \u0434\u0435\u043B\u0435\u043D\u0438\u044F\u043C\u0438-\u0441\u0438\u043C\u0432\u043E\u043B\u0430\u043C\u0438. \u041A\u0430\u0436\u0434\u044B\u0439 \u0438\u0433\u0440\u043E\u043A \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u0442 6 \u0444\u0438\u0448\u0435\u043A \u043F\u0438\u0440\u0430\u0442\u043E\u0432 \u043E\u0434\u043D\u043E\u0433\u043E \u0446\u0432\u0435\u0442\u0430. \u041D\u0435\u043D\u0443\u0436\u043D\u044B\u0435 \u0444\u0438\u0448\u043A\u0438 \u0443\u0431\u0435\u0440\u0438\u0442\u0435 \u0432 \u043A\u043E\u0440\u043E\u0431\u043A\u0443. \u0418\u0433\u0440\u043E\u043A\u0438 \u0441\u0442\u0430\u0432\u044F\u0442 \u0432\u0441\u0435\u0445 \u0441\u0432\u043E\u0438\u0445 \u043F\u0438\u0440\u0430\u0442\u043E\u0432 \u0441 \u043E\u0434\u043D\u043E\u0433\u043E \u043A\u043E\u043D\u0446\u0430 \u043F\u043E\u0434\u0437\u0435\u043C\u043D\u043E\u0433\u043E \u0445\u043E\u0434\u0430, \u0430 \u0443 \u0434\u0440\u0443\u0433\u043E\u0433\u043E \u0448\u0432\u0430\u0440\u0442\u0443\u0435\u0442\u0441\u044F \u0448\u043B\u044E\u043F\u043A\u0430. \u041E\u0442\u043B\u043E\u0436\u0438\u0442\u0435 \u043A\u0430\u0440\u0442\u0443 \u0441\u043E \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439. \u0415\u0441\u043B\u0438 \u0438\u0433\u0440\u0430\u0435\u0442\u0435 \u0432 \u00AB\u0422\u043E\u0440\u0442\u0443\u0433\u0443\u00BB, \u043E\u043D\u0430 \u043F\u043E\u043D\u0430\u0434\u043E\u0431\u0438\u0442\u0441\u044F \u0447\u0443\u0442\u044C \u043F\u043E\u0437\u0436\u0435, \u0430 \u0434\u043B\u044F \u00AB\u042F\u043C\u0430\u0439\u043A\u0438\u00BB \u0441\u043E\u0432\u0441\u0435\u043C \u043D\u0435 \u043F\u0440\u0438\u0433\u043E\u0434\u0438\u0442\u0441\u044F. \u041F\u0435\u0440\u0435\u0442\u0430\u0441\u0443\u0439\u0442\u0435 \u043A\u043E\u043B\u043E\u0434\u0443 \u0438 \u0441\u0434\u0430\u0439\u0442\u0435 \u043A\u0430\u0436\u0434\u043E\u043C\u0443 \u0438\u0433\u0440\u043E\u043A\u0443 \u043F\u043E 6 \u043A\u0430\u0440\u0442.\n\u0415\u0441\u043B\u0438 \u0432\u044B \u0435\u0449\u0451 \u043D\u0435 \u0440\u0435\u0448\u0438\u043B\u0438, \u043F\u043E \u043A\u0430\u043A\u043E\u043C\u0443 \u0432\u0430\u0440\u0438\u0430\u043D\u0442\u0443 \u043F\u0440\u0430\u0432\u0438\u043B \u0438\u0433\u0440\u0430\u0442\u044C, \u0441\u0430\u043C\u043E\u0435 \u0432\u0440\u0435\u043C\u044F \u0441\u0434\u0435\u043B\u0430\u0442\u044C \u044D\u0442\u043E.\n\"\u042F\u043C\u0430\u0439\u043A\u0430\" - \u043A\u0430\u0440\u0442\u044B \u0441\u043A\u0440\u044B\u0442\u044B, \u043F\u043E\u0431\u0435\u0434\u0430 \u0432 \u0431\u043E\u043B\u044C\u0448\u0435\u0439 \u0441\u0442\u0435\u043F\u0435\u043D\u0438 \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043E\u0442 \u0432\u0435\u0437\u0435\u043D\u0438\u044F. \u0418\u0433\u0440\u043E\u043A\u0438 \u0434\u0435\u0440\u0436\u0430\u0442 \u0441\u0432\u043E\u0438 \u043A\u0430\u0440\u0442\u044B \u043D\u0430 \u0440\u0443\u043A\u0435, \u043D\u0435 \u043F\u043E\u043A\u0430\u0437\u044B\u0432\u0430\u044F \u0441\u043E\u043F\u0435\u0440\u043D\u0438\u043A\u0430\u043C. \u041A\u043E\u043B\u043E\u0434\u0430 \u043B\u0435\u0436\u0438\u0442 \u0440\u044F\u0434\u043E\u043C \u0441 \u043F\u043E\u043B\u0435\u043C \u0442\u0430\u043A\u0436\u0435 \u0432\u0437\u0430\u043A\u0440\u044B\u0442\u0443\u044E; \u0432 \u0445\u043E\u0434\u0435 \u043F\u0430\u0440\u0442\u0438\u0438 \u0438\u0433\u0440\u043E\u043A\u0438 \u0431\u0435\u0440\u0443\u0442 \u043A\u0430\u0440\u0442\u044B \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B.\n\"\u0422\u043E\u0440\u0442\u0443\u0433\u0430\" - \u043A\u0430\u0440\u0442\u044B \u0440\u0430\u0441\u043A\u0440\u044B\u0442\u044B, \u043F\u043E\u0431\u0435\u0434\u0430 \u0432 \u0431\u043E\u043B\u044C\u0448\u0435\u0439 \u0441\u0442\u0435\u043F\u0435\u043D\u0438 \u0437\u0430\u0432\u0438\u0441\u0438\u0442 \u043E\u0442 \u0440\u0430\u0441\u0447\u0451\u0442\u0430. \u0418\u0433\u0440\u043E\u043A\u0438 \u0434\u0435\u0440\u0436\u0430\u0442 \u0441\u0432\u043E\u0438 \u043A\u0430\u0440\u0442\u044B \u0432 \u043E\u0442\u043A\u0440\u044B\u0442\u0443\u044E, \u043D\u0430 \u0441\u0442\u043E\u043B\u0435 \u043F\u0435\u0440\u0435\u0434 \u0441\u043E\u0431\u043E\u0439. \u0420\u0430\u0437\u0434\u0430\u0432 \u043A\u0430\u0440\u0442\u044B \u0438\u0433\u0440\u043E\u043A\u0430\u043C, \u0432\u044B\u043B\u043E\u0436\u0438\u0442\u0435 \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B \u043F\u043E\u0441\u0435\u0440\u0435\u0434\u0438\u043D\u0435 \u0441\u0442\u043E\u043B\u0430 \u0440\u044F\u0434 \u0438\u0437 12 \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u0445 \u043A\u0430\u0440\u0442. \u041A\u0430\u0440\u0442\u0443 \u0441\u043E \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439 \u043F\u043E\u043B\u043E\u0436\u0438\u0442\u0435 \u0433\u043E\u0440\u0438\u0437\u043E\u043D\u0442\u0430\u043B\u044C\u043D\u043E \u0440\u044F\u0434\u043E\u043C \u0441 \u043E\u0442\u043A\u0440\u044B\u0442\u044B\u043C\u0438 \u043A\u0430\u0440\u0442\u0430\u043C\u0438 (\u0442\u0430\u043A, \u0447\u0442\u043E\u0431\u044B \u043E\u043D\u0430 \u0443\u043A\u0430\u0437\u044B\u0432\u0430\u043B\u0430 \u0432\u043F\u0440\u0430\u0432\u043E \u0438\u043B\u0438 \u0432\u043B\u0435\u0432\u043E). \u0412 \u0445\u043E\u0434\u0435 \u043F\u0430\u0440\u0442\u0438\u0438 \u0438\u0433\u0440\u043E\u043A\u0438 \u0431\u0435\u0440\u0443\u0442 \u043A\u0430\u0440\u0442\u044B \u0438\u0437 \u044D\u0442\u043E\u0433\u043E \u0440\u044F\u0434\u0430 \u0432 \u043F\u043E\u0440\u044F\u0434\u043A\u0435, \u0443\u043A\u0430\u0437\u0430\u043D\u043D\u043E\u043C \u0441\u0442\u0440\u0435\u043B\u043A\u043E\u0439. \u041A\u043E\u0433\u0434\u0430 \u043A\u0430\u0440\u0442\u044B \u0432 \u0440\u044F\u0434\u0443 \u0437\u0430\u043A\u043E\u043D\u0447\u0430\u0442\u0441\u044F, \u0432\u044B\u043B\u043E\u0436\u0438\u0442\u0435 12 \u043D\u043E\u0432\u044B\u0445 \u043A\u0430\u0440\u0442 \u0438\u0437 \u043A\u043E\u043B\u043E\u0434\u044B.";
-var DescSceneBehaviour = function () {
-    function DescSceneBehaviour() {}
-    DescSceneBehaviour.prototype.onCreate = function () {
-        var self = this;
-        var bgView = this.game.uiBuilder.build({
-            AbsoluteLayout: {
-                pos: { x: 0, y: 0 },
-                width: this.game.width,
-                height: this.game.height,
-                layoutWidth: 0,
-                layoutHeight: 0,
-                background: {
-                    Image: {
-                        src: 'resources/bg.jpg'
-                    }
-                },
-                children: [{
-                    TextField: {
-                        maxWidth: 990,
-                        maxHeight: 480,
-                        pos: { x: 10, y: 10 },
-                        fontName: 'scriptFont',
-                        text: str,
-                        textAlign: 'CENTER',
-                        border: {
-                            Border: {}
-                        }
-                    }
-                }, {
-                    Button: {
-                        pos: { x: 360, y: 500 },
-                        fontName: 'scriptFont',
-                        text: "Продолжить",
-                        paddings: [15, 25],
-                        background: {
-                            NinePatchImage: {
-                                src: 'resources/button.png',
-                                ABCD: 20
-                            }
-                        },
-                        on: ['click', function () {
-                            self.toNextScene();
-                        }]
-                    }
-                }]
-            }
-        });
-        this.scene.appendChild(bgView);
-    };
-    DescSceneBehaviour.prototype.toNextScene = function () {
-        var scene = this.game.repository.getArray('Scene').find(function (it) {
-            return it.name == 'setFieldScene';
-        });
-        this.game.runScene(scene);
-    };
-    DescSceneBehaviour.prototype.onUpdate = function () {};
-    DescSceneBehaviour.prototype.onDestroy = function () {};
-    return DescSceneBehaviour;
-}();
-exports.DescSceneBehaviour = DescSceneBehaviour;
-
-/***/ }),
-/* 117 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var IntroSceneBehaviour = function () {
-    function IntroSceneBehaviour() {}
-    IntroSceneBehaviour.prototype.onCreate = function () {
-        var self = this;
-        var widget = this.game.uiBuilder.build({
-            AbsoluteLayout: {
-                pos: { x: 0, y: 0 },
-                width: this.game.width,
-                height: this.game.height,
-                layoutWidth: 0,
-                layoutHeight: 0,
-                background: {
-                    Image: {
-                        id: 100,
-                        src: 'resources/bg.jpg'
-                    }
-                },
-                children: [{
-                    Image: {
-                        id: 200,
-                        pos: { x: 180, y: -40 },
-                        src: 'resources/pirate-flag.png'
-                    }
-                }, {
-                    TextField: {
-                        pos: { x: 330, y: 300 },
-                        fontName: 'cartahena_large',
-                        name: '1',
-                        text: 'Cartahena'
-                    }
-                }, {
-                    Button: {
-                        pos: { x: 360, y: 500 },
-                        fontName: 'scriptFont',
-                        text: "Продолжить",
-                        paddings: [15, 25],
-                        background: {
-                            NinePatchImage: {
-                                id: 300,
-                                src: 'resources/button.png',
-                                ABCD: 20
-                            }
-                        },
-                        on: ['click', function () {
-                            self.game.audioPlayer.play('uiSound1');
-                            self.toNextScene();
-                        }]
-                    }
-                }]
-            }
-        });
-        this.scene.appendChild(widget);
-    };
-    IntroSceneBehaviour.prototype.toNextScene = function () {
-        var scene = this.game.repository.getArray('Scene').find(function (it) {
-            return it.name == 'descScene';
-        });
-        this.game.runScene(scene);
-    };
-    return IntroSceneBehaviour;
-}();
-exports.IntroSceneBehaviour = IntroSceneBehaviour;
-
-/***/ }),
-/* 118 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var colorizeFilter_1 = __webpack_require__(119);
-var color_1 = __webpack_require__(2);
-var rectangle_1 = __webpack_require__(12);
-var Board = function () {
-    function Board(game, cards) {
-        this.cells = [];
-        this.cardsCnt = 0;
-        this.cellsX = 4;
-        this.cellsY = 3;
-        this.lightUpColor = 30;
-        this.game = game;
-        this.cards = cards;
-        this.setUpDraggable();
-        for (var j = 0; j < this.cellsY; j++) {
-            this.cells[j] = [];
-            for (var i = 0; i < this.cellsX; i++) {
-                var cell = {};
-                var r = new rectangle_1.Rectangle(this.game);
-                r.fillColor = new color_1.Color(3, 100, 12, 0);
-                r.width = 200;
-                r.height = 200;
-                r.pos.x = i * 200;
-                r.pos.y = j * 200;
-                cell.rectangle = r;
-                cell.available = false;
-                cell.card = null;
-                this.game.getCurrScene().getLayerByName('bg').children[0].children[0].appendChild(r);
-                this.cells[j][i] = cell;
-            }
-        }
-    }
-    Board.prototype.lightUpAvailablePlaces = function () {
-        this.lightDown();
-        if (this.cardsCnt == 0) {
-            this.cells[1][0].rectangle.fillColor.setA(this.lightUpColor);
-            this.cells[1][0].available = true;
-        } else {
-            console.log(this.cardsCnt);
-        }
-    };
-    Board.prototype.lightDown = function () {
-        for (var j = 0; j < this.cellsY; j++) {
-            for (var i = 0; i < this.cellsX; i++) {
-                this.cells[j][i].rectangle.fillColor.setA(0);
-                this.cells[j][i].available = false;
-            }
-        }
-    };
-    Board.prototype.onCardDrop = function (card) {
-        var cellOver = null;
-        var x = card.pos.x + card.width / 2;
-        var y = card.pos.y + card.height / 2;
-        for (var j = 0; j < 3; j++) {
-            for (var i = 0; i < 4; i++) {
-                var cell = this.cells[j][i];
-                if (x >= cell.rectangle.pos.x && x <= cell.rectangle.pos.x + cell.rectangle.width && y >= cell.rectangle.pos.y && y <= cell.rectangle.pos.y + cell.rectangle.height && cell.available) {
-                    cellOver = cell;
-                    break;
-                }
-            }
-            if (cellOver) break;
-        }
-        if (cellOver) {
-            card.pos.x = cellOver.rectangle.pos.x;
-            card.pos.y = cellOver.rectangle.pos.y;
-            cellOver.card = card;
-        }
-    };
-    Board.prototype.setUpDraggable = function () {
-        var _this = this;
-        this.cards.forEach(function (it, i) {
-            it.setFrameIndex(i);
-            it.revalidate();
-            var selectedColor = new color_1.Color(20, 255, 0, 50);
-            var defaultColor = new color_1.Color(0, 255, 0, 0);
-            it.filters.push(new colorizeFilter_1.ColorizeFilter(_this.game.renderer.gl));
-            it.on('dragStart', function () {
-                it.moveToFront();
-                it.scale.setXY(1.2, 1.2);
-                it.filters[0].setColor(selectedColor);
-                _this.lightUpAvailablePlaces();
-            });
-            it.on('dragStop', function () {
-                it.moveToFront();
-                it.scale.setXY(1, 1);
-                it.filters[0].setColor(defaultColor);
-                _this.onCardDrop(it);
-                _this.lightDown();
-            });
-        });
-    };
-    return Board;
-}();
-var SetFieldSceneBehaviour = function () {
-    function SetFieldSceneBehaviour() {}
-    SetFieldSceneBehaviour.prototype.onCreate = function () {
-        var self = this;
-        var bgView = this.game.uiBuilder.build({
-            AbsoluteLayout: {
-                pos: { x: 0, y: 0 },
-                width: this.game.width,
-                height: this.game.height,
-                layoutWidth: 0,
-                layoutHeight: 0,
-                background: {
-                    Image: {
-                        src: 'resources/bg.jpg'
-                    }
-                },
-                children: [{
-                    Rectangle: {
-                        pos: { x: 0, y: 0 },
-                        width: 800,
-                        height: 600,
-                        fillColor: { r: 10, g: 10, b: 10, a: 20 }
-                    }
-                }]
-            }
-        });
-        this.scene.getLayerByName('bg').prependChild(bgView);
-        var cards = this.scene.getLayerByName('main').children.filter(function (it) {
-            return it.name == 'boardCard';
-        });
-        new Board(this.game, cards);
-    };
-    SetFieldSceneBehaviour.prototype.onUpdate = function () {};
-    SetFieldSceneBehaviour.prototype.onDestroy = function () {};
-    return SetFieldSceneBehaviour;
-}();
-exports.SetFieldSceneBehaviour = SetFieldSceneBehaviour;
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __extends = this && this.__extends || function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
-            d.__proto__ = b;
-        } || function (d, b) {
-            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-}();
-Object.defineProperty(exports, "__esModule", { value: true });
-var abstractFilter_1 = __webpack_require__(41);
-var shaderProgramUtils_1 = __webpack_require__(8);
-var color_1 = __webpack_require__(2);
-var ColorizeFilter = function (_super) {
-    __extends(ColorizeFilter, _super);
-    function ColorizeFilter(gl) {
-        return _super.call(this, gl) || this;
-    }
-    ColorizeFilter.prototype.prepare = function (programGen) {
-        programGen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'uPixelColor');
-        this.setColor(color_1.Color.NONE);
-        programGen.setFragmentMainFn("\n            void main(){\n                vec4 col = texture2D(texture, v_texCoord);\n                vec3 r = vec3(col) * (1.0-uPixelColor.a) + vec3(uPixelColor) * uPixelColor.a;\n                vec4 result = vec4(r, col.a);\n                gl_FragColor = result;\n            }\n        ");
-    };
-    ColorizeFilter.prototype.setColor = function (c) {
-        this.setParam('uPixelColor', c.clone().asGL());
-    };
-    return ColorizeFilter;
-}(abstractFilter_1.AbstractFilter);
-exports.ColorizeFilter = ColorizeFilter;
+exports.MainSceneBehaviour = MainSceneBehaviour;
 
 /***/ })
 /******/ ]);

@@ -27,7 +27,7 @@ export class GameObjectDialog extends BaseComponent {
             this.editData.game.repository.addObject(g);
             let name = this.utils.capitalise(this.editData.currGameObjectInEdit.name);
             await this.restFileSystem.createFile(
-                `scripts/${g.name}.js`,
+                `scripts/${g.name}.ts`,
                 getDefaultCodeScript(name)
             );
         }

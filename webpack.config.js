@@ -71,7 +71,7 @@ module.exports = (env={})=>{
             rules: [
                 {
                     test: /\.ts$/,
-                    loader: "ts-loader",
+                    loader: "awesome-typescript-loader",
                     options: {}
                 },
                 {
@@ -89,9 +89,11 @@ module.exports = (env={})=>{
             extensions: ['.js','.ts'],
             modules: [
                 path.resolve(__dirname, 'node_modules'),
-                path.resolve(__dirname, 'src'),
-                path.resolve(__dirname, './client-app')
-            ]
+                path.resolve(__dirname, 'client-app')
+            ],
+            alias: {
+                '@engine': path.resolve(__dirname, 'client-app/engine/')
+            },
         },
         optimization: {
             minimize: !debug,

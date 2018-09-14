@@ -8,6 +8,9 @@ const str =
 
 export class DescSceneBehaviour {
 
+    game:any;
+    scene:any;
+
     onCreate(){
         let self = this;
         let bgView = this.game.uiBuilder.build({

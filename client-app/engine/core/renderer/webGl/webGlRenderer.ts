@@ -203,12 +203,6 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
                             srcRect:Rect,
                             dstRect:Rect){
 
-        //let camRectScaled:Rect = this.game.camera.getRectScaled();
-        // if (!matEx.overlapTest(
-        //     camRectScaled,
-        //     dstRect)
-        // ) return;
-
         let scene = this.game.getCurrScene();
 
         let drawer:IDrawer;

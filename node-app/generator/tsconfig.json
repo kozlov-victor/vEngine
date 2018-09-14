@@ -13,10 +13,14 @@
         "strict": false,
         "noImplicitAny": false,
         "noEmitOnError": true,
-        "removeComments": true
+        "removeComments": true,
+        "baseUrl": ".",
+        "paths": {
+           "@engine/*": ["client-app/engine/*"]
+        }
     },
     "exclude": [
-        "node_modules", "node-app"
+        "node_modules"
     ],
     "awesomeTypescriptLoaderOptions": {
         "transpileOnly": false,

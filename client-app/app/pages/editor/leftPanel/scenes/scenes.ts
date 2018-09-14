@@ -1,7 +1,6 @@
 import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
-/*global alertEx:true*/
 
 
 import './scenes.scss'
@@ -42,7 +41,7 @@ export class Scenes extends BaseComponent {
         }
         let res = await this.utils.deleteModel(scene);
         if (!res) return;
-        await this.restFileSystem.removeFile(`scripts/${scene.name}.js`);
+        await this.restFileSystem.removeFile(`scripts/${scene.name}.ts`);
     }
     createLayer(scene){
         this.editData.currLayerInEdit = new Layer(this.editData.game);
@@ -55,7 +54,7 @@ export class Scenes extends BaseComponent {
         RF.getComponentById('layerModal').open();
     }
     editScript(scene){
-        this.utils.openEditor(`scripts/${scene.name}.js`);
+        this.utils.openEditor(`scripts/${scene.name}.ts`);
     }
     async deleteLayer(layer,scene){
         if (layer.children.length)

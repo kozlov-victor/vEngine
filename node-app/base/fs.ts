@@ -1,5 +1,6 @@
 
 import {nodeRequire, forEach, filter} from "./fns";
+import {unescape} from "querystring";
 
 const fs = nodeRequire('fs');
 const path = nodeRequire('path');
@@ -14,7 +15,7 @@ export interface FileData {
 }
 
 class FS {
-    async copyFile(source, target) {
+    async copyFile(source, target, modifier:Function = null) {
         return new Promise(async (resolve,reject)=>{
             let pathArr = target.split('/');
             pathArr.pop();
@@ -23,16 +24,21 @@ class FS {
             if (!exists && targetPath) await this.createFolder(targetPath);
             let ws = fs.createWriteStream(target);
             let rs = fs.createReadStream(source);
-            ws.on("error", function(err) {
+            ws.on("error", (err)=> {
                 done(err);
             });
-            ws.on("error", function(err) {
+            ws.on("error", (err)=> {
                 done(err);
             });
-            ws.on("close", function() {
+            ws.on("close", async ()=> {
+                if (modifier) {
+                    let content = await this.readFile(target);
+                    content = modifier(content);
+                    await this.createFile(target,content);
+                }
                 done();
             });
-            ws.on("error", function(err) {
+            ws.on("error", (err)=> {
                 done(err);
             });
             rs.pipe(ws);
@@ -43,7 +49,9 @@ class FS {
                     console.error('copyFile error',err);
                     reject(err);
                 }
-                else resolve();
+                else {
+                    resolve();
+                }
             }
         });
 
@@ -83,6 +91,11 @@ class FS {
     }
 
     async createFile(path,content){
+        let fullPathArr = path.split('/');
+        fullPathArr.pop();
+        let pathToCreate = fullPathArr.join('/');
+        let exists = await this.exists(pathToCreate);
+        if (!exists) await this.createFolder(pathToCreate);
         await this.deleteFile(path);
         await this.writeFile(
             path,
@@ -103,7 +116,7 @@ class FS {
         });
     }
 
-    async _copyFilesToFolder( source, target ) {
+    async _copyFilesToFolder(source, target, modifier) {
         let exists = await this.exists(target);
         return new Promise(async (resolve,reject)=>{
             let targetFile = target;
@@ -111,12 +124,16 @@ class FS {
             if (exists) {
                 let isDir = await this._isDirectory(target);
                 if (isDir) targetFile = path.join( target, path.basename( source ) );
-                fs.readFile(source,(err,file)=>{
+                let format = modifier?'utf8':undefined;
+                fs.readFile(source,format,(err,file)=>{
                     if (err) reject(err);
-                    else fs.writeFile(targetFile, file,(error)=>{
-                        if (error) reject(error);
-                        else resolve();
-                    });
+                    else {
+                        if (modifier) file = modifier(file);
+                        fs.writeFile(targetFile, file,(error)=>{
+                            if (error) reject(error);
+                            else resolve();
+                        });
+                    }
                 });
 
             } else {
@@ -136,7 +153,7 @@ class FS {
         });
     }
 
-    async copyFolder( source, target ) {
+    async copyFolder(source, target, modifier:Function = null) {
         return new Promise((resolve,reject)=>{
             //check if folder needs to be created or integrated
             let targetFolder = path.join( target, path.basename( source ) );
@@ -168,8 +185,8 @@ class FS {
                 await forEach(files,async file=>{
                     let curSource = path.join( source, file );
                     let isDirectory = await this._isDirectory(curSource);
-                    if (isDirectory) await this.copyFolder(curSource, targetFolder);
-                    else await this._copyFilesToFolder(curSource, targetFolder);
+                    if (isDirectory) await this.copyFolder(curSource, targetFolder,modifier);
+                    else await this._copyFilesToFolder(curSource, targetFolder,modifier);
                 });
                 resolve();
             }).catch(err=>{

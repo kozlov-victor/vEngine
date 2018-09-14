@@ -2,6 +2,9 @@
 //
 export class IntroSceneBehaviour {
 
+    game:any;
+    scene:any;
+
     onCreate(){
         let self = this;
         let widget = this.game.uiBuilder.build({

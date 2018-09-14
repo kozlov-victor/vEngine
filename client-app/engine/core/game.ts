@@ -137,15 +137,15 @@ export class Game extends CommonObject {
             return;
         }
         if (!IN_EDITOR) {
-            let allScripts = require(`../../../workspace/${PROJECT_NAME}/generated/src/app/scripts/allScripts`);
+            let allBehaviours = this.repository.allBehaviours;
             let sceneBhScriptName = `${scene.name[0].toUpperCase()}${scene.name.substr(1)}Behaviour`;
-            let BhClass = allScripts[sceneBhScriptName];
+            let BhClass = allBehaviours[sceneBhScriptName];
             if (sceneBhScriptName) scene.setIndividualBehaviour(new BhClass());
             scene.layers.forEach((l:Layer)=>{
                 l.children.forEach((go:GameObject)=>{
                     go.setCommonBehaviour();
                     let scriptName = go.name && `${go.name[0].toUpperCase()}${go.name.substr(1)}Behaviour`;
-                    let BhClass = allScripts[scriptName];
+                    let BhClass = allBehaviours[scriptName];
                     if (BhClass && !go.getIndividualBehaviour()) go.setIndividualBehaviour(new BhClass());
                 });
             });
