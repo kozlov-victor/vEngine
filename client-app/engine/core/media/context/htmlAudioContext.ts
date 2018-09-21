@@ -1,5 +1,4 @@
 import {IAudioContext} from "./iAudioContext";
-import {AudioPlayer} from "../audioPlayer";
 import {Game} from "../../game";
 import {DebugError} from "../../../debugError";
 
@@ -41,11 +40,15 @@ export class HtmlAudioContext implements IAudioContext{
 
     play(resourcePath:string, loop: boolean) {
 
-        let base64Url = this.game.repository.embeddedResources[resourcePath];
-        if (DEBUG && !base64Url) throw new DebugError(`no embedded resource provided by url ${resourcePath}`);
+        let url:string;
+        if (EMBED_RESOURCES) {
+            let base64Url = this.game.repository.embeddedResources[resourcePath];
+            url = base64Url;
+            if (DEBUG && !base64Url) throw new DebugError(`no embedded resource provided by url ${resourcePath}`)
+        } else url = resourcePath;
 
         this.free = false;
-        this._ctx.src = base64Url;
+        this._ctx.src = url;
         this._ctx.play();
         this._ctx.loop = loop;
         this._ctx.onended = () => {

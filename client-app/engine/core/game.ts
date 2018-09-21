@@ -1,15 +1,11 @@
 import {Layer} from "../model/impl/layer";
 import {GameObject3d} from "../model/impl/gameObject3d";
+import './misc/polyfills'
 
 declare const DEBUG:boolean,IN_EDITOR:boolean,PROJECT_NAME:string;
 declare const setTimeout: (f:Function,n:number)=>number;
 declare const setInterval: (f:Function,n:number)=>number;
 
-
-declare let window:any;
-declare let require:Function;
-
-import './misc/polyfills'
 import {BaseAbstractBehaviour} from "../commonBehaviour/abstract/baseAbstractBehaviour";
 import {RendererFactory} from './renderer/rendererFactory'
 import {Repository} from './repository';
@@ -32,6 +28,10 @@ import {_global} from "./global";
 import {GameObject} from "../model/impl/gameObject";
 import {DebugError} from "../debugError";
 import {AudioPlayer} from "./media/audioPlayer";
+
+declare let window:any;
+declare let require:Function;
+
 
 
 @Transient({

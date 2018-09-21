@@ -128,7 +128,8 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         }
         let drawableInfo:DrawableInfo = { // todo move to renderable
             blendMode:renderable.blendMode,
-            acceptLight:renderable.acceptLight
+            acceptLight:renderable.acceptLight,
+            alpha: renderable.alpha
         };
         this.drawTextureInfo(
             texInfo,
@@ -150,7 +151,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
             else throw new DebugError(`can not find texture with path ${texturePath}`);
         }
         let texInfo:TextureInfo[] = [{texture,name:'texture'}];
-        let drawableInfo:DrawableInfo = {blendMode:'normal',acceptLight:false};
+        let drawableInfo:DrawableInfo = {blendMode:'normal',acceptLight:false,alpha:1};
         this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstRect);
     }
 
@@ -209,7 +210,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         let uniforms:UniformsInfo = {
             u_textureMatrix: makeTextureMatrix(srcRect,texInfo[0].texture.getSize()),
             u_vertexMatrix: makePositionMatrix(dstRect, Size.fromPool().setWH(this.game.width,this.game.height)), // todo
-            u_alpha: 1
+            u_alpha: drawableInfo.alpha
         };
 
         if (drawableInfo.blendMode==='add') drawer = this.addBlendDrawer; // todo extract to separate class method
@@ -400,6 +401,10 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     }
 
     loadTextureInfo(resourcePath:string,onLoad:()=>void){
+        if (this.renderableCache[resourcePath]) {
+            onLoad();
+            return;
+        }
         let img = new Image();
         let resource = this.getResource(resourcePath);
         if (DEBUG && !resource) throw new DebugError(`can not find resource with path ${resourcePath}`);

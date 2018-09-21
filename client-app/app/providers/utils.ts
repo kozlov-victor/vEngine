@@ -1,11 +1,7 @@
 
-declare const Blob:any,atob:any;
-declare let Promise:any;
-
-
 import {GameObject} from "../../engine/model/impl/gameObject";
 import {confirmEx} from "./userDefinedFns";
-import * as mathEx from '../../engine/core/mathEx';
+import {MathEx} from '../../engine/core/mathEx';
 
 import {editData} from './editData';
 import {RestResource as restResource} from './rest/restResource';
@@ -16,6 +12,9 @@ import {GameObjectProto} from '../../engine/model/impl/gameObjectProto'
 import {Scene} from "../../engine/model/impl/scene";
 import {Point2d} from "../../engine/core/geometry/point2d";
 import {SpriteSheet} from "../../engine/model/impl/spriteSheet";
+
+declare const Blob:any,atob:any;
+declare let Promise:any;
 
 export class Utils {
     static getGameObjectCss(gameObj:GameObject){
@@ -32,7 +31,7 @@ export class Utils {
             backgroundPositionX:  -gameObj._sprPosX+'px',
             backgroundRepeat:     'no-repeat',
             opacity:               gameObj.alpha,
-            transform:            `scale(${gameObj.scale.x},${gameObj.scale.y}) rotateZ(${mathEx.radToDeg(gameObj.angle)}deg)`,
+            transform:            `scale(${gameObj.scale.x},${gameObj.scale.y}) rotateZ(${MathEx.radToDeg(gameObj.angle)}deg)`,
             backgroundSize:       `${gameObj.spriteSheet.numOfFramesH*gameObj.width}px ${gameObj.spriteSheet.numOfFramesV*gameObj.height}px`
         };
 

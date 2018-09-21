@@ -1,11 +1,11 @@
 
 import {BaseModel} from '../baseModel'
-import * as mathEx from '../../core/mathEx'
+import {MathEx} from '../../core/mathEx'
 import {Game} from "../../core/game";
 import {GameObjectProto} from './gameObjectProto';
 import {AbstractFilter} from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 
-let r = obj=>mathEx.random(obj.from,obj.to);
+let r = obj=>MathEx.random(obj.from,obj.to);
 
 interface ParticlePropertyDesc {
     from:number,

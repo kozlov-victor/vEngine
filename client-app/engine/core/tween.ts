@@ -1,6 +1,6 @@
 
-import * as mathEx from './mathEx'
 import {_global} from "./global";
+import {Easing} from "../core/easing";
 
 interface KeyVal {
     [key:string]:any
@@ -49,16 +49,16 @@ export interface TweenDescriptionNormalized extends TweenDescription{
 
 export class Tween {
 
-    private propsToChange:Array<any> = [];
-    private startedTime:number = 0;
-    private currTime:number = 0;
-    private completed:boolean = false;
-    private target: any;
-    private progressFn:Function|undefined;
-    private completeFn: Function|undefined;
-    private easeFnName:string;
-    private tweenTime: number;
-    private desc:TweenDescriptionNormalized;
+    private _propsToChange:Array<any> = [];
+    private _startedTime:number = 0;
+    private _currTime:number = 0;
+    private _completed:boolean = false;
+    private _target: any;
+    private _progressFn:Function|undefined;
+    private _completeFn: Function|undefined;
+    private _easeFnName:string;
+    private _tweenTime: number;
+    private _desc:TweenDescriptionNormalized;
 
     /**
      * @param tweenDesc
@@ -71,22 +71,22 @@ export class Tween {
      * time: tween time
      */
     constructor(tweenDesc:TweenDescription){
-        this.target = tweenDesc.target;
-        this.progressFn = tweenDesc.progress;
-        this.completeFn = tweenDesc.complete;
-        this.easeFnName = tweenDesc.ease || 'linear';
-        this.tweenTime = tweenDesc.time || 1000;
-        this.desc = this.normalizeDesc(tweenDesc);
+        this._target = tweenDesc.target;
+        this._progressFn = tweenDesc.progress;
+        this._completeFn = tweenDesc.complete;
+        this._easeFnName = tweenDesc.ease || 'linear';
+        this._tweenTime = tweenDesc.time || 1000;
+        this._desc = this.normalizeDesc(tweenDesc);
     }
 
     reuse(newTweenDesc:TweenDescription):void{
-        this.startedTime = this.currTime;
-        this.completed = false;
+        this._startedTime = this._currTime;
+        this._completed = false;
 
         Object.keys(newTweenDesc).forEach(key=>{
-            (this.desc as any)[key] = (newTweenDesc as any)[key];
+            (this._desc as any)[key] = (newTweenDesc as any)[key];
         });
-        this.desc = this.normalizeDesc(newTweenDesc);
+        this._desc = this.normalizeDesc(newTweenDesc);
     }
 
     normalizeDesc(tweenDesc:TweenDescription):TweenDescriptionNormalized{
@@ -99,69 +99,73 @@ export class Tween {
         Object.keys(tweenDesc.to).forEach(keyTo=>{
             allPropsMap[keyTo] = true;
         });
-        this.propsToChange = Object.keys(allPropsMap);
-        this.propsToChange.forEach((prp:string)=>{
-            if (tweenDesc.from[prp]===undefined) tweenDesc.from[prp] = getValByPath(this.target,prp);
-            if (tweenDesc.to[prp]===undefined) tweenDesc.to[prp] = getValByPath(this.target,prp);
+        this._propsToChange = Object.keys(allPropsMap);
+        this._propsToChange.forEach((prp:string)=>{
+            if (tweenDesc.from[prp]===undefined) tweenDesc.from[prp] = getValByPath(this._target,prp);
+            if (tweenDesc.to[prp]===undefined) tweenDesc.to[prp] = getValByPath(this._target,prp);
         });
         return tweenDesc as TweenDescriptionNormalized;
-    };
+    }
 
 
-    update(time:number){
-        if (this.completed) return;
-        this.currTime = time;
-        if (!this.startedTime) this.startedTime = time;
-        let curTweenTime:number = time - this.startedTime;
-        if (curTweenTime>this.tweenTime) {
-            this._complete();
+    update(currTime:number){
+        if (this._completed) return;
+        this._currTime = currTime;
+        if (!this._startedTime) this._startedTime = currTime;
+        let curTweenTime:number = currTime - this._startedTime;
+        if (curTweenTime>this._tweenTime) {
+            this.complete();
             return;
         }
-        let l:number = this.propsToChange.length;
+        let l:number = this._propsToChange.length;
         while(l--){
-            let prp:string = this.propsToChange[l];
-            let valFrom:number = this.desc.from[prp] as number;
-            let valTo:number = this.desc.to[prp] as number;
-            let fn:Function = mathEx[this.easeFnName] as Function;
+            let prp:string = this._propsToChange[l];
+            let valFrom:number = this._desc.from[prp] as number;
+            let valTo:number = this._desc.to[prp] as number;
+            let fn:Function = Easing[this._easeFnName] as Function;
             let valCurr:number = <number>fn(
                 curTweenTime,
                 valFrom,
                 valTo - valFrom,
-                this.tweenTime);
-            setValByPath(this.target,prp,valCurr);
+                this._tweenTime);
+            setValByPath(this._target,prp,valCurr);
         }
-        this.progressFn && this.progressFn(this.target);
+        this._progressFn && this._progressFn(this._target);
 
-    };
+    }
 
     private progress(_progressFn:(val:number)=>void){
-        this.progressFn = _progressFn;
-    };
+        this._progressFn = _progressFn;
+    }
 
-    private reset() {
-        this.startedTime = null;
-        this.completed = false;
-    };
+    reset() {
+        this._startedTime = null;
+        this._completed = false;
+    }
 
-    private _complete(){
-        if (this.completed) return;
-        let l = this.propsToChange.length;
+    complete(){
+        if (this._completed) return;
+        let l = this._propsToChange.length;
         while(l--){
-            let prp = this.propsToChange[l];
-            let valCurr = this.desc.to[prp];
-            setValByPath(this.target,prp,valCurr);
+            let prp = this._propsToChange[l];
+            let valCurr = this._desc.to[prp];
+            setValByPath(this._target,prp,valCurr);
         }
-        this.progressFn && this.progressFn(this.target);
-        this.completeFn && this.completeFn(this.target);
-        this.completed = true;
-    };
+        this._progressFn && this._progressFn(this._target);
+        this._completeFn && this._completeFn(this._target);
+        this._completed = true;
+    }
 
     public isCompleted():boolean{
-        return this.completed;
+        return this._completed;
     }
 
     public getTarget():any{
-        return this.target;
+        return this._target;
+    }
+
+    public getTweenTime():number{
+        return this._tweenTime;
     }
 
 }

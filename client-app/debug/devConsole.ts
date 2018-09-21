@@ -30,11 +30,16 @@ window.addEventListener('load',(e:Event)=>{
 });
 
 window.addEventListener('error',function(e:any){
-    if (e.error && e.error.name && e.error.name==='DebugError') return;
+    let lineNum = e.lineno;
+    let colNum = e.colno;
+    let filename = e.filename;
+
+    if (e.error && e.error.name && e.error.name==='DebugError') {
+        console.log(e);
+        return;
+    }
+
     try {
-        let lineNum = e.lineno;
-        let colNum = e.colno;
-        let filename = e.filename;
         let tmpl = `
 
   <div class="errorBlock"> 

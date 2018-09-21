@@ -2,13 +2,13 @@ import {BaseModel} from '../baseModel'
 import {Game} from "../../core/game";
 import {ArrayEx} from "../../declarations";
 import {GameObjectProto} from "./gameObjectProto";
-import {IParentChild} from "../renderableModel";
+import {IParentChild, RenderableModel} from "../renderableModel";
 
 export class Layer extends BaseModel implements IParentChild{
 
     type:string = 'Layer';
     parent:IParentChild;
-    children:ArrayEx<any> = [] as ArrayEx<any>;
+    children:ArrayEx<any> = [] as ArrayEx<any>; // todo why any?
 
     constructor(game:Game) {
         super(game);
@@ -20,9 +20,19 @@ export class Layer extends BaseModel implements IParentChild{
         });
     }
 
+    // todo repeated block
+    findObjectById(id:any):RenderableModel{
+        for (let c of this.children) {
+            let possibleItem = c.findObjectById(id);
+            if (possibleItem!==null) return possibleItem;
+        }
+        return null;
+    }
+
     prependChild(go){
         go.parent = this;
         this.children.unshift(go);
+
         go.onShow();
     }
     appendChild(go){
@@ -30,6 +40,7 @@ export class Layer extends BaseModel implements IParentChild{
         this.children.push(go);
         go.onShow();
     }
+
     getAllSpriteSheets() {
         let dataSet:any[] = [];
         this.children.forEach((obj:GameObjectProto)=>{

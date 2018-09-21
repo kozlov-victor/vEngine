@@ -192,6 +192,66 @@
                 "type": "Layer",
                 "children": []
             }
+        },
+        {
+            "id": 43,
+            "name": "logoScene",
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "Scene",
+            "layers": [
+                {
+                    "type": "Layer",
+                    "id": 46
+                }
+            ],
+            "useBG": true,
+            "colorBG": {
+                "r": 255,
+                "g": 255,
+                "b": 255
+            },
+            "tileMap": {
+                "type": "TileMap",
+                "data": [],
+                "width": 0,
+                "height": 0,
+                "blendMode": ""
+            },
+            "uiLayer": {
+                "width": 0,
+                "height": 0,
+                "pos": {
+                    "x": 0,
+                    "y": 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "anchor": {
+                    "x": 0,
+                    "y": 0
+                },
+                "angle": 0,
+                "alpha": 1,
+                "filters": [],
+                "acceptLight": false,
+                "fixedToCamera": false,
+                "rigid": false,
+                "type": "Layer",
+                "children": []
+            }
         }
     ],
     "Layer": [
@@ -262,6 +322,29 @@
                 {
                     "type": "GameObject",
                     "id": 41
+                }
+            ]
+        },
+        {
+            "id": 46,
+            "name": "main",
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "Layer",
+            "children": [
+                {
+                    "type": "GameObject",
+                    "id": 47
                 }
             ]
         }
@@ -356,6 +439,28 @@
             "type": "SpriteSheet",
             "numOfFramesH": 3,
             "numOfFramesV": 2
+        },
+        {
+            "id": 44,
+            "name": "logo",
+            "width": 389,
+            "height": 248,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "resourceMap": {
+                "main": "resources/logo.png"
+            },
+            "type": "SpriteSheet"
         }
     ],
     "GameObjectProto": [
@@ -421,6 +526,33 @@
                 "x": 0,
                 "y": 0
             }
+        },
+        {
+            "name": "logo",
+            "width": 389,
+            "height": 248,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 44,
+                "type": "SpriteSheet"
+            },
+            "velocity": {
+                "x": 0,
+                "y": 0
+            },
+            "id": 45
         }
     ],
     "GameObject": [
@@ -565,6 +697,24 @@
             "type": "GameObject",
             "gameObjectProto": {
                 "id": 30,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 47,
+            "name": "logo",
+            "pos": {
+                "x": 356,
+                "y": 130
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 46,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 45,
                 "type": "GameObjectProto"
             }
         }

@@ -3,13 +3,12 @@ declare const DEBUG:boolean;
 
 import {Tween} from "./tween";
 import * as mat4 from './geometry/mat4'
-import * as mathEx from './mathEx'
+import {MathEx} from './mathEx'
 import {Rect} from "./geometry/rect";
 import {Point2d} from "./geometry/point2d";
 import {Game} from "./game";
 import {GameObject} from "../model/impl/gameObject";
 import {Scene} from "../model/impl/scene";
-import {random} from "./mathEx";
 
 interface CameraTweenTarget {
     time:number,
@@ -137,8 +136,8 @@ export class Camera {
             time,
             to:{time:time},
             progress:()=>{
-                let r1 = random(-amplitude/2,amplitude/2);
-                let r2 = random(-amplitude/2,amplitude/2);
+                let r1 = MathEx.random(-amplitude/2,amplitude/2);
+                let r2 = MathEx.random(-amplitude/2,amplitude/2);
                 tweenTarget.point.setXY(r1,r2);
             },
             complete:()=>this.cameraShakeTween = null
@@ -169,7 +168,7 @@ export class Camera {
 
     screenToWorld(p:Point2d){
         let mScale = mat4.makeScale(this.scale.x,this.scale.y,1);
-        let point2d = mathEx.unProject(
+        let point2d = MathEx.unProject(
             p, this.game.width,this.game.height,mScale);
         point2d.add(this.pos);
         return point2d;

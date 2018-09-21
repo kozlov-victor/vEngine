@@ -2,9 +2,8 @@
 import {AbstractRenderer} from "../core/renderer/abstract/abstractRenderer";
 import {Resource} from "./resource";
 import {ArrayEx} from "../declarations";
-import * as matEx from "../core/mathEx";
 import {DebugError} from "../debugError";
-import {Layer} from "./impl/layer";
+import {MathEx} from '../core/mathEx'
 
 declare const DEBUG:boolean;
 
@@ -31,6 +30,15 @@ export abstract class RenderableModel extends Resource implements IParentChild{
         c.onShow();
     }
 
+    findObjectById(id:any):RenderableModel{
+        if (this.id==id) return this;
+        for (let c of this.children) {
+            let possibleItem = c.findObjectById(id);
+            if (possibleItem!==null) return possibleItem;
+        }
+        return null;
+    }
+
     _setDirty(){
         this._dirty = true;
         if (this.parent) this.parent._dirty = true;
@@ -52,7 +60,7 @@ export abstract class RenderableModel extends Resource implements IParentChild{
     }
 
     protected isInViewPort():boolean{
-        return matEx.overlapTest(this.game.camera.getRectScaled(),this.getRect());
+        return MathEx.overlapTest(this.game.camera.getRectScaled(),this.getRect());
     }
 
     moveToFront(){

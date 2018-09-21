@@ -19,12 +19,12 @@ const TweenChain = function(){
     };
 
     this.loop = function(val){
-        tweenMovie.loop(val);
+        tweenMovie._loop(val);
         return this;
     };
 
     this.finish = function(fn){
-        tweenMovie.onComplete = fn;
+        tweenMovie._onComplete = fn;
         return this;
     };
 

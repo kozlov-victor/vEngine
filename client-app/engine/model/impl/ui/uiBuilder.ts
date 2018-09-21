@@ -16,6 +16,10 @@ interface Clazz<T> { // todo extract to separate file
     new(game:Game) : T;
 }
 
+const isObject = (obj:any):boolean=>{ // todo extract to
+    return obj === Object(obj);
+};
+
 
 export class UIBuilder {
 
@@ -30,6 +34,7 @@ export class UIBuilder {
     }
 
     private _getFirstKey(desc:UIDescription):string{
+        if (!isObject(desc)) return undefined;
         return Object.keys(desc)[0];
     }
 
@@ -90,7 +95,8 @@ export class UIBuilder {
                     else if (instance[propName] && instance[propName].apply) {
                         let args = desc[propName];
                         if (!args.splice) args = [args];
-                        instance[propName].apply(instance,args);
+                        if (propName=='on') instance[propName].apply(this.game.getCurrScene(),args);
+                        else instance[propName].apply(instance,args);
                     }
                     else {
                         instance[propName] = desc[propName];

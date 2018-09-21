@@ -6,7 +6,7 @@ const TweenMovie = function(){
     let tweens = [];
     let startedTime = null;
     this.completed = false;
-    this.onComplete = null;
+    this._onComplete = null;
     let loop = false;
 
     this.tween = function(startTime,obj,fromToVal,tweenTime,easeFnName){
@@ -20,13 +20,13 @@ const TweenMovie = function(){
         return this;
     };
 
-    this.loop = function(val) {
+    this._loop = function(val) {
         loop = val;
         return this;
     };
 
     this.finish = function(fn){
-        this.onComplete = fn;
+        this._onComplete = fn;
         return this;
     };
 
@@ -60,7 +60,7 @@ const TweenMovie = function(){
                 this.reset();
             } else {
                 this.completed = true;
-                this.onComplete && this.onComplete();
+                this._onComplete && this._onComplete();
             }
         }
     };

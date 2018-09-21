@@ -1,9 +1,9 @@
 import {MOUSE_EVENTS, MousePoint} from "../../../../core/control/mouse";
 import {Container} from "./container";
-import {closeTo} from "../../../../core/mathEx";
 import {Transient} from "../../../../core/misc/decorators";
 import {VScroll} from "../components/vScroll";
 import {Game} from "../../../../core/game";
+import {MathEx} from "../../../../core/mathEx";
 
 export interface ScrollInitDesc {
     vertical: boolean
@@ -141,7 +141,7 @@ export class ScrollInfo {
         if (this._scrollVelocity > 0) this._scrollVelocity -= this._deceleration;
         else if (this._scrollVelocity < 0) this._scrollVelocity += this._deceleration;
 
-        if (closeTo(this._scrollVelocity, 0,3)) {
+        if (MathEx.closeTo(this._scrollVelocity, 0,3)) {
             this._scrollVelocity = 0;
             this._deceleration = 0;
         }

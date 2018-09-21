@@ -1,7 +1,6 @@
 import {Container} from "../generic/container";
 import {TextField} from "./textField";
 import {Font} from "../../font";
-import {random} from "../../../../core/mathEx";
 import {DebugError} from "../../../../debugError";
 
 declare const DEBUG:boolean;

@@ -1300,9 +1300,11 @@ var ExpressApp = function () {
             return this.sendError(response, error);
         }
         if (codeResult && codeResult.then) {
+            console.log('received promise');
             codeResult.then(function (data) {
                 callback(data);
             }).catch(function (error) {
+                console.log('catched promise', error);
                 _this.sendError(response, error);
             });
         } else {
@@ -1996,9 +1998,15 @@ var GeneratorService = function () {
             }
         }));
         return {
-            nativeCompiler: compiler,
             onProgress: function (fn) {
                 cb = fn;
+            },
+            run: function () {
+                return new Promise(function (resolve, reject) {
+                    compiler.run(function (err, data) {
+                        if (err) reject(err);else resolve(data);
+                    });
+                });
             }
         };
     };
@@ -2113,76 +2121,63 @@ var GeneratorService = function () {
     };
     GeneratorService.prototype.compile = function (params, response) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var _this = this;
+            var compiler, data, errorMsg, indexHtml, debugJs, appBundleJs;
             return tslib_1.__generator(this, function (_a) {
-                return [2, new Promise(function (resolve, reject) {
-                    console.log('compiling');
-                    wsService_1.wsService.send(params.clientId, { message: 'compiling', success: true });
-                    var compiler = _this.getCompiler(params);
-                    response.setHeader('Content-Type', 'text/html');
-                    compiler.onProgress(function (msg) {
-                        global.process.stdout.write("\r                                                             ");
-                        global.process.stdout.write("\r" + msg);
-                        wsService_1.wsService.send(params.clientId, { message: msg, success: true });
-                    });
-                    compiler.nativeCompiler.run(function (err, data) {
-                        return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                            var errorMsg, indexHtml, debugJs, appBundleJs;
-                            return tslib_1.__generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        if (!err) return [3, 2];
-                                        console.error('compiler run error: ', err);
-                                        return [4, GeneratorService._createError(params, err)];
-                                    case 1:
-                                        _a.sent();
-                                        reject(err);
-                                        return [3, 10];
-                                    case 2:
-                                        if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 3];
-                                        console.error("compiled with " + data.compilation.errors.length + " error(s)");
-                                        errorMsg = data.compilation.errors.map(function (err) {
-                                            var msg = err.details || err.message || err.toString();
-                                            if (err.file) msg += "\n\t at file " + err.file;else if (err.module && err.module && err.module.resource) msg += "\n\t at file " + err.module.resource;
-                                            return msg;
-                                        }).join('\n\t---------\t\n');
-                                        reject(errorMsg);
-                                        return [3, 10];
-                                    case 3:
-                                        console.log('creating index.html');
-                                        return [4, fs_1.default.readFile('./node-app/generator/index.html')];
-                                    case 4:
-                                        indexHtml = _a.sent();
-                                        debugJs = '';
-                                        if (!params.debug) return [3, 6];
-                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/virtual/debug.js")];
-                                    case 5:
-                                        debugJs = _a.sent();
-                                        _a.label = 6;
-                                    case 6:
-                                        indexHtml = indexHtml.replace('${debug}', params.debug ? "<script>" + debugJs + "</script>" : '');
-                                        indexHtml = indexHtml.replace('${hash}', (this.cnt++).toString());
-                                        indexHtml = indexHtml.replace('${projectName}', params.projectName);
-                                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/index.html", indexHtml)];
-                                    case 7:
-                                        _a.sent();
-                                        console.log('creating bundle');
-                                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/virtual/bundle.js")];
-                                    case 8:
-                                        appBundleJs = _a.sent();
-                                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/bundle.js", appBundleJs)];
-                                    case 9:
-                                        _a.sent();
-                                        console.log('completed');
-                                        resolve();
-                                        _a.label = 10;
-                                    case 10:
-                                        return [2];
-                                }
-                            });
+                switch (_a.label) {
+                    case 0:
+                        console.log('compiling');
+                        wsService_1.wsService.send(params.clientId, { message: 'compiling', success: true });
+                        compiler = this.getCompiler(params);
+                        response.setHeader('Content-Type', 'text/html');
+                        compiler.onProgress(function (msg) {
+                            global.process.stdout.write("\r                                                             ");
+                            global.process.stdout.write("\r" + msg);
+                            wsService_1.wsService.send(params.clientId, { message: msg, success: true });
                         });
-                    });
-                })];
+                        return [4, compiler.run()];
+                    case 1:
+                        data = _a.sent();
+                        if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 2];
+                        console.error("compiled with " + data.compilation.errors.length + " error(s)");
+                        errorMsg = data.compilation.errors.map(function (err) {
+                            var msg = err.details || err.message || err.toString();
+                            if (err.file) msg += "\n\t at file " + err.file;else if (err.module && err.module && err.module.resource) msg += "\n\t at file " + err.module.resource;
+                            return msg;
+                        }).join('\n\t---------\t\n');
+                        throw new debugError_1.DebugError(errorMsg);
+                    case 2:
+                        console.log('creating index.html');
+                        return [4, fs_1.default.readFile('./node-app/generator/index.html')];
+                    case 3:
+                        indexHtml = _a.sent();
+                        debugJs = '';
+                        if (!params.debug) return [3, 5];
+                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/virtual/debug.js")];
+                    case 4:
+                        debugJs = _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        indexHtml = indexHtml.replace('${debug}', params.debug ? "<script>" + debugJs + "</script>" : '');
+                        indexHtml = indexHtml.replace('${hash}', (this.cnt++).toString());
+                        indexHtml = indexHtml.replace('${projectName}', params.projectName);
+                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/index.html", indexHtml)];
+                    case 6:
+                        _a.sent();
+                        console.log('creating bundle');
+                        return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/virtual/bundle.js")];
+                    case 7:
+                        appBundleJs = _a.sent();
+                        return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/bundle.js", appBundleJs)];
+                    case 8:
+                        _a.sent();
+                        return [4, fs_1.default.deleteFolder("./workspace/" + params.projectName + "/virtual/")];
+                    case 9:
+                        _a.sent();
+                        console.log('completed');
+                        _a.label = 10;
+                    case 10:
+                        return [2];
+                }
             });
         });
     };
@@ -2192,38 +2187,38 @@ var GeneratorService = function () {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this.processCache[params.projectName]) {
-                            message = "generation of " + params.projectName + " already started";
-                            console.error('generator error', message);
-                            return [2];
-                        }
-                        _a.label = 1;
+                        _a.trys.push([0, 7,, 9]);
+                        if (!this.processCache[params.projectName]) return [3, 2];
+                        message = "generation of " + params.projectName + " already started";
+                        return [4, GeneratorService._createError(params, message)];
                     case 1:
-                        _a.trys.push([1, 6,, 8]);
+                        _a.sent();
+                        return [2];
+                    case 2:
                         this.processCache[params.projectName] = true;
                         return [4, this.clearFolders(params)];
-                    case 2:
-                        _a.sent();
-                        return [4, this.createFolders(params)];
                     case 3:
                         _a.sent();
-                        return [4, this.generateData(params)];
+                        return [4, this.createFolders(params)];
                     case 4:
                         _a.sent();
-                        return [4, this.compile(params, response)];
+                        return [4, this.generateData(params)];
                     case 5:
                         _a.sent();
-                        delete this.processCache[params.projectName];
-                        return [3, 8];
+                        return [4, this.compile(params, response)];
                     case 6:
+                        _a.sent();
+                        delete this.processCache[params.projectName];
+                        return [3, 9];
+                    case 7:
                         e_1 = _a.sent();
                         delete this.processCache[params.projectName];
-                        console.error('generator error', e_1);
-                        return [4, GeneratorService._createError(params, e_1.toString())];
-                    case 7:
-                        _a.sent();
-                        return [3, 8];
+                        console.error('generator error:', e_1.errorMessage);
+                        return [4, GeneratorService._createError(params, e_1.errorMessage || e_1.toString())];
                     case 8:
+                        _a.sent();
+                        return [3, 9];
+                    case 9:
                         return [2];
                 }
             });
@@ -2660,7 +2655,7 @@ function byteLength (string, encoding) {
   var len = string.length
   if (len === 0) return 0
 
-  // Use a for loop to avoid recursion
+  // Use a for _loop to avoid recursion
   var loweredCase = false
   for (;;) {
     switch (encoding) {
@@ -4461,14 +4456,18 @@ var DebugError = function (_super) {
     tslib_1.__extends(DebugError, _super);
     function DebugError(message) {
         var _this = _super.call(this, message) || this;
-        _this.name = 'DebugError';
         if (Error.captureStackTrace) {
             Error.captureStackTrace(_this, _this.constructor);
         } else {
             _this.stack = new Error().stack;
         }
+        _this.name = 'DebugError';
+        _this.errorMessage = message;
         return _this;
     }
+    DebugError.prototype.toString = function () {
+        return this.errorMessage;
+    };
     return DebugError;
 }(Error);
 exports.DebugError = DebugError;

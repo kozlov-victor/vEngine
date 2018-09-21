@@ -6,7 +6,6 @@ export class IntroSceneBehaviour {
     scene:any;
 
     onCreate(){
-        let self = this;
         let widget = this.game.uiBuilder.build({
             AbsoluteLayout: {
                 pos: {x:0,y:0},
@@ -33,7 +32,6 @@ export class IntroSceneBehaviour {
                         TextField: {
                             pos: {x:330,y:300},
                             fontName: 'cartahena_large',
-                            name: '1',
                             text: 'Cartahena'
                         }
                     },
@@ -51,8 +49,8 @@ export class IntroSceneBehaviour {
                                 }
                             },
                             on: ['click',()=>{
-                                self.game.audioPlayer.play('uiSound1');
-                                self.toNextScene();
+                                this.game.audioPlayer.play(this.game.repository.getArray('Sound').find(it=>it.name=='uiSound1'));
+                                this.toNextScene();
                             }]
                         }
                     }

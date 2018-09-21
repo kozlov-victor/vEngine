@@ -7,25 +7,25 @@ export class Sound extends CommonObject {
     type:string = 'Sound';
     resourcePath:string = '';
     _gain:number = 1;
-    _loop:boolean =false;
+    loop:boolean =false;
 
     constructor(protected game:Game){
         super();
     }
 
-    static find(name:string){
-        // let res = bundle.soundList.find({name:name});
-        // //<code>{{#if opts.minify}}
-        // if (!res) throw `can not found sound with name ${name}`;
-        // // {{/if}}
-        // return res;
-    }
+    // static find(name:string){
+    //     // let res = bundle.soundList.find({name:name});
+    //     // //<code>{{#if opts.minify}}
+    //     // if (!res) throw `can not found sound with name ${name}`;
+    //     // // {{/if}}
+    //     // return res;
+    // }
 
     play(){
-        //audioPlayer.play(this);
+        this.game.audioPlayer.play(this);
     }
     stop(){
-        //audioPlayer.stop(this);
+        this.game.audioPlayer.stop(this);
     }
     pause(){
         throw new DebugError('not implemented');

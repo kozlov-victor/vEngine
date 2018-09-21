@@ -1,8 +1,5 @@
 import {MouseEventEx} from "../../declarations";
-
-declare const IN_EDITOR:boolean,DEBUG:boolean;
-
-import * as mathEx from "../mathEx";
+import {MathEx} from "../mathEx";
 import {Point2d} from "../geometry/point2d";
 import {ObjectPool} from "../misc/objectPool";
 import {Game} from "../game";
@@ -10,6 +7,8 @@ import {Scene} from "../../model/impl/scene";
 import {BaseModel} from "../../model/baseModel";
 import {Rect} from "../geometry/rect";
 import {RenderableModel} from "../../model/renderableModel";
+
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 
 
@@ -94,7 +93,7 @@ export class Mouse {
 
         let rectWithOffset = Rect.fromPool().clone().set(go.getRect()).addXY(offsetX,offsetY);
         if (
-            mathEx.isPointInRect(point,rectWithOffset)
+            MathEx.isPointInRect(point,rectWithOffset)
         ) {
             point.target = go;
             go.trigger(eventName,{

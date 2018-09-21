@@ -1,6 +1,6 @@
 
 import {AbstractDomRenderer} from './abstractDomRender'
-import * as mathEx from '../../../core/mathEx'
+import {MathEx} from '../../../core/mathEx'
 import {Game} from "../../game";
 import {GameObject} from "../../../model/impl/gameObject";
 import {Rect} from "../../geometry/rect";
@@ -60,9 +60,9 @@ export class HtmlRenderer extends AbstractDomRenderer {
             [state,renderable,undefined,(v,obj)=>{return {
                 backgroundSize:`${obj.spriteSheet.numOfFramesH*obj.width}px ${obj.spriteSheet.numOfFramesV*obj.height}px`}}],
             [state,renderable,undefined,(v,obj)=>{
-                if (obj.angle) console.log(~~mathEx.radToDeg(obj.angle));
+                if (obj.angle) console.log(~~MathEx.radToDeg(obj.angle));
                 return {
-                    transform:`scale(${obj.scale.x},${obj.scale.y}) rotate(${~~mathEx.radToDeg(obj.angle)}deg)`}
+                    transform:`scale(${obj.scale.x},${obj.scale.y}) rotate(${~~MathEx.radToDeg(obj.angle)}deg)`}
                 }
             ]
         ]);

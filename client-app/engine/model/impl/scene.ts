@@ -6,7 +6,6 @@ import {TileMap} from './tileMap'
 import {Layer} from "./layer";
 import {AbstractFilter} from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {Game} from "../../core/game";
-import {Tween} from "../../core/tween";
 import {AmbientLight} from "../../core/light/ambientLight";
 import {Color} from "../../core/color";
 import {SpriteSheet} from "./spriteSheet";
@@ -16,6 +15,7 @@ import {TextField} from "./ui/components/textField";
 import {ParticleSystem} from "./particleSystem";
 import {Sound} from "./sound";
 import {DebugError} from "../../debugError";
+import {RenderableModel} from "../../model/renderableModel";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -23,7 +23,7 @@ declare const IN_EDITOR:boolean,DEBUG:boolean;
 export class Scene extends BaseModel  {
 
     type:string = 'Scene';
-    layers:Array<Layer> = [];
+    layers:Layer[] = [];
     uiLayer:Layer;
     useBG:boolean = false;
     colorBG = Color.WHITE;
@@ -31,9 +31,8 @@ export class Scene extends BaseModel  {
     ambientLight:AmbientLight;
     prepared:boolean = false;
 
-    filters:Array<AbstractFilter> = [];
+    filters:AbstractFilter[] = [];
     blendMode:string = ''; // todo
-    _tweenMovies = [];
     _individualBehaviour = null;
 
     constructor(game:Game) {
@@ -81,6 +80,14 @@ export class Scene extends BaseModel  {
 
     getDefaultLayer(){
         return this.layers[0];
+    }
+
+    findObjectById(id:any):RenderableModel {
+        for (let l of this.layers) {
+            let possibleResult = l.findObjectById(id);
+            if (possibleResult!==null) return possibleResult;
+        }
+        return null;
     }
 
     addGameObject(go){
@@ -166,6 +173,7 @@ export class Scene extends BaseModel  {
     }
 
     update(currTime:number,deltaTime:number){
+        super.update(currTime,deltaTime);
 
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
 
@@ -178,10 +186,6 @@ export class Scene extends BaseModel  {
         // this.game.repository.getArray('ParticleSystem').forEach((ps:ParticleSystem)=>{ // todo also while? or foreach
         //     ps.update(currTime,deltaTime);
         // });
-        this._tweens.forEach((t:Tween,index:number)=>{
-            t.update(currTime);
-            if (t.isCompleted()) this._tweens.splice(index,1);
-        });
 
     }
 

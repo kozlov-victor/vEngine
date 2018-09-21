@@ -71,10 +71,14 @@ window['showError'] = function _err(e,lineNum){
         lastErr = e;
         let popup = document.createElement('div');
         popup.style.cssText =
-            'background-color:rgba(255,255,255,0.95);' +
-            'color:red;' +
-            'margin-bottom:5px;'+
-            'border:1px solid red;';
+            `
+            background-color:rgba(255,255,255,0.95);
+            color:red;
+            margin-bottom:5px;
+            padding: 13px;
+            font-family: monospace;
+            font-size: 20px;
+            border:1px solid red;`;
         let leftBox = document.createElement('div');
         leftBox.style.cssText = 'width:90%;display:inline-block;';
         leftBox.style.cssText = 'width:90%;display:inline-block;';

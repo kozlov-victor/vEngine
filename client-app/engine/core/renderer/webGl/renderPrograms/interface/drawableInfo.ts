@@ -1,4 +1,5 @@
 export interface DrawableInfo {
     blendMode:string,
-    acceptLight: boolean
+    acceptLight: boolean,
+    alpha: number
 }

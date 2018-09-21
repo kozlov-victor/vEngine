@@ -1,0 +1,2 @@
+export let embeddedResources:any = 
+	{};

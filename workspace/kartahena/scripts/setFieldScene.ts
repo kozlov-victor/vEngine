@@ -1,111 +1,83 @@
-
-import {ColorizeFilter} from '@engine/core/renderer/webGl/filters/textureFilters/colorizeFilter'
-import {Color} from '@engine/core/color'
-import {Rectangle} from '@engine/model/impl/ui/drawable/rectangle'
-
+import {ColorizeFilter} from "@engine/core/renderer/webGl/filters/textureFilters/colorizeFilter";
+import {Color} from "@engine/core/color";
+import {Game} from "@engine/core/game";
+import {GameObject} from "@engine/model/impl/gameObject";
 
 class Board {
 
-    game:any;
-    cards:any;
+    game: Game;
+    cards: GameObject[] = [];
+    cardsInRow: number = 4;
+    cardsInCol: number = 3;
 
-    cells = [];
-    cardsCnt = 0;
-    cellsX = 4;
-    cellsY = 3;
-    lightUpColor = 30;
-
-    constructor(game,cards){
+    constructor(game: Game, cards: GameObject[]) {
         this.game = game;
         this.cards = cards;
+        game.getCurrScene().findObjectById('boardRect').width =
+            cards[0].width*this.cardsInRow + ~~(cards[0].width/3);
         this.setUpDraggable();
-
-        for (let j=0;j<this.cellsY;j++) {
-            this.cells[j] = [];
-            for (let i=0;i<this.cellsX;i++) {
-                let cell:any = {} as any;
-                let r = new Rectangle(this.game);
-                r.fillColor = new Color(3,100,12,0);
-                r.width = 200;
-                r.height = 200;
-                r.pos.x = i*200;
-                r.pos.y = j*200;
-                cell.rectangle = r;
-                cell.available = false;
-                cell.card = null;
-                this.game.getCurrScene().getLayerByName('bg').children[0].children[0].appendChild(r);
-                this.cells[j][i] = cell;
-            }
-        }
-    }
-
-    lightUpAvailablePlaces(){
-        this.lightDown();
-        if (this.cardsCnt==0) {
-            this.cells[1][0].rectangle.fillColor.setA(this.lightUpColor);
-            this.cells[1][0].available = true;
-        } else {
-            console.log(this.cardsCnt);
-        }
-    }
-
-    lightDown(){
-        for (let j=0;j<this.cellsY;j++) {
-            for (let i = 0; i < this.cellsX; i++) {
-                this.cells[j][i].rectangle.fillColor.setA(0);
-                this.cells[j][i].available = false;
-            }
-        }
     }
 
 
-    onCardDrop(card){
-        let cellOver = null;
-        let x = card.pos.x + card.width / 2;
-        let y = card.pos.y + card.height / 2;
-        for (let j=0;j<3;j++) {
-            for (let i = 0; i < 4; i++) {
-                let cell = this.cells[j][i];
-                if (
-                    x>=cell.rectangle.pos.x &&
-                    x<=(cell.rectangle.pos.x + cell.rectangle.width) &&
-                    y>=cell.rectangle.pos.y &&
-                    y<=(cell.rectangle.pos.y + cell.rectangle.height) &&
-                    cell.available
-                ){
-                    cellOver = cell;
-                    break;
+    onCardDrop(card) {
+
+        if (card.pos.x>this.cardsInRow*card.width || card.pos.y>this.cardsInCol*card.height) {
+            (card as any).seted = false;
+            return;
+        }
+
+        let isSet = (card as any).seted;
+        let w = ~~(card.width / 3);
+        let h = ~~(card.height / 3);
+        let minX = (~~(card.pos.x / w)) * w;
+        let minY = (~~(card.pos.y / h)) * h;
+        let maxX = minX+w;
+        let maxY = minY+h;
+        let distToMinX = Math.abs((card.pos.x - minX));
+        let distToMinY = Math.abs((card.pos.y - minY));
+        let distToMaxX = Math.abs((card.pos.x - maxX));
+        let distToMaxY = Math.abs((card.pos.y - maxY));
+        if (distToMinX<distToMaxX) card.pos.setX(minX);
+        else card.pos.setX(maxX);
+        if (distToMinY<distToMaxY) card.pos.setY(minY);
+        else card.pos.setY(maxY);
+        (card as any).seted = true;
+
+        if (!isSet) {
+            this.cards.forEach((it: GameObject, i: number) => {
+                if ((it as any).seted ) return;
+                if (Math.random()>0.5) {
+                    it.scale.y *= -1;
+                } else {
+                    it.scale.x *= -1;
                 }
-            }
-            if (cellOver) break;
+            });
         }
-        if (cellOver) {
-            card.pos.x = cellOver.rectangle.pos.x;
-            card.pos.y = cellOver.rectangle.pos.y;
-            cellOver.card = card;
-        }
+
     }
 
 
-    setUpDraggable(){
-        this.cards.forEach((it,i)=>{
+    setUpDraggable() {
+        this.cards.forEach((it: GameObject, i: number) => {
             it.setFrameIndex(i);
+            //if (i%2==0) it.scale.x=-1;
             it.revalidate();
-            let selectedColor = new Color(20,255,0,50);
-            let defaultColor = new Color(0,255,0,0);
-            it.filters.push(new ColorizeFilter(this.game.renderer.gl));
-            it.on('dragStart',()=>{
+            let selectedColor = new Color(20, 50, 0, 50);
+            let defaultColor = new Color(0, 0, 0, 0);
+            it.filters.push(new ColorizeFilter(this.game.renderer['gl']));
+            it.on('dragStart', () => {
                 it.moveToFront();
-                it.scale.setXY(1.2,1.2);
-                it.filters[0].setColor(selectedColor);
-                this.lightUpAvailablePlaces();
+                (it.filters[0] as ColorizeFilter).setColor(selectedColor);
             });
-            it.on('dragStop',()=>{
+            it.on('dragStop', () => {
                 it.moveToFront();
-                it.scale.setXY(1,1);
-                it.filters[0].setColor(defaultColor);
+                (it.filters[0] as ColorizeFilter).setColor(defaultColor);
                 this.onCardDrop(it);
-                this.lightDown();
+            });
+
+            it.on('doubleClick', () => {
+                let angleTo = it.angle + Math.PI / 2;
+                it.tween({ease: 'easeInQuint',target: it, time: 500, to: {angle: angleTo}});
             });
         });
     }
@@ -114,17 +86,16 @@ class Board {
 
 export class SetFieldSceneBehaviour {
 
-    game:any;
-    scene:any;
+    game: any;
+    scene: any;
 
-    onCreate(){
-    
-        let self = this;
+    onCreate() {
+
         let bgView = this.game.uiBuilder.build({
             AbsoluteLayout: {
-                pos: {x:0,y:0},
-                width:this.game.width,
-                height:this.game.height,
+                pos: {x: 0, y: 0},
+                width: this.game.width,
+                height: this.game.height,
                 layoutWidth: 0,
                 layoutHeight: 0,
                 background: {
@@ -136,26 +107,27 @@ export class SetFieldSceneBehaviour {
                 children: [
                     {
                         Rectangle: {
-                            pos: {x:0,y:0},
-                            width: 800,
+                            id: 'boardRect',
+                            pos: {x: 0, y: 0},
+                            width: 900,
                             height: 600,
-                            fillColor: {r:10,g:10,b:10,a:20}
+                            fillColor: {r: 10, g: 10, b: 10, a: 20}
                         }
                     }
                 ]
             }
         });
         this.scene.getLayerByName('bg').prependChild(bgView);
-        
-        let cards = this.scene.getLayerByName('main').children.filter(it=>it.name=='boardCard');
-        new Board(this.game,cards);
+
+        let cards: GameObject[] = this.scene.getLayerByName('main').children.filter(it => it.name == 'boardCard');
+        new Board(this.game, cards);
     }
 
-    onUpdate(){
+    onUpdate() {
 
     }
 
-    onDestroy(){
+    onDestroy() {
 
     }
 

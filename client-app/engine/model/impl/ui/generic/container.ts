@@ -142,7 +142,7 @@ export abstract class Container extends RenderableModel {
 
 
     getDrawableInfo():DrawableInfo {
-        return {blendMode:this.blendMode,acceptLight:false};
+        return {blendMode:this.blendMode,acceptLight:false,alpha:this.alpha};
     }
 
     constructor(game){

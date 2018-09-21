@@ -1,4 +1,5 @@
 import {DebugError} from "../../../../debugError";
+import {ShaderProgram} from "../../webGl/base/shaderProgram";
 
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
@@ -119,17 +120,21 @@ export interface AttributesMap {
     [key:string]:number
 }
 
-export const extractUniforms = (gl:WebGLRenderingContext, program:WebGLProgram):UniformsMap=> {
-
-    let activeUniforms:number = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS) as number;
+export const extractUniforms = (gl:WebGLRenderingContext, program:ShaderProgram):UniformsMap=> {
+    let glProgram:WebGLProgram = program.getProgram();
+    let activeUniforms:number = gl.getProgramParameter(glProgram, gl.ACTIVE_UNIFORMS) as number;
     let uniforms:UniformsMap = {};
 
     for (let i = 0; i < activeUniforms; i++) {
-        let uniformData:WebGLActiveInfo = gl.getActiveUniform(program, i) as WebGLActiveInfo;
+        let uniformData:WebGLActiveInfo = gl.getActiveUniform(glProgram, i) as WebGLActiveInfo;
         if (DEBUG && !uniformData) throw new DebugError(`can not receive active uniforms info: gl.getActiveUniform()`);
         let type = mapType(gl, uniformData.type);
-        let location:WebGLUniformLocation = gl.getUniformLocation(program, uniformData.name) as WebGLUniformLocation;
-        if (DEBUG && location===null) throw new DebugError(`error finding uniform location: ${uniformData.name}`);
+        let location:WebGLUniformLocation = gl.getUniformLocation(glProgram, uniformData.name) as WebGLUniformLocation;
+        // if (DEBUG && location===null) {
+        //     console.log(program);
+        //     throw new DebugError(`error finding uniform location: ${uniformData.name}`);
+        // }
+        // todo ie provide attrData.name but can not find location of unused attr
 
         uniforms[uniformData.name] = {
             type,
@@ -144,15 +149,18 @@ export const extractUniforms = (gl:WebGLRenderingContext, program:WebGLProgram):
 };
 
 
-export const extractAttributes = (gl:WebGLRenderingContext, program:WebGLProgram):AttributesMap=>{
-
-    let activeAttributes:number = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES) as number;
+export const extractAttributes = (gl:WebGLRenderingContext, program:ShaderProgram):AttributesMap=>{
+    let glProgram:WebGLProgram = program.getProgram();
+    let activeAttributes:number = gl.getProgramParameter(glProgram, gl.ACTIVE_ATTRIBUTES) as number;
     let attrMap:AttributesMap = {};
     for (let i = 0; i < activeAttributes; i++) {
-        let attrData:WebGLActiveInfo = gl.getActiveAttrib(program, i) as WebGLActiveInfo;
+        let attrData:WebGLActiveInfo = gl.getActiveAttrib(glProgram, i) as WebGLActiveInfo;
         if (DEBUG && !attrData) throw new DebugError(`can not receive active attribute info: gl.getActiveAttrib()`);
-        let location:number = gl.getAttribLocation(program, attrData.name);
-        if (DEBUG && location<0) throw new DebugError(`error finding attribute location: ${attrData.name}`);
+        let location:number = gl.getAttribLocation(glProgram, attrData.name);
+        if (DEBUG && location<0) {
+            console.log(program);
+            throw new DebugError(`error finding attribute location: ${attrData.name}`);
+        }
         attrMap[attrData.name] = location;
     }
     return attrMap;

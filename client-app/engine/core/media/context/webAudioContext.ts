@@ -15,8 +15,19 @@ class CtxHolder {
     private static ctx:Clazz<AudioContext> = (window as any).AudioContext;
     private static res:AudioContext = null;
 
+    private static fixAutoPlayPolicy(){
+        const click =()=>{
+            CtxHolder.res.resume();
+            document.removeEventListener('click',click);
+        };
+        document.addEventListener('click',click);
+    }
+
     static getCtx():AudioContext{
-        if (CtxHolder.ctx && !CtxHolder.res) CtxHolder.res = new CtxHolder.ctx();
+        if (CtxHolder.ctx && !CtxHolder.res) {
+            CtxHolder.res = new CtxHolder.ctx();
+            CtxHolder.fixAutoPlayPolicy();
+        }
         return CtxHolder.res;
     }
 }
@@ -34,10 +45,10 @@ const decode =(buffer:ArrayBuffer,callback:Function)=>{
 };
 
 const base64ToArrayBuffer = (base64:string):ArrayBuffer=> {
-    var binary_string =  window.atob(base64);
-    var len = binary_string.length;
-    var bytes = new Uint8Array(len);
-    for (var i = 0; i < len; i++) {
+    let binary_string =  window.atob(base64);
+    let len = binary_string.length;
+    let bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
         bytes[i] = binary_string.charCodeAt(i);
     }
     return bytes.buffer;
@@ -49,7 +60,11 @@ export class WebAudioContext implements IAudioContext {
         return !!(window && CtxHolder.getCtx());
     }
 
-    load(url:string, progress:Function, callBack:Function) {
+    load(url:string, progress:Function, onLoad:()=>void) {
+        if (AudioPlayer.cache[url]) {
+            onLoad();
+            return;
+        }
         if (EMBED_RESOURCES) {
             let base64Url = this.game.repository.embeddedResources[url];
             if (DEBUG && !base64Url) throw new DebugError(`no embedded resource provided by url ${url}`);
@@ -58,13 +73,13 @@ export class WebAudioContext implements IAudioContext {
             let buffer:ArrayBuffer = base64ToArrayBuffer(base64Url);
             decode(buffer, (decoded)=>{
                 AudioPlayer.cache[url] = decoded;
-                callBack();
+                onLoad();
             });
         } else {
             LoaderUtil.loadBinary(url, progress,  (buffer:ArrayBuffer)=> {
                 decode(buffer, (decoded)=>{
                     AudioPlayer.cache[url] = decoded;
-                    callBack();
+                    onLoad();
                 });
             });
         }

@@ -26,8 +26,8 @@ export class ShaderProgram {
         this.program = createProgram(gl, vShader, fShader);
         gl.deleteShader(vShader);
         gl.deleteShader(fShader);
-        this.uniforms = extractUniforms(gl, this.program);
-        this.attributes = extractAttributes(gl,this.program);
+        this.uniforms = extractUniforms(gl, this);
+        this.attributes = extractAttributes(gl,this);
         this.gl = gl;
     }
 

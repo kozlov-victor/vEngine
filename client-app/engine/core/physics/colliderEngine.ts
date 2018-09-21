@@ -3,7 +3,7 @@
 import {Game} from "../game";
 import {Vec2,CollisionInfo} from './rigidShapes';
 import {Rect} from "../geometry/rect";
-import * as mathEx from '../mathEx'
+import {MathEx} from '../mathEx'
 import {GameObject} from "../../model/impl/gameObject";
 
 export class ColliderEngine {
@@ -163,7 +163,7 @@ export class ColliderEngine {
     private boundAndCollideAcrade(a:GameObject,b:GameObject){
         if (a.velocity.equal(0) && b.velocity.equal(0)) return;
         let numOfIterations = 0;
-        let isOverlapped = mathEx.overlapTest(a.getRect(),b.getRect());
+        let isOverlapped = MathEx.overlapTest(a.getRect(),b.getRect());
         if (!isOverlapped) return;
         if (!a.rigid || !b.rigid) {
             a.trigger('overlap',b);
@@ -177,7 +177,7 @@ export class ColliderEngine {
             a.pos.y += -a.velocity.y*dt;
             b.pos.x += -b.velocity.x*dt;
             b.pos.y += -b.velocity.y*dt;
-            isOverlapped = mathEx.overlapTest(a.getRect(),b.getRect());
+            isOverlapped = MathEx.overlapTest(a.getRect(),b.getRect());
             numOfIterations++;
         }
         a.trigger('collide',b);

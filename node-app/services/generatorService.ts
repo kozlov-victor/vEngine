@@ -41,9 +41,16 @@ class GeneratorService {
             }
         }));
         return {
-            nativeCompiler:compiler,
             onProgress: (fn)=>{
                 cb = fn;
+            },
+            run: ()=>{
+                return new Promise((resolve,reject)=>{
+                    compiler.run((err, data) => {
+                       if (err) reject(err);
+                       else resolve(data);
+                    })
+                })
             }
         };
     }
@@ -128,65 +135,64 @@ class GeneratorService {
     }
 
     private async compile(params,response) {
-        return new Promise((resolve,reject)=>{
-            console.log('compiling');
-            wsService.send(params.clientId,{message:'compiling',success:true});
-            let compiler = this.getCompiler(params);
-            response.setHeader('Content-Type', 'text/html');
-            compiler.onProgress((msg)=>{
-                global.process.stdout.write(`\r                                                             `);
-                global.process.stdout.write(`\r${msg}`);
-                wsService.send(params.clientId,{message:msg,success:true});
-            });
-            compiler.nativeCompiler.run(async (err, data) => {
-
-                if (err) {
-                    console.error('compiler run error: ',err);
-                    await GeneratorService._createError(params,err);
-                    reject(err);
-                }
-                else {
-                    if (data.compilation && data.compilation.errors && data.compilation.errors[0]) {
-                        console.error(`compiled with ${data.compilation.errors.length} error(s)`);
-                        let errorMsg = data.compilation.errors.map(err=>{
-                            let msg = (err.details || err.message || err.toString());
-                            if (err.file) msg+=`\n\t at file ${err.file}`;
-                            else if (err.module && err.module && err.module.resource)
-                                msg+=`\n\t at file ${err.module.resource}`;
-                            return msg;
-                        }).join('\n\t---------\t\n');
-                        reject(errorMsg);
-                    } else {
-
-                        console.log('creating index.html');
-                        let indexHtml:string = await fs.readFile('./node-app/generator/index.html') as string;
-                        let debugJs:string = '';
-                        if (params.debug) debugJs = await fs.readFile(`./workspace/${params.projectName}/virtual/debug.js`) as string;
-                        indexHtml = indexHtml.replace('${debug}',params.debug?`<script>${debugJs}</script>`:'');
-                        indexHtml = indexHtml.replace('${hash}',(this.cnt++).toString());
-                        indexHtml = indexHtml.replace('${projectName}',params.projectName);
-                        await fs.createFile(`workspace/${params.projectName}/out/index.html`,indexHtml);
-
-                        console.log('creating bundle');
-                        let appBundleJs = await fs.readFile(`./workspace/${params.projectName}/virtual/bundle.js`);
-                        await fs.createFile(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
-                        await fs.deleteFolder(`./workspace/${params.projectName}/virtual/`);
-                        console.log('completed');
-                        resolve();
-                    }
-                }
-            });
+        console.log('compiling');
+        wsService.send(params.clientId,{message:'compiling',success:true});
+        let compiler = this.getCompiler(params);
+        response.setHeader('Content-Type', 'text/html');
+        compiler.onProgress((msg)=>{
+            global.process.stdout.write(`\r                                                             `);
+            global.process.stdout.write(`\r${msg}`);
+            wsService.send(params.clientId,{message:msg,success:true});
         });
+        let data:any = await compiler.run();
+
+        // if (err) {
+        //     console.error('compiler run error: ',err);
+        //     await GeneratorService._createError(params,err);
+        //     reject(err);
+        // }
+        // else {
+        //
+        // }
+
+        if (data.compilation && data.compilation.errors && data.compilation.errors[0]) {
+            console.error(`compiled with ${data.compilation.errors.length} error(s)`);
+            let errorMsg = data.compilation.errors.map(err=>{
+                let msg = (err.details || err.message || err.toString());
+                if (err.file) msg+=`\n\t at file ${err.file}`;
+                else if (err.module && err.module && err.module.resource)
+                    msg+=`\n\t at file ${err.module.resource}`;
+                return msg;
+            }).join('\n\t---------\t\n');
+            throw new DebugError(errorMsg);
+        } else {
+
+            console.log('creating index.html');
+            let indexHtml:string = await fs.readFile('./node-app/generator/index.html') as string;
+            let debugJs:string = '';
+            if (params.debug) debugJs = await fs.readFile(`./workspace/${params.projectName}/virtual/debug.js`) as string;
+            indexHtml = indexHtml.replace('${debug}',params.debug?`<script>${debugJs}</script>`:'');
+            indexHtml = indexHtml.replace('${hash}',(this.cnt++).toString());
+            indexHtml = indexHtml.replace('${projectName}',params.projectName);
+            await fs.createFile(`workspace/${params.projectName}/out/index.html`,indexHtml);
+
+            console.log('creating bundle');
+            let appBundleJs = await fs.readFile(`./workspace/${params.projectName}/virtual/bundle.js`);
+            await fs.createFile(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
+            await fs.deleteFolder(`./workspace/${params.projectName}/virtual/`);
+            console.log('completed');
+        }
+
     }
 
     async generate(params,response){
 
-        if (this.processCache[params.projectName]) {
-            let message = `generation of ${params.projectName} already started`;
-            console.error('generator error',message);
-            return;
-        }
         try {
+            if (this.processCache[params.projectName]) {
+                let message = `generation of ${params.projectName} already started`;
+                await GeneratorService._createError(params,message);
+                return;
+            }
             this.processCache[params.projectName] = true;
             await this.clearFolders(params);
             await this.createFolders(params);
@@ -196,8 +202,8 @@ class GeneratorService {
 
         } catch (e){
             delete this.processCache[params.projectName];
-            console.error('generator error',e);
-            await GeneratorService._createError(params,e.toString());
+            console.error('generator error:',e.errorMessage);
+            await GeneratorService._createError(params,e.errorMessage || e.toString());
         }
     }
 

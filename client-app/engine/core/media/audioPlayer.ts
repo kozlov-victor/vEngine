@@ -24,6 +24,7 @@ export  class AudioPlayer {
     private tweens:ArrayEx<Tween> = [] as ArrayEx<Tween>;
 
     static cache:{[key:string]:any} = {};
+    static DEFAULT_AUDIO_NODES_COUNT:number = 6;
 
     constructor(private game:Game){
         if (WebAudioContext.isAcceptable()) {
@@ -33,25 +34,23 @@ export  class AudioPlayer {
         } else {
             this.contextClass = FakeAudioContext;
         }
-        this.audioNodeSet = new AudioNodeSet(game,this.contextClass,6);
+        this.audioNodeSet = new AudioNodeSet(game,this.contextClass,AudioPlayer.DEFAULT_AUDIO_NODES_COUNT);
     }
 
     loadSound(url:string, progress:Function, callback:Function) {
-        new this.contextClass(this.game).load(url,progress,callback); //todo
+        new this.contextClass(this.game).load(url,progress,callback);
     }
 
-    play(soundName:string,loop:boolean = false){
+    play(sound:Sound){
         let node:AudioNode = this.audioNodeSet.getFreeNode();
         if (DEBUG && !node) {
             console.log('no free node to play sound');
         }
         if (!node) return;
-        let sound:Sound = this.game.repository.getArray('Sound').find(it=>it.name==soundName);
-        if (DEBUG && !sound) throw new DebugError(`can not find sound with name ${soundName}`);
-        node.play(sound.resourcePath,loop);
+        node.play(sound.resourcePath,sound.loop);
     }
 
-    stop(sound){
+    stop(sound:Sound){
         let node:AudioNode = this.audioNodeSet.getNodeBySound(sound);
         if (!node) return;
         node.stop();

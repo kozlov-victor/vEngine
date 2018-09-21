@@ -15,6 +15,9 @@ export class AbstractCanvasRenderer extends AbstractRenderer {
         document.body.appendChild(container);
         container.setAttribute('width',game.width.toString());
         container.setAttribute('height',game.height.toString());
+        container.ondragstart = (e)=>{
+            e.preventDefault();
+        };
         this.container = container;
     }
 
