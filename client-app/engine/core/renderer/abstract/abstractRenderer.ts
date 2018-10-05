@@ -16,6 +16,10 @@ import {Texture} from "../webGl/base/texture";
 import {Size} from "../../geometry/size";
 import {DrawableInfo} from "../webGl/renderPrograms/interface/drawableInfo";
 import {DebugError} from "../../../debugError";
+import {Rectangle} from "../../../model/impl/ui/drawable/rectangle";
+import {Ellipse} from "../../../model/impl/ui/drawable/ellipse";
+import {NinePatchImage} from "../../../model/impl/ui/drawable/ninePatchImage";
+import {Image} from "../../../model/impl/ui/drawable/image";
 
 declare const document:any, window:any;
 
@@ -28,7 +32,7 @@ export class AbstractRenderer {
     public container:HTMLElement;
     public debugTextField:TextField;
 
-    protected renderableCache:{[path:string]:TextureInfo} = {};
+    renderableCache:{[path:string]:TextureInfo} = {};
     public fullScreenSize:Size = new Size(0,0);
     protected game:Game;
 
@@ -84,33 +88,16 @@ export class AbstractRenderer {
         return 0;
     }
 
-    drawImage(texturePath:string,
-              srcRect:Rect,
-              dstRect:Rect){}
+    drawImage(img:Image){}
 
-    drawImageEx(texturePath:string,
-              srcRect:Rect,
-              dstRect:Rect,
-              filters:AbstractFilter[],
-                drawableInfo:DrawableInfo
-            ){}
-
-    drawNinePatch(
-        texturePath:string,
-        destRect:Rect,
-        filters:AbstractFilter[],
-        drawableInfo:DrawableInfo,
-        a:number,b:number,c:number,d:number
-    ){}
+    drawNinePatch(img:NinePatchImage){}
 
     drawTiledImage(texturePath:string,
                    srcRect:Rect,
                    dstRect:Rect,
                    offset:Point2d){}
 
-    fillRect(rect:Rect, color:Color){}
-
-    drawRect(rect:Rect,color:Color,lineWidth:number){}
+    drawRectangle(rectangle:Rectangle){}
 
     lockRect(rect:Rect) {}
 
@@ -118,7 +105,8 @@ export class AbstractRenderer {
 
     drawLine(x1:number,y1:number,x2:number,y2:number,color:Color){}
 
-    fillCircle(x:number,y:number,r:number,color:Color){}
+
+    drawEllipse(ellispe:Ellipse){}
 
     resetTransform(){}
 

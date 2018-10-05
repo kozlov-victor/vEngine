@@ -3,6 +3,7 @@ import {Rect} from "../../../../core/geometry/rect";
 import {DebugError} from "../../../../debugError";
 import {Rectangle} from "../drawable/rectangle";
 import {ScrollableContainer} from "../generic/scrollableContainer";
+import {Image} from "../drawable/image";
 
 declare const DEBUG: boolean;
 type char = string;
@@ -186,6 +187,7 @@ export class TextField extends ScrollableContainer {
 
     readonly type = 'TextField';
     private _textInfo: TextInfo;
+    private _symbolImage:Image;
 
     text: string = '';
     font: Font = null;
@@ -195,6 +197,7 @@ export class TextField extends ScrollableContainer {
     constructor(game) {
         super(game);
         this._textInfo = new TextInfo(this);
+        this._symbolImage = new Image(this.game);
         this._initScrolling({vertical: true});
     }
 
@@ -284,23 +287,26 @@ export class TextField extends ScrollableContainer {
     }
 
 
-    draw() {
+    draw():boolean {
         this.game.renderer.lockRect(this.getScreenRect());
         this.game.renderer.save();
         if (this.vScrollInfo.offset) this.game.renderer.translate(0, -this.vScrollInfo.offset, 0);
 
+        this._symbolImage.setDefaultResourcePath(this.font.getDefaultResourcePath());
         for (let charInfo of this._textInfo.allCharsCached) {
 
             if (charInfo.destRect.y - this.vScrollInfo.offset > this.height) continue;
             if (charInfo.destRect.y + charInfo.destRect.height - this.vScrollInfo.offset < 0) continue;
 
-            this.game.renderer.drawImage(
-                this.font.getDefaultResourcePath(), charInfo.sourceRect, charInfo.destRect
-            );
+            this._symbolImage.srcRect.set(charInfo.sourceRect);
+            this._symbolImage.setXYWH(charInfo.destRect.x,charInfo.destRect.y,charInfo.destRect.width,charInfo.destRect.height);
+
+            this._symbolImage.render(true);
         }
         this.game.renderer.restore();
         this.game.renderer.unlockRect();
         if (this.border) this.border.render();
+        return true;
     }
 
 }

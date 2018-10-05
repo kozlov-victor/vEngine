@@ -3,10 +3,11 @@ import {Container} from "../generic/container";
 import {Game} from "../../../../core/game";
 import {Rectangle} from "../drawable/rectangle";
 import {Color} from "../../../../core/color";
+import {Shape} from "../generic/shape";
 
 export class VScroll extends Container {
 
-    handler: Container;
+    handler: Shape;
 
     maxValue:number = 0;
     value: number = 0;
@@ -21,9 +22,11 @@ export class VScroll extends Container {
         let hnd:Rectangle = new Rectangle(game);
         hnd.height = 10;
         hnd.color = Color.NONE.clone();
-        hnd.fillColor = new Color(10,10,10,25);
+        hnd.fillColor = new Color(10,10,10,100);
         this.background = bg;
         this.handler = hnd;
+        this.appendChild(bg);
+        this.appendChild(hnd);
     }
 
     onGeometryChanged(){
@@ -37,10 +40,8 @@ export class VScroll extends Container {
         this.calcDrawableRect(this.width,this.height);
     }
 
-    draw(){
-        if (!this.enabled) return;
-        this.background.draw();
-        this.handler.draw();
+    draw():boolean{
+        return this.enabled;
     }
 
 }

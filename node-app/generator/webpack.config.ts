@@ -50,14 +50,7 @@ export const configFn = (params:GeneratorParams)=>{
                         //configFile:  path.resolve(__dirname, "./node-app/generator", "tsconfig.json")
                         configFileName: "./node-app/generator/tsconfig.json"
                     }
-                },
-                {
-                    test: /\.(frag|vert)$/,
-                    loader: 'text-loader',
-                    options: {
-                        minimize: true
-                    }
-                },
+                }
             ]
         },
         resolve: {

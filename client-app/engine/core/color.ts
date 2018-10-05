@@ -1,7 +1,6 @@
 
 
 import {ObjectPool} from "./misc/objectPool";
-import {_global} from "./global";
 declare const DEBUG:boolean;
 
 interface ColorJSON {
@@ -26,10 +25,10 @@ export class Color {
     public static WHITE = Color.RGB(255,255,255);
     public static GREY  = Color.RGB(127,127,127);
     public static BLACK = Color.RGB(0,0,0);
-    public static NONE = Color.RGB(0,0,0,0);
+    public static NONE  = Color.RGB(0,0,0,0);
 
     private static objectPool:ObjectPool<Color>;
-    private _arr:Array<number> = null;
+    private _arr:number[] = null;
 
     constructor(r:number,g:number,b:number,a?:number){
         this.setRGBA(r,g,b,a);
@@ -78,6 +77,10 @@ export class Color {
         this.normalizeToZeroOne();
     }
 
+    set(another:Color){
+        this.setRGBA(another.r,another.g,another.b,another.a);
+    }
+
     clone(){
         return new Color(this.r,this.g,this.b,this.a);
     }
@@ -116,5 +119,3 @@ export class Color {
     }
 
 }
-
-_global['Color'] = Color;

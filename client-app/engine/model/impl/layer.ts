@@ -20,10 +20,9 @@ export class Layer extends BaseModel implements IParentChild{
         });
     }
 
-    // todo repeated block
-    findObjectById(id:any):RenderableModel{
+    findObject(query:{[key:string]:any}):RenderableModel{
         for (let c of this.children) {
-            let possibleItem = c.findObjectById(id);
+            let possibleItem = c.findObject(query);
             if (possibleItem!==null) return possibleItem;
         }
         return null;

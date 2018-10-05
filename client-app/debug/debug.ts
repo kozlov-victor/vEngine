@@ -1,5 +1,6 @@
 
 
+import {Game} from "../engine/core/game";
 declare interface NavigatorEx extends Navigator{
     isCocoonJS: boolean
 }
@@ -11,14 +12,14 @@ let getPopupContainer = ()=>{
     if (container) return container;
     container = document.createElement('div');
     container.id = 'popupContainer';
-    container.style.cssText =
-        'position:absolute;' +
-        'bottom:10px;' +
-        'right:10px;' +
-        'z-index:10000;' +
-        'width:300px;'+
-        'max-height:'+window.innerHeight+'px;'+
-        'overflow-y:auto';
+    container.style.cssText =`
+        position:absolute;
+        bottom:10px;
+        right:10px;
+        z-index:10000;
+        width:470px;
+        max-height:${window.innerHeight}px;
+        overflow-y:auto`;
     document.body.appendChild(container);
     return container;
 };
@@ -58,8 +59,9 @@ let _showErrorToDom = function(el,e,lineNum) {
 
 
 let lastErr = '';
-window['showError'] = function _err(e,lineNum){
-    window['game'] && window['game'].destroy();
+(window as any).showError = function _err(e,lineNum){
+    let game:Game = (window as any).game as Game;
+    if (game) game.destroy();
     if ((<NavigatorEx>navigator).isCocoonJS) {
         _showErrToConsole(e,lineNum);
         return;
@@ -107,10 +109,10 @@ window['showError'] = function _err(e,lineNum){
 
 
 window.addEventListener('error',(e)=>{
-    window['showError'](e,e['linenum']);
+    (window as any).showError(e,e['linenum']);
 },true);
 
 window.addEventListener('unhandledrejection',(e)=>{
     console.error(e);
-    window['showError'](e,e['linenum']);
+    (window as any).showError(e,e['linenum']);
 });

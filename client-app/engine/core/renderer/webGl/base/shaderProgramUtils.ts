@@ -223,67 +223,67 @@ const expect = (value:any,typeChecker:IChecker)=>{
 export const getUniformSetter = function(size:number,type:string){
     if (size===1) {
         switch (type) {
-            case 'float': return (gl,location,value)=> {
+            case GL_TYPE.FLOAT: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeNumber);
                 gl.uniform1f(location, value);
             };
-            case 'vec2':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_VEC2:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber,2));
                 gl.uniform2f(location, value[0], value[1]);
             };
-            case 'vec3':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_VEC3:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber,3));
                 gl.uniform3f(location, value[0], value[1], value[2]);
             };
-            case 'vec4':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_VEC4:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber,4));
                 gl.uniform4f(location, value[0], value[1], value[2], value[3]);
             };
-            case 'int':   return (gl,location,value)=> {
+            case GL_TYPE.INT:   return (gl,location,value)=> {
                 DEBUG && expect(value,TypeInt);
                 gl.uniform1i(location, value);
             };
-            case 'ivec2': return (gl,location,value)=> {
+            case GL_TYPE.INT_VEC2: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeInt,2));
                 gl.uniform2i(location, value[0], value[1]);
             };
-            case 'ivec3': return (gl,location,value)=> {
+            case GL_TYPE.INT_VEC3: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeInt,3));
                 gl.uniform3i(location, value[0], value[1], value[2]);
             };
-            case 'ivec4': return (gl,location,value)=> {
+            case GL_TYPE.INT_VEC4: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeInt,4));
                 gl.uniform4i(location, value[0], value[1], value[2], value[3]);
             };
-            case 'bool':  return (gl,location,value)=> {
+            case GL_TYPE.BOOL:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeBool);
                 gl.uniform1i(location, value);
             };
-            case 'bvec2': return (gl,location,value)=> {
+            case GL_TYPE.BOOL_VEC2: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeBool,2));
                 gl.uniform2i(location, value[0], value[1]);
             };
-            case 'bvec3': return (gl,location,value)=> {
+            case GL_TYPE.BOOL_VEC3: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeBool,3));
                 gl.uniform3i(location, value[0], value[1], value[2]);
             };
-            case 'bvec4': return (gl,location,value)=> {
+            case GL_TYPE.BOOL_VEC4: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeBool,4));
                 gl.uniform4i(location, value[0], value[1], value[2], value[3]);
             };
-            case 'mat2':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_MAT2:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber,2*2));
                 gl.uniformMatrix2fv(location, false, value); // location, transpose (Must be false), value
             };
-            case 'mat3':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_MAT3:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber,3*3));
                 gl.uniformMatrix3fv(location, false, value);
             };
-            case 'mat4':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_MAT4:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber,4*4));
                 gl.uniformMatrix4fv(location, false, value);
             };
-            case 'sampler2D':return (gl,location,value)=> {
+            case GL_TYPE.SAMPLER_2D:return (gl,location,value)=> {
                 DEBUG && expect(value,TypeInt);
                 gl.uniform1i(location, value);
             };
@@ -293,55 +293,55 @@ export const getUniformSetter = function(size:number,type:string){
         }
     } else {
         switch (type) { // ie uniform vec2 u_someVec2[3]
-            case 'float': return (gl,location,value)=> {
+            case GL_TYPE.FLOAT: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber));
                 gl.uniform1fv(location, value);
             };
-            case 'vec2':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_VEC2:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber));
                 gl.uniform2fv(location, value);
             };
-            case 'vec3':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_VEC3:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber));
                 gl.uniform3fv(location, value);
             };
-            case 'vec4':  return (gl,location,value)=> {
+            case GL_TYPE.FLOAT_VEC4:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeNumber));
                 gl.uniform4fv(location, value);
             };
-            case 'int':   return (gl,location,value)=> {
+            case GL_TYPE.INT:   return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeInt));
                 gl.uniform1iv(location, value);
             };
-            case 'ivec2': return (gl,location,value)=> {
+            case GL_TYPE.INT_VEC2: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeInt));
                 gl.uniform2iv(location, value);
             };
-            case 'ivec3': return (gl,location,value)=> {
+            case GL_TYPE.INT_VEC3: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeInt));
                 gl.uniform3iv(location, value);
             };
-            case 'ivec4': return (gl,location,value)=> {
+            case GL_TYPE.INT_VEC4: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeInt));
                 gl.uniform4iv(location, value);
             };
-            case 'bool':  return (gl,location,value)=> {
+            case GL_TYPE.BOOL:  return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform1iv(location, value);
             };
-            case 'bvec2': return (gl,location,value)=> {
+            case GL_TYPE.BOOL_VEC2: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform2iv(location, value);
             };
-            case 'bvec3': return (gl,location,value)=> {
+            case GL_TYPE.BOOL_VEC3: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform3iv(location, value);
             };
-            case 'bvec4': return (gl,location,value)=> {
+            case GL_TYPE.BOOL_VEC4: return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform4iv(location, value);
             };
-            case 'sampler2D':return (gl,location,value)=> {
+            case GL_TYPE.SAMPLER_2D:return (gl,location,value)=> {
                 DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform1iv(location, value);
             };

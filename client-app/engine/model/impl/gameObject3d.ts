@@ -1,6 +1,5 @@
 import { GameObject } from './gameObject';
 import { WebGlRenderer } from '../../core/renderer/webGl/webGlRenderer';
-import { _global } from '../../core/global';
 import {BufferInfo} from "../../core/renderer/webGl/base/bufferInfo";
 import {IPrimitive} from "../../core/renderer/webGl/primitives/abstractPrimitive";
 
@@ -20,12 +19,10 @@ export class GameObject3d extends GameObject {
         this.game.renderer.rotateY(this.angleY);
     }
 
-    draw(){
+    draw():boolean{
         (this.game.renderer as WebGlRenderer).drawModel(this);
+        return true;
     }
 
 
 }
-
-
-_global['GameObject3d'] = GameObject;

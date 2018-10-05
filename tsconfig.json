@@ -16,13 +16,16 @@
         "noImplicitAny": false,
         "noEmitOnError": true,
         "removeComments": true,
-        "baseUrl": ".",
-        "paths": {
-            "@engine/*": ["client-app/engine/*"]
-        }
+        "baseUrl": "."
+//    ,
+//        "paths": {
+//            "@engine/*": ["client-app/engine/*"]
+//        }
     },
     "exclude": [
         "node_modules"
+        ,
+        "workspace"
     ],
     "awesomeTypescriptLoaderOptions": {
       "transpileOnly": false,

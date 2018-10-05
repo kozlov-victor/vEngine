@@ -13,7 +13,7 @@ class Board {
     constructor(game: Game, cards: GameObject[]) {
         this.game = game;
         this.cards = cards;
-        game.getCurrScene().findObjectById('boardRect').width =
+        game.getCurrScene().findObject({id:'boardRect'}).width =
             cards[0].width*this.cardsInRow + ~~(cards[0].width/3);
         this.setUpDraggable();
     }
@@ -117,9 +117,9 @@ export class SetFieldSceneBehaviour {
                 ]
             }
         });
-        this.scene.getLayerByName('bg').prependChild(bgView);
+        this.scene.findLayer({name:'bg'}).prependChild(bgView);
 
-        let cards: GameObject[] = this.scene.getLayerByName('main').children.filter(it => it.name == 'boardCard');
+        let cards: GameObject[] = this.scene.findLayer({name:'main'}).children.filter(it => it.name == 'boardCard');
         new Board(this.game, cards);
     }
 

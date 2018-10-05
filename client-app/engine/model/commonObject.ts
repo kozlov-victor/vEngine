@@ -73,7 +73,7 @@ export class CommonObject {
     protected game:Game;
     public type:string;
     _cloner:CommonObject;
-    id:number = null;
+    id:string|number = null;
     name:string = null;
 
     fromJSON(params:any = {},forceNew?:boolean){

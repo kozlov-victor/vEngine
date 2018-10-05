@@ -13,7 +13,7 @@ export class AbsoluteLayout extends Container {
     }
 
     appendChild(c:RenderableModel){
-        (c as Container).testLayout();
+        if (c instanceof Container) (c as Container).testLayout();
         super.appendChild(c);
     }
 
@@ -22,7 +22,7 @@ export class AbsoluteLayout extends Container {
 
         let maxX = 0, maxY = 0;
         for (let v of this.children) {
-            (v as Container).onGeometryChanged();
+            if (v instanceof Container) (v as Container).onGeometryChanged();
             v._dirty = true;
             let r:Rect = v.getRect();
             if (r.right>maxX) maxX = r.right;
@@ -37,23 +37,21 @@ export class AbsoluteLayout extends Container {
         this.calcDrawableRect(this.width,this.height);
     }
 
-    //update(time:number,delta:number){
-        //super.update(time,delta);
-        //for (let c of this.children) { // moved to Renderable model
-            //if (c._dirty) c.parent._dirty = true; // todo cyclic update!!
-            //c.update(time,delta);
-        //}
-    //}
-
-    draw(){
+    draw():boolean{
         let renderer = this.game.renderer;
-        if (this.overflow===OVERFLOW.HIDDEN) renderer.lockRect(this.getRect());
+        if (this.overflow===OVERFLOW.HIDDEN) {
+            let r:Rect = Rect.fromPool().set(this.getScreenRect());
+            r.addXY(-1,-1);
+            r.setWH(r.width+1,r.height+1);
+            renderer.lockRect(r);
+        }
         if (this.background) this.background.draw();
         renderer.translate(
             this.paddingLeft,
             this.paddingTop
         );
         if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.unlockRect();
+        return true;
     }
 
 }

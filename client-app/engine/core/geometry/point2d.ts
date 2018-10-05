@@ -1,14 +1,13 @@
 
 import {ObjectPool} from "../misc/objectPool";
 import {ObservableEntity} from "./abstract/observableEntity";
-import {_global} from "../global";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 export class Point2d extends ObservableEntity{
 
-    x:number = 0;
-    y:number = 0;
+    private _x:number = 0;
+    private _y:number = 0;
 
     private static pool = new ObjectPool<Point2d>(Point2d,4);
     private _arr:Array<number>;
@@ -18,15 +17,31 @@ export class Point2d extends ObservableEntity{
     }
 
 
+    get x(): number {
+        return this._x;
+    }
+
+    set x(value: number) {
+        this.setX(value);
+    }
+
+    get y(): number {
+        return this._y;
+    }
+
+    set y(value: number) {
+        this.setY(value)
+    }
+
     constructor(x:number = 0,y:number = 0,onChangedFn?:()=>void){
         super();
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
         if (onChangedFn) this.addListener(onChangedFn);
     }
 
     protected checkObservableChanged():boolean{
-        return this._state.setState(this.x,this.y);
+        return this._state.setState(this._x,this._y);
     }
 
     observe(onChangedFn:()=>void){
@@ -37,90 +52,90 @@ export class Point2d extends ObservableEntity{
         if (y===undefined) { //noinspection JSSuspiciousNameCombination
             y = x;
         }
-        this.x = x;
-        this.y = y;
+        this._x = x;
+        this._y = y;
         this.triggerObservable();
         return this;
     }
 
     setX(x:number):Point2d{
-        this.x = x;
+        this._x = x;
         this.triggerObservable();
         return this;
     }
 
     setY(y:number):Point2d{
-        this.y = y;
+        this._y = y;
         this.triggerObservable();
         return this;
     }
 
     set(another:Point2d):Point2d{
-        this.setXY(another.x,another.y);
+        this.setXY(another._x,another._y);
         this.triggerObservable();
         return this;
     }
 
 
     add(another:Point2d):Point2d{
-        this.addXY(another.x,another.y);
+        this.addXY(another._x,another._y);
         this.triggerObservable();
         return this;
     }
 
     substract(another:Point2d):Point2d{
-        this.addXY(-another.x,-another.y);
+        this.addXY(-another._x,-another._y);
         this.triggerObservable();
         return this;
     }
 
     multiply(n:number):Point2d {
-        this.x*=n;
-        this.y*=n;
+        this._x*=n;
+        this._y*=n;
         this.triggerObservable();
         return this;
     }
 
     addXY(x:number,y:number):Point2d{
-        this.x+=x;
-        this.y+=y;
+        this._x+=x;
+        this._y+=y;
         this.triggerObservable();
         return this;
     }
 
     addX(x:number):Point2d{
-        this.x+=x;
+        this._x+=x;
         this.triggerObservable();
         return this;
     }
 
     addY(y:number):Point2d{
-        this.y+=y;
+        this._y+=y;
         this.triggerObservable();
         return this;
     }
 
     negative(){
-        this.x = - this.x;
-        this.y = -this.y;
+        this._x = - this._x;
+        this._y = -this._y;
         this.triggerObservable();
         return this;
     }
 
     equal(val:number) {
-        return this.x===val && this.y===val;
+        return this._x===val && this._y===val;
     }
 
     equalXY(x:number,y:number) {
-        return this.x===x && this.y===y;
+        return this._x===x && this._y===y;
     }
 
     equalPoint(point:Point2d) {
-        return this.x===point.x && this.y===point.y;
+        return this._x===point._x && this._y===point._y;
     }
 
     clone():Point2d {
-        return new Point2d(this.x,this.y);
+        return new Point2d(this._x,this._y);
     }
 
     fromJSON(json:{x:number,y:number}){
@@ -128,18 +143,16 @@ export class Point2d extends ObservableEntity{
     }
 
     toJSON():{x:number,y:number}{
-        return {x:this.x,y:this.y}
+        return {x:this._x,y:this._y}
     }
 
     toArray():Array<number>{
         if (!this._arr) this._arr = new Array(2);
-        this._arr[0] = this.x;
-        this._arr[1] = this.y;
+        this._arr[0] = this._x;
+        this._arr[1] = this._y;
         return this._arr;
     }
 
 
 
 }
-
-_global['Point2d'] = Point2d;

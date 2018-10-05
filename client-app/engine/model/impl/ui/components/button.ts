@@ -28,12 +28,12 @@ export class Button extends Container {
     onGeometryChanged(){
         this._textField.onGeometryChanged();
         this.calcDrawableRect(this._textField.width,this._textField.height);
-        if (!this.background) return;
+        if (this.background) {
+            let dx = (this.background.width - this._textField.width)/2;
+            let dy = (this.background.height - this._textField.height)/2;
 
-        let dx = (this.background.drawingRect.width - this._textField.width)/2;
-        let dy = (this.background.drawingRect.height - this._textField.height)/2;
-
-        this._textField.pos.setXY(dx,dy);
+            this._textField.pos.setXY(dx,dy);
+        }
     }
 
 
@@ -61,9 +61,10 @@ export class Button extends Container {
         super.update(time,delta);
     }
 
-    draw(){
+    draw():boolean{
         if (this.background) this.background.draw();
         this._textField.render();
+        return true;
     }
 
 }

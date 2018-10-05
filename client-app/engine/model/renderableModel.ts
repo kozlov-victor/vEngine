@@ -4,6 +4,7 @@ import {Resource} from "./resource";
 import {ArrayEx} from "../declarations";
 import {DebugError} from "../debugError";
 import {MathEx} from '../core/mathEx'
+import {isObjectMatch} from "../core/misc/object";
 
 declare const DEBUG:boolean;
 
@@ -30,21 +31,21 @@ export abstract class RenderableModel extends Resource implements IParentChild{
         c.onShow();
     }
 
-    findObjectById(id:any):RenderableModel{
-        if (this.id==id) return this;
+    findObject(query:{[key:string]:any}):RenderableModel{
+        if (isObjectMatch(this,query)) return this;
         for (let c of this.children) {
-            let possibleItem = c.findObjectById(id);
-            if (possibleItem!==null) return possibleItem;
+            let possibleObject:RenderableModel = c.findObject(query);
+            if (possibleObject) return possibleObject;
         }
         return null;
     }
 
     _setDirty(){
         this._dirty = true;
-        if (this.parent) this.parent._dirty = true;
+        //if (this.parent) this.parent._dirty = true;
     }
 
-    abstract draw();
+    abstract draw():boolean;
 
     protected beforeRender(){
         this.game.renderer.translate(this.pos.x,this.pos.y);
@@ -78,8 +79,8 @@ export abstract class RenderableModel extends Resource implements IParentChild{
         this.parent.children.unshift(this);
     }
 
-    render(){
-        if (!this.isInViewPort()) return;
+    render(force:boolean = false){
+        if (!force && !this.isInViewPort()) return;
         let renderer:AbstractRenderer = this.game.renderer;
 
         renderer.save();
@@ -95,9 +96,9 @@ export abstract class RenderableModel extends Resource implements IParentChild{
             renderer.translate(-dx, -dy);
         }
 
-        this.draw();
+        let drawResult:boolean = this.draw();
 
-        if (this.children.length>0) {
+        if (drawResult && this.children.length>0) {
             renderer.save();
             renderer.translate(this.anchor.x,this.anchor.y);
             for(let i=0,max=this.children.length;i<max;i++) {
@@ -113,9 +114,10 @@ export abstract class RenderableModel extends Resource implements IParentChild{
 
     update(time:number,delta:number){
         super.update(time,delta);
-        this.children.forEach((c:RenderableModel)=>{
+        for (let c of this.children) {
+            if (this._dirty) c._setDirty();
             c.update(time,delta);
-        });
+        }
     }
 
 }

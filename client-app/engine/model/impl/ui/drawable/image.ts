@@ -2,19 +2,27 @@ import {Game} from "../../../../core/game";
 import {Rect} from "../../../../core/geometry/rect";
 import {Container} from "../generic/container";
 import {DebugError} from "../../../../debugError";
+import {Shape} from "../generic/shape";
+import {Color} from "../../../../core/color";
 
 declare const DEBUG: boolean;
 
-export class Image extends Container {
+export class Image extends Shape {
 
-    private srcRect:Rect = new Rect();
+    srcRect:Rect = new Rect();
+    borderRadius:number = 0;
 
     constructor(game: Game) {
         super(game);
+        this.fillColor.set(Color.NONE);
     }
 
     setSrc(uri:string){
         this.setDefaultResourcePath(uri);
+    }
+
+    getSrc(){
+        return this.getDefaultResourcePath();
     }
 
     revalidate(){
@@ -22,17 +30,16 @@ export class Image extends Container {
             console.error(this);
             throw new DebugError(`can not render Image: default resource path not specified in resourceMap property`);
         }
-        let r:Rect = this.drawingRect;
         let tex = this.game.renderer.getTextureInfo(this.getDefaultResourcePath());
         if (this.width===0) this.width = tex.size.width;
         if (this.height===0) this.height = tex.size.height;
-        r.setWH(this.width,this.height);
         if (this.srcRect.width===0) this.srcRect.width = tex.size.width;
         if (this.srcRect.height===0) this.srcRect.height = tex.size.height;
     }
 
-    draw(){
-        this.game.renderer.drawImage(this.getDefaultResourcePath(),this.srcRect,this.drawingRect);
+    draw():boolean{
+        this.game.renderer.drawImage(this);
+        return true;
     }
 
 

@@ -24,10 +24,10 @@ import {LightArray} from "./light/lightArray";
 import {UIBuilder} from "../model/impl/ui/uiBuilder";
 import {ColliderEngine} from "./physics/colliderEngine";
 import * as MathEx from "../core/mathEx";
-import {_global} from "./global";
 import {GameObject} from "../model/impl/gameObject";
 import {DebugError} from "../debugError";
 import {AudioPlayer} from "./media/audioPlayer";
+import {EarClippingTriangulator} from "../model/impl/ui/drawable/helpers/earClippingTriangulator";
 
 declare let window:any;
 declare let require:Function;
@@ -80,7 +80,6 @@ export class Game extends CommonObject {
     preloadingSceneId:number = 0;
 
     _revalidated:boolean = false;
-    __global__ = _global;
 
     static UPDATE_TIME_RATE = 20;
 
@@ -99,8 +98,6 @@ export class Game extends CommonObject {
         this.audioPlayer = new AudioPlayer(this);
         if (DEBUG) window['game'] = this;
 
-        // todo
-        this.__global__['MathEx'] = MathEx;
     }
 
     revalidate(){
@@ -218,12 +215,14 @@ export class Game extends CommonObject {
         }
         this.keyboard.destroy();
         this.mouse.destroy();
-        this.renderer.cancelFullScreen();
+        if (this.renderer) this.renderer.cancelFullScreen();
         BaseAbstractBehaviour.destroyAll();
         let tid = setTimeout(()=>{ // wait for rendering stopped
-            this.renderer.destroy();
+            if (this.renderer) this.renderer.destroy();
         },200);
     }
 
 }
+
+(window as any).E = EarClippingTriangulator;
 

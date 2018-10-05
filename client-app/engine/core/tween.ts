@@ -1,5 +1,5 @@
 
-import {_global} from "./global";
+
 import {Easing} from "../core/easing";
 
 interface KeyVal {
@@ -169,5 +169,3 @@ export class Tween {
     }
 
 }
-
-_global['Tween'] = Tween;

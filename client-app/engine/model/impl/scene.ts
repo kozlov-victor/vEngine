@@ -16,6 +16,7 @@ import {ParticleSystem} from "./particleSystem";
 import {Sound} from "./sound";
 import {DebugError} from "../../debugError";
 import {RenderableModel} from "../../model/renderableModel";
+import {isObjectMatch} from "../../core/misc/object";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -82,9 +83,9 @@ export class Scene extends BaseModel  {
         return this.layers[0];
     }
 
-    findObjectById(id:any):RenderableModel {
+    findObject(query:{[key:string]:any}):RenderableModel {
         for (let l of this.layers) {
-            let possibleResult = l.findObjectById(id);
+            let possibleResult = l.findObject(query);
             if (possibleResult!==null) return possibleResult;
         }
         return null;
@@ -103,10 +104,11 @@ export class Scene extends BaseModel  {
         this.getDefaultLayer().prependChild(go);
     }
 
-    getLayerByName(name:string):Layer {
-        let l:Layer = this.layers.find((l:Layer)=>l.name===name);
-        if (DEBUG && !l) throw new DebugError(`can not find layer by name ${name}`);
-        return l;
+    findLayer(query:{[key:string]:any}):Layer {
+        for (let l of this.layers) {
+            if (isObjectMatch(l,query)) return l;
+        }
+        return null;
     }
 
     preload(cb){
@@ -193,9 +195,12 @@ export class Scene extends BaseModel  {
         if (!this.prepared) return;
 
         let renderer = this.game.renderer;
+
         if (this.useBG) renderer.clearColor(this.colorBG);
         else renderer.clear();
         renderer.beginFrameBuffer();
+        if (this.useBG) renderer.clearColor(this.colorBG);
+        else renderer.clear();
 
 
         this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;

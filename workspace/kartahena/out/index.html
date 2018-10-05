@@ -86,30 +86,34 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 124);
+/******/ 	return __webpack_require__(__webpack_require__.s = 128);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 124:
+/***/ 128:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(125);
-module.exports = __webpack_require__(126);
+__webpack_require__(129);
+module.exports = __webpack_require__(130);
 
 
 /***/ }),
 
-/***/ 125:
-/***/ (function(module, exports) {
+/***/ 129:
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var getPopupContainer = function () {
     if (!(document && document.getElementById)) return null;
     var container = document.getElementById('popupContainer');
     if (container) return container;
     container = document.createElement('div');
     container.id = 'popupContainer';
-    container.style.cssText = 'position:absolute;' + 'bottom:10px;' + 'right:10px;' + 'z-index:10000;' + 'width:300px;' + 'max-height:' + window.innerHeight + 'px;' + 'overflow-y:auto';
+    container.style.cssText = "\n        position:absolute;\n        bottom:10px;\n        right:10px;\n        z-index:10000;\n        width:470px;\n        max-height:" + window.innerHeight + "px;\n        overflow-y:auto";
     document.body.appendChild(container);
     return container;
 };
@@ -144,8 +148,9 @@ var _showErrorToDom = function (el, e, lineNum) {
     el.textContent = _prepareMessage(e, lineNum);
 };
 var lastErr = '';
-window['showError'] = function _err(e, lineNum) {
-    window['game'] && window['game'].destroy();
+window.showError = function _err(e, lineNum) {
+    var game = window.game;
+    if (game) game.destroy();
     if (navigator.isCocoonJS) {
         _showErrToConsole(e, lineNum);
         return;
@@ -182,23 +187,23 @@ window['showError'] = function _err(e, lineNum) {
     }
 };
 window.addEventListener('error', function (e) {
-    window['showError'](e, e['linenum']);
+    window.showError(e, e['linenum']);
 }, true);
 window.addEventListener('unhandledrejection', function (e) {
     console.error(e);
-    window['showError'](e, e['linenum']);
+    window.showError(e, e['linenum']);
 });
 
 /***/ }),
 
-/***/ 126:
+/***/ 130:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(127);
+var httpClient_1 = __webpack_require__(131);
 var devConsole = document.createElement('div');
 var css = {
     position: 'absolute',
@@ -258,7 +263,7 @@ window.addEventListener('error', function (e) {
 
 /***/ }),
 
-/***/ 127:
+/***/ 131:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -387,7 +392,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
 </head>
 
 <body ontouchstart="">
-<script src="bundle.js?12"></script>
+<script src="bundle.js?305"></script>
 </body>
 
 </html>

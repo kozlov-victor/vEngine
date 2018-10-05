@@ -1,5 +1,6 @@
 
-const str = 
+import {Container, LAYOUT_SIZE} from "@engine/model/impl/ui/generic/container";
+const str =
 `Подготовка к игре
 Соберите подземный ход из шести участков поля, участки можно класть любой стороной и в любом порядке - существуют тысячи возможных комбинаций. В любом случае у вас должен получиться единый подземный ход с 36 делениями-символами. Каждый игрок получает 6 фишек пиратов одного цвета. Ненужные фишки уберите в коробку. Игроки ставят всех своих пиратов с одного конца подземного хода, а у другого швартуется шлюпка. Отложите карту со стрелкой. Если играете в «Тортугу», она понадобится чуть позже, а для «Ямайки» совсем не пригодится. Перетасуйте колоду и сдайте каждому игроку по 6 карт.
 Если вы ещё не решили, по какому варианту правил играть, самое время сделать это.
@@ -18,17 +19,18 @@ export class DescSceneBehaviour {
                 pos: {x:0,y:0},
                 width:this.game.width,
                 height:this.game.height,
-                layoutWidth: 0,
-                layoutHeight: 0,
+                layoutWidth: LAYOUT_SIZE.WRAP_CONTENT,
+                layoutHeight: LAYOUT_SIZE.WRAP_CONTENT,
                 background: {
                     Image: {
+                        id: 'bgImage',
                         src: 'resources/bg.jpg'
                     }
                 },
                 children: [
                     {
                         TextField: {
-                            maxWidth: 990,
+                            maxWidth: 970,
                             maxHeight: 480,
                             pos: {x:10,y:10},
                             fontName: 'scriptFont',

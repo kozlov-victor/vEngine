@@ -28,6 +28,12 @@ export class Size {
         return this;
     }
 
+    set(another:Size){
+        this.width = another.width;
+        this.height = another.height;
+        return this;
+    }
+
     static fromPool():Size {
         return Size.rectPool.getNextObject();
     }

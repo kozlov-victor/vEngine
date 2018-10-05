@@ -2,11 +2,9 @@
 
 import {GameObjectProto} from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
-import {_global} from "../../core/global";
 import {noop} from "../../core/misc/noop";
 import {BaseAbstractBehaviour} from "../../commonBehaviour/abstract/baseAbstractBehaviour";
 import {Game} from "../../core/game";
-import {DebugError} from "../../debugError";
 
 declare const DEBUG:boolean;
 
@@ -85,5 +83,3 @@ export class GameObject extends GameObjectProto {
     }
 
 }
-
-_global['GameObject'] = GameObject;

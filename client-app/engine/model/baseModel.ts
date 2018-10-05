@@ -72,6 +72,7 @@ export abstract class BaseModel extends CommonObject {
     setTimer(callback:Function,interval:number):Timer{
         let t:Timer = new Timer(callback,interval);
         this._timers.push(t);
+        return t;
     }
 
     /**

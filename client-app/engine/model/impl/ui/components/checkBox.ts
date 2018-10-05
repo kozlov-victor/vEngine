@@ -2,11 +2,12 @@
 import {Container} from "../generic/container";
 import {Rectangle} from "../drawable/rectangle";
 import {Color} from "../../../../core/color";
+import {Shape} from "../generic/shape";
 
 export class CheckBox extends Container {
 
-    private rNormal:Container;
-    private rChecked: Container;
+    private rNormal:Shape;
+    private rChecked: Shape;
 
     checked: boolean = false;
 
@@ -36,14 +37,14 @@ export class CheckBox extends Container {
         this.rChecked.setWH(this.width,this.height);
     }
 
-    protected getBgByState():Container{
+    protected getBgByState():Shape{
         if (this.checked) return this.rChecked;
         return this.rNormal;
     }
 
-    draw(){
-        let bg:Container = this.getBgByState();
-        if (!bg) return;
-        bg.draw();
+    draw():boolean{
+        let bg:Shape = this.getBgByState();
+        if (bg) bg.draw(); // todo
+        return true;
     }
 }

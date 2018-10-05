@@ -75,8 +75,12 @@ module.exports = (env={})=>{
                     options: {}
                 },
                 {
+                    test: /\.js$/,
+                    loader: "babel-loader"
+                },
+                {
                     test: /\.(css|frag|vert)$/,
-                    loader: 'text-loader'
+                    loader: 'shader-loader'
                 },
                 {
                     test: /\.(html)$/,
@@ -86,7 +90,7 @@ module.exports = (env={})=>{
             ]
         },
         resolve: {
-            extensions: ['.js','.ts'],
+            extensions: ['.ts','.js'],
             modules: [
                 path.resolve(__dirname, 'node_modules'),
                 path.resolve(__dirname, 'client-app')

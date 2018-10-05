@@ -18,5 +18,29 @@
             "name": "mainLayer",
             "type": "Layer"
         }
+    ],
+    "SpriteSheet": [
+        {
+            "name": "esb-header-logo",
+            "width": 229,
+            "height": 29,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "resourceMap": {
+                "main": "resources/esb-header-logo.png"
+            },
+            "type": "SpriteSheet",
+            "id": 3
+        }
     ]
 }

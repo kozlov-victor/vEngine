@@ -1,14 +1,16 @@
 
+declare const DEBUG:boolean;
+
 export class ShaderGenerator {
 
-    private vertexUniforms:Array<any> = [];
-    private fragmentUniforms:Array<any> = [];
-    private attributes:Array<any> = [];
-    private varyings:Array<any> = [];
-    private appendedFragCodeBlocks:Array<any> = [];
-    private appendedVertexCodeBlocks:Array<any> = [];
-    private prependedVertexCodeBlocks:Array<any> = [];
-    private prependedFragCodeBlocks:Array<any> = [];
+    private vertexUniforms:any[] = [];
+    private fragmentUniforms:any[] = [];
+    private attributes:any[] = [];
+    private varyings:any[] = [];
+    private appendedFragCodeBlocks:any[] = [];
+    private appendedVertexCodeBlocks:any[] = [];
+    private prependedVertexCodeBlocks:any[] = [];
+    private prependedFragCodeBlocks:any[] = [];
     private vertexMainFn:string = '';
     private fragmentMainFn:string = '';
 
@@ -16,22 +18,21 @@ export class ShaderGenerator {
 
     addVertexUniform(type:string,name:string){
         this.vertexUniforms.push({type,name});
-        return this;
+        return name;
     }
 
     addFragmentUniform(type,name){
         this.fragmentUniforms.push({type,name});
-        return this;
+        return name;
     }
 
     addAttribute(type,name){
         this.attributes.push({type,name});
-        return this;
+        return name;
     }
 
     addVarying(type,name){
         this.varyings.push({type,name});
-        return this;
     }
 
     appendVertexCodeBlock(code){
@@ -62,40 +63,40 @@ export class ShaderGenerator {
 
     getVertexSource():string{
         return (
-            `
-            ${this.prependedVertexCodeBlocks.map(v=>`${v}`).join('\n')}
-            
-            ${this.vertexUniforms.map(  u=>`uniform   ${u.type} ${u.name};`).join('\n')}
-            ${this.attributes.map(      u=>`attribute ${u.type} ${u.name};`).join('\n')}
-            ${this.varyings.map(        u=>`varying   ${u.type} ${u.name};`).join('\n')}
-            ${this.appendedVertexCodeBlocks.map(v=>`${v}`).join('\n')}
-           
-            ${this.vertexMainFn}
-            
-            `.replace(/\t/g, '')
-        )
+
+
+`
+${this.prependedVertexCodeBlocks.map(v=>`${v}`).join('\n')}
+
+${this.vertexUniforms.map(  u=>`uniform   ${u.type} ${u.name};`).join('\n')}
+${this.attributes.map(      u=>`attribute ${u.type} ${u.name};`).join('\n')}
+${this.varyings.map(        u=>`varying   ${u.type} ${u.name};`).join('\n')}
+${this.appendedVertexCodeBlocks.map(v=>`${v}`).join('\n')}
+
+${this.vertexMainFn}`)
     }
 
     getFragmentSource():string{
         return (
-            // lowp, mediump, highp
-            `
-            precision mediump float;
-            
-            ${this.prependedFragCodeBlocks.map(v=>`${v}`).join('\n')}
-            
-            ${this.fragmentUniforms.map(u=>`uniform ${u.type} ${u.name};`).join('\n')}
-            ${this.varyings.map(        u=>`varying ${u.type} ${u.name};`).join('\n')}
-            ${this.appendedFragCodeBlocks.map(v=>`${v}`).join('\n')}
-            
-            ${this.fragmentMainFn}
-            
-            `.replace(/\t/g, '')
-        )
+// lowp, mediump, highp
+`
+precision mediump float;
+
+${this.prependedFragCodeBlocks.map(v=>`${v}`).join('\n')}
+
+${this.fragmentUniforms.map(u=>`uniform ${u.type} ${u.name};`).join('\n')}
+${this.varyings.map(        u=>`varying ${u.type} ${u.name};`).join('\n')}
+${this.appendedFragCodeBlocks.map(v=>`${v}`).join('\n')}
+
+${this.fragmentMainFn}
+`)
     }
 
     debug(){
+        if (!DEBUG) return;
+        console.log('// *** vertex shader source ***');
         console.log(this.getVertexSource());
+        console.log('// *** fragment shader source ***');
         console.log(this.getFragmentSource());
     }
 

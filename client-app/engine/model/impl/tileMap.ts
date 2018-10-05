@@ -133,11 +133,12 @@ export class TileMap extends CommonObject  {
                     x*spriteSheet._frameWidth, y*spriteSheet._frameHeight,
                     spriteSheet._frameWidth, spriteSheet._frameHeight
                 );
-                renderer.drawImage(
-                    spriteSheet.getDefaultResourcePath(),
-                    spriteSheet.getFrameRect(tileVal),
-                    destRect
-                );
+                // todo
+                // renderer.drawImage(
+                //     spriteSheet.getDefaultResourcePath(),
+                //     spriteSheet.getFrameRect(tileVal),
+                //     destRect
+                // );
             }
         }
     }

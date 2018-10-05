@@ -1,15 +1,15 @@
 
-
 import {TweenMovie} from "@engine/core/tweenMovie";
 import {Game} from "@engine/core/game";
 import {Scene} from "@engine/model/impl/scene";
+
 export class LogoSceneBehaviour {
 
     game:Game;
     scene:Scene;
 
     public onCreate(){
-        let logo = this.game.getCurrScene().getLayerByName('main').children[0];
+        let logo = this.game.getCurrScene().findLayer({name:'main'}).children[0];
         logo.alpha = 0;
 
 

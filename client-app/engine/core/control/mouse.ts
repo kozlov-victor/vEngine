@@ -257,6 +257,7 @@ export class Mouse {
     }
 
     destroy(){
+            if (!this.container) return;
         [
             'mouseMove','ontouchstart','onmousedown',
             'ontouchend','onmouseup','ontouchmove',

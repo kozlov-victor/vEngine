@@ -46,7 +46,8 @@ export class ShaderProgram {
         }
         let uniform = this.uniforms[name];
         if (DEBUG && !uniform) {
-            console.error(this);
+            //console.error(this);
+            return;
             throw new DebugError(`no uniform with name ${name} found!`);
         }
         if (DEBUG) {

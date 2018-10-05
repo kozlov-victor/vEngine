@@ -8,6 +8,8 @@ import {Color} from "../../color";
 import {Size} from "../../geometry/size";
 import { AbstractFilter } from '../webGl/filters/abstract/abstractFilter';
 import { DrawableInfo } from '../webGl/renderPrograms/interface/drawableInfo';
+import {Rectangle} from "../../../model/impl/ui/drawable/rectangle";
+import {Image} from "../../../model/impl/ui/drawable/image";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -45,10 +47,10 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
         );
     }
 
-    drawImage(
-        imgPath:string,
-        srcRect:Rect,
-        dstRect:Rect){
+    drawImage(img:Image){
+        let imgPath:string = img.getDefaultResourcePath();
+        let srcRect:Rect = img.srcRect;
+        let dstRect:Rect = img.getRect();
         this.ctx.drawImage(
             this.renderableCache[imgPath].texture,
             srcRect.x,
@@ -69,24 +71,11 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
 
     }
 
-
-    drawImageEx(texturePath:string,
-        srcRect:Rect,
-        dstRect:Rect,
-        filters:AbstractFilter[],
-        drawableInfo:DrawableInfo,
-    ){
-        this.drawImage(texturePath,srcRect,dstRect);
-    }
-
-    fillRect(rect:Rect,color:Color){
-        this.ctx.fillStyle = color.asCSS();
-        this.ctx.fillRect(rect.x,rect.y,rect.width,rect.height);
-    }
-
-    drawRect(rect:Rect,color:Color, lineWidth:number){
-        this.ctx.fillStyle = color.asCSS();
-        this.ctx.strokeRect(rect.x,rect.y,rect.width,rect.height);
+    drawRectangle(rectangle:Rectangle){
+        this.ctx.fillStyle = rectangle.fillColor.asCSS();
+        this.ctx.strokeStyle = rectangle.color.asCSS();
+        this.ctx.strokeWidth = rectangle.lineWidth;
+        //this.ctx.strokeRect(0,0,rectangle.width,rectangle.height);
     }
 
     // drawLine(point1:Point2d,point2:Point2d,color){ // todo
@@ -97,17 +86,17 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
     //     this.ctx.stroke();
     // }
 
-    fillCircle(x:number,y:number,r:number,color:Color){
-        let cssCol:string = color.asCSS();
-        let ctx = this.ctx;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, 2 * Math.PI, false);
-        ctx.fillStyle = cssCol;
-        ctx.strokeStyle = cssCol;
-        ctx.fill();
-        ctx.stroke();
-        ctx.closePath();
-    }
+    // fillCircle(x:number,y:number,r:number,color:Color){
+    //     let cssCol:string = color.asCSS();
+    //     let ctx = this.ctx;
+    //     ctx.beginPath();
+    //     ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+    //     ctx.fillStyle = cssCol;
+    //     ctx.strokeStyle = cssCol;
+    //     ctx.fill();
+    //     ctx.stroke();
+    //     ctx.closePath();
+    // }
 
     setAlpha(a:number){
         this.ctx.globalAlpha = a;
@@ -129,7 +118,7 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
     }
 
     clearColor(color:Color){
-        this.fillRect(new Rect(0,0,this.game.width,this.game.height),color);
+        //this.fillRect(new Rect(0,0,this.game.width,this.game.height),color);
     }
 
     save() {
@@ -169,7 +158,7 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
 
 
     loadTextureInfo(resourcePath:string,onLoad:()=>void){
-        let img = new Image();
+        let img:HTMLImageElement = new (window as any).Image();
         img.src = this.getResource(resourcePath);
         this.renderableCache[resourcePath] = this.renderableCache[resourcePath] || {} as any;
         img.onload = ()=>{

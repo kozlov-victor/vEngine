@@ -10,7 +10,6 @@ import {ArrayEx} from "../../declarations";
 import {ShaderMaterial} from "../../core/light/shaderMaterial";
 import {RigidShape} from "../../core/physics/rigidShapes";
 import {RenderableModel} from "../renderableModel";
-import {_global} from "../../core/global";
 import {BaseAbstractBehaviour} from "../../commonBehaviour/abstract/baseAbstractBehaviour";
 
 let cloneId:number = 0;
@@ -39,20 +38,13 @@ export class GameObjectProto extends RenderableModel {
     _timeCreated:number = null; // todo only for particle system
     _individualBehaviour = null;
 
-    // static find(name:string){
-    //     //return game.getCurrScene()._allGameObjects.find({name:name});
-    // }
-    // static findAll(name:string) {
-    //     //return game.getCurrScene()._allGameObjects.findAll({name: name});
-    // }
-
     constructor(game:Game){
         super(game);
     }
 
     createGameObject(){
-        let go = new _global['GameObject'](this.game); // to avoid circular dependency
-        go.gameObjectProto = this.clone();
+        let go:GameObject = new GameObject(this.game);
+        go.gameObjectProto = this.clone() as GameObjectProto;
         go.revalidate();
         go.id +=`_clone_${++cloneId}`;
         go.setCommonBehaviour();
@@ -131,8 +123,9 @@ export class GameObjectProto extends RenderableModel {
     }
 
 
-    draw(){
+    draw():boolean{
         this.game.renderer.draw(this);
+        return true;
     }
 
     onShow(){
@@ -145,4 +138,6 @@ export class GameObjectProto extends RenderableModel {
     }
 }
 
-_global['GameObjectProto'] = GameObjectProto;
+
+
+import {GameObject} from "./gameObject"; // moved to bottom to avoid circular dependency

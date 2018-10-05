@@ -3,6 +3,8 @@ import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/inter
 import {MOUSE_EVENTS} from "../../../../core/control/mouse";
 import {RenderableModel} from "../../../renderableModel";
 import {DebugError} from "../../../../debugError";
+import {Game} from "../../../../core/game";
+import {Shape} from "./shape";
 
 
 declare const DEBUG:boolean;
@@ -35,7 +37,7 @@ export abstract class Container extends RenderableModel {
     layoutHeight    :LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
     overflow        :OVERFLOW = OVERFLOW.HIDDEN; // todo change
 
-    background      :Container = undefined;
+    background      :Shape = undefined;
 
     drawingRect:Rect = new Rect();
 
@@ -43,9 +45,22 @@ export abstract class Container extends RenderableModel {
     maxHeight: number = 0;
 
 
-    protected bgByState :{[state:string]:Container} = {};
+    protected bgByState :{[state:string]:Shape} = {};
     private state     :STATE = STATE.NORMAL;
     private _screenRect = new Rect();
+
+    constructor(game:Game){
+        super(game);
+        this.on(MOUSE_EVENTS.mouseDown,()=>{
+            this.state = STATE.ACTIVE;
+        });
+        this.on(MOUSE_EVENTS.mouseUp,()=>{
+            this.state = STATE.NORMAL;
+        });
+        this.on(MOUSE_EVENTS.mouseLeave,()=>{
+            this.state = STATE.NORMAL;
+        });
+    }
 
     testLayout(){
         if (DEBUG) {
@@ -141,21 +156,8 @@ export abstract class Container extends RenderableModel {
     }
 
 
-    getDrawableInfo():DrawableInfo {
+    getDrawableInfo():DrawableInfo { // todo remove this method
         return {blendMode:this.blendMode,acceptLight:false,alpha:this.alpha};
-    }
-
-    constructor(game){
-        super(game);
-        this.on(MOUSE_EVENTS.mouseDown,()=>{
-           this.state = STATE.ACTIVE;
-        });
-        this.on(MOUSE_EVENTS.mouseUp,()=>{
-            this.state = STATE.NORMAL;
-        });
-        this.on(MOUSE_EVENTS.mouseLeave,()=>{
-            this.state = STATE.NORMAL;
-        });
     }
 
     revalidate(){
@@ -192,8 +194,8 @@ export abstract class Container extends RenderableModel {
         }
     }
 
-    protected getBgByState():Container {
-        let possibleBg:Container = this.bgByState[this.state];
+    protected getBgByState():Shape {
+        let possibleBg:Shape = this.bgByState[this.state];
         if (!possibleBg) possibleBg = this.background;
         return possibleBg;
     }
@@ -209,8 +211,8 @@ export abstract class Container extends RenderableModel {
         let paddedHeight = contentHeight +  this.paddingTop +  this.paddingBottom;
         if (this.background) {
             this.background.setWH(paddedWidth,paddedHeight);
-            this.width = this.background.drawingRect.width;
-            this.height = this.background.drawingRect.height;
+            this.width = this.background.width;
+            this.height = this.background.height;
         } else {
             this.width = paddedWidth;
             this.height = paddedHeight;

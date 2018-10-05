@@ -86,30 +86,34 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 114);
+/******/ 	return __webpack_require__(__webpack_require__.s = 120);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 114:
+/***/ 120:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(115);
-module.exports = __webpack_require__(116);
+__webpack_require__(121);
+module.exports = __webpack_require__(122);
 
 
 /***/ }),
 
-/***/ 115:
-/***/ (function(module, exports) {
+/***/ 121:
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var getPopupContainer = function () {
     if (!(document && document.getElementById)) return null;
     var container = document.getElementById('popupContainer');
     if (container) return container;
     container = document.createElement('div');
     container.id = 'popupContainer';
-    container.style.cssText = 'position:absolute;' + 'bottom:10px;' + 'right:10px;' + 'z-index:10000;' + 'width:300px;' + 'max-height:' + window.innerHeight + 'px;' + 'overflow-y:auto';
+    container.style.cssText = "\n        position:absolute;\n        bottom:10px;\n        right:10px;\n        z-index:10000;\n        width:470px;\n        max-height:" + window.innerHeight + "px;\n        overflow-y:auto";
     document.body.appendChild(container);
     return container;
 };
@@ -144,8 +148,9 @@ var _showErrorToDom = function (el, e, lineNum) {
     el.textContent = _prepareMessage(e, lineNum);
 };
 var lastErr = '';
-window['showError'] = function _err(e, lineNum) {
-    window['game'] && window['game'].destroy();
+window.showError = function _err(e, lineNum) {
+    var game = window.game;
+    if (game) game.destroy();
     if (navigator.isCocoonJS) {
         _showErrToConsole(e, lineNum);
         return;
@@ -156,7 +161,7 @@ window['showError'] = function _err(e, lineNum) {
         }
         lastErr = e;
         var popup_1 = document.createElement('div');
-        popup_1.style.cssText = 'background-color:rgba(255,255,255,0.95);' + 'color:red;' + 'margin-bottom:5px;' + 'border:1px solid red;';
+        popup_1.style.cssText = "\n            background-color:rgba(255,255,255,0.95);\n            color:red;\n            margin-bottom:5px;\n            padding: 13px;\n            font-family: monospace;\n            font-size: 20px;\n            border:1px solid red;";
         var leftBox = document.createElement('div');
         leftBox.style.cssText = 'width:90%;display:inline-block;';
         leftBox.style.cssText = 'width:90%;display:inline-block;';
@@ -182,23 +187,23 @@ window['showError'] = function _err(e, lineNum) {
     }
 };
 window.addEventListener('error', function (e) {
-    window['showError'](e, e['linenum']);
+    window.showError(e, e['linenum']);
 }, true);
 window.addEventListener('unhandledrejection', function (e) {
     console.error(e);
-    window['showError'](e, e['linenum']);
+    window.showError(e, e['linenum']);
 });
 
 /***/ }),
 
-/***/ 116:
+/***/ 122:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(117);
+var httpClient_1 = __webpack_require__(123);
 var devConsole = document.createElement('div');
 var css = {
     position: 'absolute',
@@ -224,21 +229,24 @@ window.addEventListener('load', function (e) {
     }, 1000);
 });
 window.addEventListener('error', function (e) {
-    if (e.error && e.error.name && e.error.name === 'DebugError') return;
+    var lineNum = e.lineno;
+    var colNum = e.colno;
+    var filename = e.filename;
+    if (e.error && e.error.name && e.error.name === 'DebugError') {
+        console.log(e);
+        return;
+    }
     try {
-        var lineNum_1 = e.lineno;
-        var colNum_1 = e.colno;
-        var filename = e.filename;
         var tmpl_1 = "\n\n  <div class=\"errorBlock\"> \n        <style>\n            .errorCol {color: #f30000;text-decoration: underline;}\n            .errorRow {\n                color: #bf1313;\n                font-weight: bold;\n            }\n            .errorBlock {\n                position: absolute;\n                left: 0;top:0;right:0;\n                border: 1px solid grey;\n                background-color: rgba(255,215,200,0.99);\n                font-family: monospace;\n                padding: 10px;\n            }\n            .errorClose {\n                position: absolute;\n                top: 5px;\n                right: 5px;\n                content: 'x';\n                width: 20px;\n                height: 20px;\n                cursor: pointer;\n                color: black;\n            }    \n       </style>\n       <div class=\"errorClose\" onclick=\"this.closest('.errorBlockHolder').remove();\">x</div>\n       <div>Runtime error!</div>\n       <div>" + filename + "</div>\n       <div>-------------------</div>\n       <pre>$_content</pre>\n  </div> \n  \n";
         httpClient_1.httpClient.get(filename, { r: Math.random() }, function (file) {
             var res = '';
             var strings = file.split('\n');
             var linesAfter = 5;
-            var errorString = strings[lineNum_1 - 1] || '';
-            errorString = errorString.substr(0, colNum_1 - 1) + "<span class=\"errorCol\">" + errorString[colNum_1 - 1] + "</span>" + errorString.substr(colNum_1);
+            var errorString = strings[lineNum - 1] || '';
+            errorString = errorString.substr(0, colNum - 1) + "<span class=\"errorCol\">" + errorString[colNum - 1] + "</span>" + errorString.substr(colNum);
             res += "<span class=\"errorRow\">" + errorString + "</span>\n";
             for (var i = 0; i < linesAfter; i++) {
-                var index = lineNum_1 + i;
+                var index = lineNum + i;
                 var s = strings[index];
                 if (s) res += s + '\n';
             }
@@ -255,7 +263,7 @@ window.addEventListener('error', function (e) {
 
 /***/ }),
 
-/***/ 117:
+/***/ 123:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -374,6 +382,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
             border:none;
             margin: 0;
             padding: 0;
+            overflow: hidden;
         }
         canvas {
             display: block;
@@ -383,7 +392,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
 </head>
 
 <body ontouchstart="">
-<script src="bundle.js?0"></script>
+<script src="bundle.js?295"></script>
 </body>
 
 </html>

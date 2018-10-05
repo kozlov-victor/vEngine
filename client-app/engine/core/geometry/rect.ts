@@ -5,7 +5,6 @@ declare const IN_EDITOR:boolean,DEBUG:boolean;
 import {Size} from "./size";
 import {Point2d} from "./point2d";
 import {ObjectPool} from "../misc/objectPool";
-import {_global} from "../global";
 import {ObservableEntity} from "./abstract/observableEntity";
 
 export class Rect extends ObservableEntity {
@@ -128,5 +127,3 @@ export class Rect extends ObservableEntity {
     }
 
 }
-
-_global['Rect'] = Rect;

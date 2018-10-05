@@ -1,19 +1,15 @@
+
+
 import {DebugError} from "../../../debugError";
-
-
-declare const IN_EDITOR:boolean,DEBUG:boolean;
-
 import {SpriteRectLightDrawer} from "./renderPrograms/impl/base/spriteRectLightDrawer";
 import {SpriteRectDrawer} from "./renderPrograms/impl/base/spriteRectDrawer";
 import {TiledSpriteRectDrawer} from "./renderPrograms/impl/base/tiledSpriteRectDrawer";
-import {ColorRectDrawer} from "./renderPrograms/impl/base/colorRectDrawer";
 import {AbstractDrawer, TextureInfo} from "./renderPrograms/abstract/abstractDrawer";
 import {LineDrawer} from "./renderPrograms/impl/base/lineDrawer";
-import {CircleDrawer} from "./renderPrograms/impl/base/circleDrawer";
+import {ShapeDrawer} from "./renderPrograms/impl/base/shapeDrawer";
 import {FrameBuffer} from "./base/frameBuffer";
 import {MatrixStack} from "./base/matrixStack";
 import * as mat4 from "../../geometry/mat4";
-import * as matEx from "../../mathEx";
 import {Texture} from "./base/texture";
 import {AddBlendDrawer} from "./renderPrograms/impl/blend/addBlendDrawer";
 import {Rect} from "../../geometry/rect";
@@ -27,9 +23,16 @@ import {DrawableInfo} from "./renderPrograms/interface/drawableInfo";
 import {IDrawer} from "./renderPrograms/interface/iDrawer";
 import {UniformsInfo} from "./renderPrograms/interface/uniformsInfo";
 import {Size} from "../../geometry/size";
-import {AbstractFilter} from "./filters/abstract/abstractFilter";
 import { ModelDrawer } from './renderPrograms/impl/base/modelDrawer';
 import {GameObject3d} from "../../../model/impl/gameObject3d";
+import {Ellipse} from "../../../model/impl/ui/drawable/ellipse";
+import {Rectangle} from "../../../model/impl/ui/drawable/rectangle";
+import {Image} from "../../../model/impl/ui/drawable/image";
+import {SHAPE_TYPE, FILL_TYPE} from "./renderPrograms/impl/base/shapeDrawer.frag";
+
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
+
 
 const getCtx = el=>{
     return (
@@ -76,15 +79,15 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
     private gl:WebGLRenderingContext;
     private matrixStack:MatrixStack;
-    private circleDrawer:CircleDrawer;
+    private shapeDrawer:ShapeDrawer;
     private spriteRectDrawer:SpriteRectDrawer;
     private spriteRectLightDrawer:SpriteRectLightDrawer;
     private tiledSpriteRectDrawer:TiledSpriteRectDrawer;
-    private colorRectDrawer:ColorRectDrawer;
     private modelDrawer:ModelDrawer;
     private lineDrawer:LineDrawer;
     private addBlendDrawer:AddBlendDrawer;
     private frameBuffer:FrameBuffer;
+    private nullTexture:Texture;
 
     constructor(game:Game){
         super(game);
@@ -97,11 +100,12 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     	let gl = getCtx(this.container);
     	this.gl = gl;
 
-        this.circleDrawer = new CircleDrawer(gl);
+    	this.nullTexture = new Texture(gl);
+
+        this.shapeDrawer = new ShapeDrawer(gl);
         this.spriteRectDrawer = new SpriteRectDrawer(gl);
         this.spriteRectLightDrawer = new SpriteRectLightDrawer(gl);
         this.tiledSpriteRectDrawer = new TiledSpriteRectDrawer(gl);
-        this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
         this.modelDrawer = new ModelDrawer(gl);
         this.addBlendDrawer = new AddBlendDrawer(gl);
@@ -141,36 +145,56 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     }
 
 
-    drawImage(texturePath:string,
-              srcRect:Rect,
-              dstRect:Rect){
-
-        let texture:Texture = this.renderableCache[texturePath].texture;
-        if (DEBUG && !texture) {
-            if (!texturePath) throw new DebugError(`no texture path provided`);
-            else throw new DebugError(`can not find texture with path ${texturePath}`);
+    drawImage(img:Image){
+        let texturePath = img.getDefaultResourcePath();
+        if (DEBUG && !this.renderableCache[texturePath]) {
+            throw new DebugError(`can not find texture with path ${texturePath}`);
         }
-        let texInfo:TextureInfo[] = [{texture,name:'texture'}];
-        let drawableInfo:DrawableInfo = {blendMode:'normal',acceptLight:false,alpha:1};
-        this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstRect);
-    }
-
-
-    drawImageEx(texturePath:string,
-                srcRect:Rect,
-                dstRect:Rect,
-                filters:AbstractFilter[],
-                drawableInfo:DrawableInfo,
-    ){
-        //if (!matEx.overlapTest(this.game.camera.getRectScaled(),dstRect)) return;
         let texture:Texture = this.renderableCache[texturePath].texture;
-        texture = texture.applyFilters(filters,this.frameBuffer);
-        if (DEBUG && !texture) {
-            if (!texturePath) throw new DebugError(`no texture path provided`);
-            else throw new DebugError(`can not find texture with path ${texturePath}`);
-        }
+        texture = texture.applyFilters(img.filters,this.frameBuffer);
         let texInfo:TextureInfo[] = [{texture,name:'texture'}];
-        this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstRect);
+        //this.game.debug2(img);
+        //let texInfo:TextureInfo[] = [{texture:this.nullTexture,name:'texture'}];
+        //this.drawTextureInfo(texInfo,img.getDrawableInfo(),ShaderMaterial.DEFAULT,img.srcRect, img.getRect());
+
+        let rw:number = img.getRect().width;
+        let rh:number = img.getRect().height;
+        let maxSize:number = Math.max(rw,rh);
+        let offsetX:number = 0,offsetY:number = 0;
+        let uniforms = {};
+        if (maxSize==rw) {
+            uniforms['u_width'] = 1;
+            uniforms['u_height'] = rh/rw;
+            offsetY = (maxSize - rh)/2;
+            uniforms['u_rectOffsetLeft'] = 0;
+            uniforms['u_rectOffsetTop'] = offsetY/maxSize;
+        } else {
+            uniforms['u_height'] = 1;
+            uniforms['u_width'] = rw/rh;
+            offsetX = (maxSize - rw)/2;
+            uniforms['u_rectOffsetLeft'] = offsetX/maxSize;
+            uniforms['u_rectOffsetTop'] = 0;
+        }
+        uniforms['u_vertexMatrix'] = makePositionMatrix(
+            Rect.fromPool().setXYWH( -offsetX, -offsetY,maxSize,maxSize),
+            Size.fromPool().setWH(this.game.width,this.game.height));
+        uniforms['u_lineWidth'] = Math.min(img.lineWidth/maxSize,1);
+        uniforms['u_borderRadius'] = Math.min(img.borderRadius/maxSize,1);
+        uniforms['u_color'] = img.color.asGL();
+        uniforms['u_fillColor'] = img.fillColor.asGL();
+        uniforms['u_shapeType'] = SHAPE_TYPE.RECT;
+        uniforms['u_fillType'] = FILL_TYPE.TEXTURE;
+
+        uniforms['u_texRect'] =
+            [
+                img.srcRect.x/texture.getSize().width,
+                img.srcRect.y/texture.getSize().height,
+                img.srcRect.width/texture.getSize().width,
+                img.srcRect.height/texture.getSize().height
+            ];
+
+
+        this.shapeDrawer.draw(texInfo,uniforms,null);
     }
 
     drawModel(g3d:GameObject3d){
@@ -223,7 +247,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         } else {
             drawer = this.spriteRectDrawer;
         }
-        drawer.draw(texInfo,uniforms,this.frameBuffer);
+        drawer.draw(texInfo,uniforms,this.frameBuffer); // todo remove uniforms variable
     }
 
     drawTiledImage(texturePath:string,
@@ -259,26 +283,32 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
     }
 
-    fillRect(rect:Rect, color:Color){
-
-        //if (!matEx.overlapTest(this.game.camera.getRectScaled(),rect)) return;
-        let uniforms = {
-            u_vertexMatrix: makePositionMatrix(
-                rect,
-                Size.fromPool().setWH(this.game.width,this.game.height)),
-            u_rgba: color.asGL()
-        };
-        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        this.colorRectDrawer.draw(null,uniforms,null);
-    }
-
-    drawRect(rect:Rect,color:Color,lineWidth:number){
-        let r:Rect = Rect.fromPool();
-        let [x,y,w,h] = [rect.x,rect.y,rect.width,rect.height];
-        this.fillRect(r.setXYWH(x, y, w, lineWidth), color);
-        this.fillRect(r.setXYWH(x, y + h - lineWidth, w, lineWidth), color);
-        this.fillRect(r.setXYWH(x , y, lineWidth, h - lineWidth), color);
-        this.fillRect(r.setXYWH(x + w, y, lineWidth, h), color);
+    drawRectangle(rectangle:Rectangle){
+        let rw:number = rectangle.width;
+        let rh:number = rectangle.height;
+        let maxSize:number = Math.max(rw,rh);
+        let offsetX:number = 0,offsetY:number = 0;
+        let uniforms = {};
+        if (maxSize==rw) {
+            uniforms['u_width'] = 1;
+            uniforms['u_height'] = rh/rw;
+            offsetY = (maxSize - rh)/2;
+        } else {
+            uniforms['u_height'] = 1;
+            uniforms['u_width'] = rw/rh;
+            offsetX = (maxSize - rw)/2;
+        }
+        uniforms['u_vertexMatrix'] = makePositionMatrix(
+            Rect.fromPool().setXYWH( -offsetX, -offsetY,maxSize,maxSize),
+            Size.fromPool().setWH(this.game.width,this.game.height));
+        uniforms['u_lineWidth'] = Math.min(rectangle.lineWidth/maxSize,1);
+        uniforms['u_borderRadius'] = Math.min(rectangle.borderRadius/maxSize,1);
+        uniforms['u_color'] = rectangle.color.asGL();
+        uniforms['u_fillColor'] = rectangle.fillColor.asGL();
+        uniforms['u_shapeType'] = SHAPE_TYPE.RECT;
+        uniforms['u_fillType'] = FILL_TYPE.COLOR;
+        let texInfo:TextureInfo[] = [{texture:this.nullTexture,name:'texture'}];
+        this.shapeDrawer.draw(texInfo,uniforms,null);
     }
 
     drawLine(x1:number,y1:number,x2:number,y2:number,color:Color){
@@ -294,17 +324,30 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         this.lineDrawer.draw(null,uniforms,null);
     }
 
-    fillCircle(x:number,y:number,r:number,color:Color){
-        let r2 = r*2;
-        //if (!matEx.overlapTest(this.game.camera.getRectScaled(),Rect.fromPool().setXYWH(x-r,y-r,r2,r2))) return;
+
+    drawEllipse(ellipse:Ellipse){
+        let maxR = Math.max(ellipse.radiusX,ellipse.radiusY);
+        let maxR2 = maxR*2;
+
         let uniforms:UniformsInfo = {} as UniformsInfo;
         uniforms['u_vertexMatrix'] = makePositionMatrix(
-            new Rect(x-r,y-r,r2,r2),
-            new Size(this.game.width,this.game.height) // tofo
+            Rect.fromPool().setXYWH(ellipse.pos.x,ellipse.pos.y,maxR2,maxR2),
+            Size.fromPool().setWH(this.game.width,this.game.height)
         );
-        uniforms['u_rgba'] = color.asGL();
-        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        this.circleDrawer.draw(null,uniforms,null);
+        uniforms['u_lineWidth'] = Math.min(ellipse.lineWidth/maxR,1);
+        if (maxR==ellipse.radiusX) {
+            uniforms['u_rx'] = 0.5;
+            uniforms['u_ry'] = ellipse.radiusY/ellipse.radiusX*0.5;
+        } else {
+            uniforms['u_ry'] = 0.5;
+            uniforms['u_rx'] = ellipse.radiusX/ellipse.radiusY*0.5;
+        }
+        uniforms['u_color'] = ellipse.color.asGL();
+        uniforms['u_fillColor'] = ellipse.fillColor.asGL();
+        uniforms['u_shapeType'] = SHAPE_TYPE.ELLIPSE;
+        uniforms['u_fillType'] = FILL_TYPE.COLOR;
+        let texInfo:TextureInfo[] = [{texture:this.nullTexture,name:'texture'}];
+        this.shapeDrawer.draw(texInfo,uniforms,null);
     }
 
     setAlpha(a:number){
@@ -355,7 +398,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     }
 
     clearColor(color:Color){
-        let arr:Array<number> = color.asGL();
+        let arr:number[] = color.asGL();
         this.gl.clearColor(arr[0],arr[1],arr[2],arr[3]);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     }
@@ -375,6 +418,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         this.scale(1,-1);
 
         let texToDraw = this.frameBuffer.getTexture().applyFilters(filters,null);
+
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.width,fullScreen.height);
 
@@ -405,7 +449,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
             onLoad();
             return;
         }
-        let img = new Image();
+        let img:HTMLImageElement = new (window as any).Image() as HTMLImageElement;
         let resource = this.getResource(resourcePath);
         if (DEBUG && !resource) throw new DebugError(`can not find resource with path ${resourcePath}`);
         img.src = resource;
