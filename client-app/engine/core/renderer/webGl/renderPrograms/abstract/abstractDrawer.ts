@@ -1,32 +1,16 @@
 
 
-declare const DEBUG:boolean;
-
+import {isEqual, isArray} from "../../../../misc/object";
 import {AbstractPrimitive} from "../../primitives/abstractPrimitive";
 import {ShaderProgram} from "../../base/shaderProgram";
-import {Texture} from "../../base/texture";
 import {BufferInfo} from "../../base/bufferInfo";
 import {FrameBuffer} from "../../base/frameBuffer";
 import {IDrawer} from "../interface/iDrawer";
 import {UniformsInfo} from "../interface/uniformsInfo";
 import {Size} from "../../../../geometry/size";
 
-let isArray = (a:any):a is any[]=> {
-    return a.splice;
-};
 
-let isEqualArray = (a:any[],b:any[]):boolean=>{
-    for (let i=0,max=a.length;i<max;i++) {
-        if (a[i]!==b[i]) return false;
-    }
-    return true;
-};
-
-let isEqual = (a,b):boolean=>{
-    if (a===undefined) return false;
-    if (isArray(a) && isArray(b)) return isEqualArray(a as any[],b as any[]);
-    return a===b;
-};
+declare const DEBUG:boolean;
 
 export interface TextureInfo {
     texture:any,
@@ -78,9 +62,16 @@ export class AbstractDrawer implements IDrawer{
     }
 
     setUniform(name:string,value:any){
-        //if (isEqual(this.uniformCache[name],value)) return;
-        this.program.setUniform(name,value);
-        this.uniformCache[name]=value;
+        if (isEqual(this.uniformCache[name],value)) return;
+        if (isArray(value)) {
+            if (!this.uniformCache[name]) this.uniformCache[name] = Array(value.length);
+            for (let i:number=0,max:number=value.length;i<max;i++) {
+                this.uniformCache[name][i] = value[i];
+            }
+        } else {
+            this.uniformCache[name]=value;
+        }
+        this.program.setUniform(name,this.uniformCache[name]);
     }
 
     drawElements(){

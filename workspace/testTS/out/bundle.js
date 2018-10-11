@@ -552,7 +552,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var rect_1 = __webpack_require__(1);
 var mouse_1 = __webpack_require__(26);
-var renderableModel_1 = __webpack_require__(20);
+var renderableModel_1 = __webpack_require__(21);
 var debugError_1 = __webpack_require__(0);
 var OVERFLOW;
 (function (OVERFLOW) {
@@ -1705,20 +1705,7 @@ exports.IDENTITY = exports.makeIdentity();
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var isArray = function (a) {
-    return a.splice;
-};
-var isEqualArray = function (a, b) {
-    for (var i = 0, max = a.length; i < max; i++) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
-};
-var isEqual = function (a, b) {
-    if (a === undefined) return false;
-    if (isArray(a) && isArray(b)) return isEqualArray(a, b);
-    return a === b;
-};
+var object_1 = __webpack_require__(17);
 var AbstractDrawer = function () {
     function AbstractDrawer(gl) {
         this.program = null;
@@ -1746,8 +1733,16 @@ var AbstractDrawer = function () {
         });
     };
     AbstractDrawer.prototype.setUniform = function (name, value) {
-        this.program.setUniform(name, value);
-        this.uniformCache[name] = value;
+        if (object_1.isEqual(this.uniformCache[name], value)) return;
+        if (object_1.isArray(value)) {
+            if (!this.uniformCache[name]) this.uniformCache[name] = Array(value.length);
+            for (var i = 0, max = value.length; i < max; i++) {
+                this.uniformCache[name][i] = value[i];
+            }
+        } else {
+            this.uniformCache[name] = value;
+        }
+        this.program.setUniform(name, this.uniformCache[name]);
     };
     AbstractDrawer.prototype.drawElements = function () {
         this.bufferInfo.draw();
@@ -1994,6 +1989,48 @@ exports.Tween = Tween;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isObjectMatch = function (obj, query) {
+    if (!(obj && query)) return false;
+    var match = true;
+    var keys = Object.keys(query);
+    if (!keys.length) return false;
+    keys.some(function (key) {
+        if (obj[key] != query[key]) {
+            match = false;
+            return true;
+        }
+    });
+    return match;
+};
+exports.isObject = function (obj) {
+    return obj === Object(obj);
+};
+exports.isArray = function (a) {
+    return !!a.splice;
+};
+var isEqualArray = function (a, b) {
+    for (var i = 0, max = a.length; i < max; i++) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+};
+var isEqualObject = function (a, b) {
+    throw 'not implemented';
+};
+exports.isEqual = function (a, b) {
+    if (a === undefined) return false;
+    if (exports.isArray(a) && exports.isArray(b)) return isEqualArray(a, b);else if (exports.isObject(a) && exports.isObject(b)) return isEqualObject(a, b);
+    return a === b;
+};
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
 var vertexBuffer_1 = __webpack_require__(68);
 var indexBuffer_1 = __webpack_require__(69);
@@ -2067,7 +2104,7 @@ var BufferInfo = function () {
 exports.BufferInfo = BufferInfo;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2394,7 +2431,7 @@ var TextField = function (_super) {
 exports.TextField = TextField;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2489,7 +2526,7 @@ var GameObject = function (_super) {
 exports.GameObject = GameObject;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2513,10 +2550,10 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var resource_1 = __webpack_require__(21);
+var resource_1 = __webpack_require__(22);
 var debugError_1 = __webpack_require__(0);
 var mathEx_1 = __webpack_require__(7);
-var object_1 = __webpack_require__(22);
+var object_1 = __webpack_require__(17);
 var RenderableModel = function (_super) {
     __extends(RenderableModel, _super);
     function RenderableModel() {
@@ -2613,7 +2650,7 @@ var RenderableModel = function (_super) {
 exports.RenderableModel = RenderableModel;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2672,31 +2709,6 @@ var Resource = function (_super) {
     return Resource;
 }(baseModel_1.BaseModel);
 exports.Resource = Resource;
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isObjectMatch = function (obj, query) {
-    if (!(obj && query)) return false;
-    var match = true;
-    var keys = Object.keys(query);
-    if (!keys.length) return false;
-    keys.some(function (key) {
-        if (obj[key] != query[key]) {
-            match = false;
-            return true;
-        }
-    });
-    return match;
-};
-exports.isObject = function (obj) {
-    return obj === Object(obj);
-};
 
 /***/ }),
 /* 23 */
@@ -3127,7 +3139,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var renderableModel_1 = __webpack_require__(20);
+var renderableModel_1 = __webpack_require__(21);
 var color_1 = __webpack_require__(2);
 var Shape = function (_super) {
     __extends(Shape, _super);
@@ -3248,7 +3260,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var point2d_1 = __webpack_require__(3);
 var rect_1 = __webpack_require__(1);
 var shaderMaterial_1 = __webpack_require__(53);
-var renderableModel_1 = __webpack_require__(20);
+var renderableModel_1 = __webpack_require__(21);
 var cloneId = 0;
 var GameObjectProto = function (_super) {
     __extends(GameObjectProto, _super);
@@ -3351,7 +3363,7 @@ var GameObjectProto = function (_super) {
     return GameObjectProto;
 }(renderableModel_1.RenderableModel);
 exports.GameObjectProto = GameObjectProto;
-var gameObject_1 = __webpack_require__(19);
+var gameObject_1 = __webpack_require__(20);
 
 /***/ }),
 /* 30 */
@@ -3858,7 +3870,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var plane_1 = __webpack_require__(35);
 var shaderProgram_1 = __webpack_require__(8);
 var abstractDrawer_1 = __webpack_require__(13);
-var bufferInfo_1 = __webpack_require__(17);
+var bufferInfo_1 = __webpack_require__(18);
 var texShaderGenerator_1 = __webpack_require__(25);
 var SpriteRectDrawer = function (_super) {
     __extends(SpriteRectDrawer, _super);
@@ -3889,7 +3901,7 @@ exports.SpriteRectDrawer = SpriteRectDrawer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var button_1 = __webpack_require__(41);
 exports.Button = button_1.Button;
-var textField_1 = __webpack_require__(18);
+var textField_1 = __webpack_require__(19);
 exports.TextField = textField_1.TextField;
 var vscroll_1 = __webpack_require__(80);
 exports.VScroll = vscroll_1.VScroll;
@@ -3942,7 +3954,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var container_1 = __webpack_require__(4);
-var textField_1 = __webpack_require__(18);
+var textField_1 = __webpack_require__(19);
 var debugError_1 = __webpack_require__(0);
 var Button = function (_super) {
     __extends(Button, _super);
@@ -5285,7 +5297,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var gameObject_1 = __webpack_require__(19);
+var gameObject_1 = __webpack_require__(20);
 var GameObject3d = function (_super) {
     __extends(GameObject3d, _super);
     function GameObject3d() {
@@ -6432,7 +6444,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var line_1 = __webpack_require__(67);
 var shaderProgram_1 = __webpack_require__(8);
-var bufferInfo_1 = __webpack_require__(17);
+var bufferInfo_1 = __webpack_require__(18);
 var abstractDrawer_1 = __webpack_require__(13);
 var colorShaderGenerator_1 = __webpack_require__(70);
 var LineDrawer = function (_super) {
@@ -6670,7 +6682,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgram_1 = __webpack_require__(8);
 var abstractDrawer_1 = __webpack_require__(13);
-var bufferInfo_1 = __webpack_require__(17);
+var bufferInfo_1 = __webpack_require__(18);
 var plane_1 = __webpack_require__(35);
 var shaderProgramUtils_1 = __webpack_require__(5);
 var shapeDrawer_frag_1 = __webpack_require__(36);
@@ -7027,7 +7039,7 @@ exports.AbstractCanvasRenderer = AbstractCanvasRenderer;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var textField_1 = __webpack_require__(18);
+var textField_1 = __webpack_require__(19);
 var device_1 = __webpack_require__(88);
 var size_1 = __webpack_require__(15);
 var debugError_1 = __webpack_require__(0);
@@ -7753,9 +7765,9 @@ var LinearGradient = function () {
         this._arr[6] = cTo[2];
         this._arr[7] = cTo[3];
         this._arr[8] = this.angle;
-        this._arr[9] = this.angle;
-        this._arr[10] = this.angle;
-        this._arr[11] = this.angle;
+        this._arr[9] = 0;
+        this._arr[10] = 0;
+        this._arr[11] = 0;
         return this._arr;
     };
     return LinearGradient;
@@ -7872,7 +7884,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgram_1 = __webpack_require__(8);
 var abstractDrawer_1 = __webpack_require__(13);
-var bufferInfo_1 = __webpack_require__(17);
+var bufferInfo_1 = __webpack_require__(18);
 var debugError_1 = __webpack_require__(0);
 var vertexShader = "\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}\n";
 var textureShader = "\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D u_texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(u_texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}\n\n";
@@ -8047,7 +8059,7 @@ var spriteSheet_1 = __webpack_require__(93);
 exports.SpriteSheet = spriteSheet_1.SpriteSheet;
 var gameObjectProto_1 = __webpack_require__(29);
 exports.GameObjectProto = gameObjectProto_1.GameObjectProto;
-var gameObject_1 = __webpack_require__(19);
+var gameObject_1 = __webpack_require__(20);
 exports.GameObject = gameObject_1.GameObject;
 var commonBehaviour_1 = __webpack_require__(94);
 exports.CommonBehaviour = commonBehaviour_1.CommonBehaviour;
@@ -8061,7 +8073,7 @@ var font_1 = __webpack_require__(100);
 exports.Font = font_1.Font;
 var layer_1 = __webpack_require__(46);
 exports.Layer = layer_1.Layer;
-var textField_1 = __webpack_require__(18);
+var textField_1 = __webpack_require__(19);
 exports.TextField = textField_1.TextField;
 var button_1 = __webpack_require__(41);
 exports.Button = button_1.Button;
@@ -8205,7 +8217,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var rect_1 = __webpack_require__(1);
-var resource_1 = __webpack_require__(21);
+var resource_1 = __webpack_require__(22);
 var SpriteSheet = function (_super) {
     __extends(SpriteSheet, _super);
     function SpriteSheet(game) {
@@ -8406,7 +8418,7 @@ var layer_1 = __webpack_require__(46);
 var ambientLight_1 = __webpack_require__(98);
 var color_1 = __webpack_require__(2);
 var camera_1 = __webpack_require__(48);
-var object_1 = __webpack_require__(22);
+var object_1 = __webpack_require__(17);
 var Scene = function (_super) {
     __extends(Scene, _super);
     function Scene(game) {
@@ -8762,7 +8774,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
 var rect_1 = __webpack_require__(1);
-var resource_1 = __webpack_require__(21);
+var resource_1 = __webpack_require__(22);
 var FontContext = function () {
     function FontContext() {
         this.width = 0;
@@ -9084,7 +9096,7 @@ exports.PointLight = PointLight;
 Object.defineProperty(exports, "__esModule", { value: true });
 var allUIClasses = __webpack_require__(40);
 var debugError_1 = __webpack_require__(0);
-var object_1 = __webpack_require__(22);
+var object_1 = __webpack_require__(17);
 var UIBuilder = function () {
     function UIBuilder(game) {
         var _this = this;
