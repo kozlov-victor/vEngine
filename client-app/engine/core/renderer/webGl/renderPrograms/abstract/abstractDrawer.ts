@@ -11,11 +11,11 @@ import {IDrawer} from "../interface/iDrawer";
 import {UniformsInfo} from "../interface/uniformsInfo";
 import {Size} from "../../../../geometry/size";
 
-let isArray = (a:any):a is Array<any>=> {
+let isArray = (a:any):a is any[]=> {
     return a.splice;
 };
 
-let isEqualArray = (a:Array<any>,b:Array<any>):boolean=>{
+let isEqualArray = (a:any[],b:any[]):boolean=>{
     for (let i=0,max=a.length;i<max;i++) {
         if (a[i]!==b[i]) return false;
     }
@@ -24,7 +24,7 @@ let isEqualArray = (a:Array<any>,b:Array<any>):boolean=>{
 
 let isEqual = (a,b):boolean=>{
     if (a===undefined) return false;
-    if (isArray(a) && isArray(b)) return isEqualArray(a as Array<any>,b as Array<any>);
+    if (isArray(a) && isArray(b)) return isEqualArray(a as any[],b as any[]);
     return a===b;
 };
 
@@ -78,7 +78,7 @@ export class AbstractDrawer implements IDrawer{
     }
 
     setUniform(name:string,value:any){
-        if (isEqual(this.uniformCache[name],value)) return;
+        //if (isEqual(this.uniformCache[name],value)) return;
         this.program.setUniform(name,value);
         this.uniformCache[name]=value;
     }

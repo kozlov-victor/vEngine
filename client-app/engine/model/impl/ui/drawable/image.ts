@@ -1,9 +1,9 @@
 import {Game} from "../../../../core/game";
 import {Rect} from "../../../../core/geometry/rect";
-import {Container} from "../generic/container";
 import {DebugError} from "../../../../debugError";
 import {Shape} from "../generic/shape";
-import {Color} from "../../../../core/color";
+import {Color} from "../../../../core/renderer/color";
+import {Point2d} from "../../../../core/geometry/point2d";
 
 declare const DEBUG: boolean;
 
@@ -11,10 +11,11 @@ export class Image extends Shape {
 
     srcRect:Rect = new Rect();
     borderRadius:number = 0;
+    offset:Point2d = new Point2d();
 
     constructor(game: Game) {
         super(game);
-        this.fillColor.set(Color.NONE);
+        (this.fillColor as Color).set(Color.NONE);
     }
 
     setSrc(uri:string){

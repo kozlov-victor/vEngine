@@ -13,7 +13,7 @@ export class WsClient {
 
         socket.onclose = (event)=> {
             if (!event.wasClean) {
-                console.log('ws error',event);
+                throw event;
             } else {
                 console.log('closed');
             }

@@ -1,4 +1,5 @@
 
+import {normalizeUniformName} from "../../base/shaderProgramUtils";
 declare const DEBUG:boolean;
 
 export class ShaderGenerator {
@@ -18,17 +19,17 @@ export class ShaderGenerator {
 
     addVertexUniform(type:string,name:string){
         this.vertexUniforms.push({type,name});
-        return name;
+        return normalizeUniformName(name);
     }
 
     addFragmentUniform(type,name){
         this.fragmentUniforms.push({type,name});
-        return name;
+        return normalizeUniformName(name);
     }
 
     addAttribute(type,name){
         this.attributes.push({type,name});
-        return name;
+        return normalizeUniformName(name);
     }
 
     addVarying(type,name){

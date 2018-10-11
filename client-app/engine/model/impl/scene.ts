@@ -7,15 +7,14 @@ import {Layer} from "./layer";
 import {AbstractFilter} from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {Game} from "../../core/game";
 import {AmbientLight} from "../../core/light/ambientLight";
-import {Color} from "../../core/color";
+import {Color} from "../../core/renderer/color";
 import {SpriteSheet} from "./spriteSheet";
-import {CAMERA_MATRIX_MODE} from "../../core/camera";
+import {CAMERA_MATRIX_MODE} from "../../core/renderer/camera";
 import {Resource} from "../resource";
 import {TextField} from "./ui/components/textField";
 import {ParticleSystem} from "./particleSystem";
 import {Sound} from "./sound";
-import {DebugError} from "../../debugError";
-import {RenderableModel} from "../../model/renderableModel";
+import {RenderableModel} from "../renderableModel";
 import {isObjectMatch} from "../../core/misc/object";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
@@ -92,8 +91,7 @@ export class Scene extends BaseModel  {
     }
 
     addGameObject(go){
-        console.trace('scene:addGameObject is deprecated'); // todo remove after completeon
-        this.getDefaultLayer().appendChild(go);
+        throw 'scene:addGameObject is deprecated'; // todo remove after completeon
     }
 
     appendChild(go){

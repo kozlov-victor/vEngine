@@ -30,7 +30,6 @@ export class NinePatchImage extends Image {
         super(game);
         for (let i=0;i<9;i++) {
             this._patches[i] = new Image(this.game);
-            this.appendChild(this._patches[i]);
         }
         this.getRect().observe(()=>{this.revalidate()});
     }
@@ -109,6 +108,9 @@ export class NinePatchImage extends Image {
     }
 
     draw():boolean{
+        for (let i=0;i<9;i++) {
+            this._patches[i].render(true);
+        }
         return true;
     }
 

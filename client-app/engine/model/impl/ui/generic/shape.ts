@@ -1,14 +1,15 @@
 
 import {RenderableModel} from "../../../renderableModel";
-import {Color} from "../../../../core/color";
+import {Color} from "../../../../core/renderer/color";
 import {Game} from "../../../../core/game";
 import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
+import {LinearGradient} from "../../../../core/renderer/linearGradient";
 
 export abstract class Shape extends RenderableModel {
 
     color:Color = Color.BLACK.clone();
     lineWidth:number = 0;
-    fillColor:Color = Color.RGB(100,100,100);
+    fillColor:Color|LinearGradient = Color.RGB(100,100,100);
 
     setWH(w:number,h:number){
         this.setXYWH(this.pos.x,this.pos.y,w,h);

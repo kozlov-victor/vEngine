@@ -3,7 +3,7 @@ import {DebugError} from "../../../debugError";
 declare const DEBUG:boolean;
 
 import {Game} from "../../game";
-import {Color} from "../../color";
+import {Color} from "../../renderer/color";
 import {Transient} from "../../misc/decorators";
 
 @Transient({

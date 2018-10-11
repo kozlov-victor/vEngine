@@ -1,6 +1,6 @@
 
 import {Rectangle} from "./rectangle";
-import {Color} from "../../../../core/color";
+import {Color} from "../../../../core/renderer/color";
 import {Game} from "../../../../core/game";
 
 export class Border extends Rectangle {

@@ -86,21 +86,21 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 128);
+/******/ 	return __webpack_require__(__webpack_require__.s = 127);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 128:
+/***/ 127:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(129);
-module.exports = __webpack_require__(130);
+__webpack_require__(128);
+module.exports = __webpack_require__(129);
 
 
 /***/ }),
 
-/***/ 129:
+/***/ 128:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -145,7 +145,7 @@ var _showErrToConsole = function (e, lineNum) {
     console.log(_prepareMessage(e, lineNum));
 };
 var _showErrorToDom = function (el, e, lineNum) {
-    el.textContent = _prepareMessage(e, lineNum);
+    el.innerHTML = _prepareMessage(e, lineNum);
 };
 var lastErr = '';
 window.showError = function _err(e, lineNum) {
@@ -196,14 +196,14 @@ window.addEventListener('unhandledrejection', function (e) {
 
 /***/ }),
 
-/***/ 130:
+/***/ 129:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(131);
+var httpClient_1 = __webpack_require__(130);
 var devConsole = document.createElement('div');
 var css = {
     position: 'absolute',
@@ -263,7 +263,7 @@ window.addEventListener('error', function (e) {
 
 /***/ }),
 
-/***/ 131:
+/***/ 130:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -392,7 +392,7 @@ exports.httpClient = { get: get, post: post, postMultiPart: postMultiPart };
 </head>
 
 <body ontouchstart="">
-<script src="bundle.js?305"></script>
+<script src="bundle.js?356"></script>
 </body>
 
 </html>

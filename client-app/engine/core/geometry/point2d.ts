@@ -146,7 +146,7 @@ export class Point2d extends ObservableEntity{
         return {x:this._x,y:this._y}
     }
 
-    toArray():Array<number>{
+    toArray():number[]{
         if (!this._arr) this._arr = new Array(2);
         this._arr[0] = this._x;
         this._arr[1] = this._y;

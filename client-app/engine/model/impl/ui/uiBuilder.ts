@@ -94,6 +94,13 @@ export class UIBuilder {
                     instance[setterName].apply(instance,args);
                 }
                 else {
+
+                    if (desc[propName].type) {
+                        let Cl:Clazz<Container> = this._components[desc[propName].type] as Clazz<Container>;
+                        if (!Cl) throw new DebugError(`unknown type: ${desc[propName].type}`);
+                        instance[propName] = new Cl(this.game);
+                    }
+
                     if (instance[propName] && instance[propName].fromJSON) {
                         instance[propName].fromJSON(desc[propName]);
                     }

@@ -1,5 +1,6 @@
 import {Game} from '@engine/core/game';
 import {LAYOUT_SIZE} from "@engine/model/impl/ui/generic/container";
+import {LinearGradient} from "@engine/core/renderer/linearGradient";
 
 export class MainSceneBehaviour {
 
@@ -27,8 +28,13 @@ export class MainSceneBehaviour {
                     },
                     {
                         Ellipse:{
+                            id:"ellipse",
                             pos:{x:300,y:10},
-                            fillColor: {r:10,g:10,b:100},
+                            fillColor: {
+                                type: 'LinearGradient',
+                                colorFrom: {r:100,g:10,b:10,a:200},
+                                colorTo: {r:10,g:100,b:10,a:200}
+                            },
                             lineWidth: 2,
                             radiusX: 50,
                             radiusY: 40
@@ -44,6 +50,7 @@ export class MainSceneBehaviour {
                     },
                     {
                         Image: {
+                            id:'logo',
                             pos:{x:100,y:200},
                             width:200,
                             height:50,

@@ -54,7 +54,7 @@ let _showErrToConsole = function(e,lineNum){
 };
 
 let _showErrorToDom = function(el,e,lineNum) {
-    el.textContent = _prepareMessage(e,lineNum);
+    el.innerHTML = _prepareMessage(e,lineNum);
 };
 
 

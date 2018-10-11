@@ -5,16 +5,13 @@
 import {AbstractFilter} from "../webGl/filters/abstract/abstractFilter";
 import {TextField} from '../../../model/impl/ui/components/textField'
 import {Device} from '../../device'
-import {SCALE_STRATEGY} from "../../misc/consts";
 import {Game} from "../../game";
 import {GameObjectProto} from '../../../model/impl/gameObjectProto';
 import {Rect} from "../../geometry/rect";
 import {Point2d} from "../../geometry/point2d";
-import {Color} from "../../color";
+import {Color} from "../../renderer/color";
 import {TextureInfo} from "../webGl/renderPrograms/abstract/abstractDrawer";
-import {Texture} from "../webGl/base/texture";
 import {Size} from "../../geometry/size";
-import {DrawableInfo} from "../webGl/renderPrograms/interface/drawableInfo";
 import {DebugError} from "../../../debugError";
 import {Rectangle} from "../../../model/impl/ui/drawable/rectangle";
 import {Ellipse} from "../../../model/impl/ui/drawable/ellipse";
@@ -84,7 +81,7 @@ export class AbstractRenderer {
         window.removeEventListener('resize',this.onResize);
     }
 
-    getError(){
+    getError():number{
         return 0;
     }
 

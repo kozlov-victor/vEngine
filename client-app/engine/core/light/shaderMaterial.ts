@@ -1,5 +1,5 @@
 
-import {Color} from "../color";
+import {Color} from "../renderer/color";
 
 export class ShaderMaterial {
 

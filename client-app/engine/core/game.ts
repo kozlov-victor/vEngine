@@ -2,10 +2,6 @@ import {Layer} from "../model/impl/layer";
 import {GameObject3d} from "../model/impl/gameObject3d";
 import './misc/polyfills'
 
-declare const DEBUG:boolean,IN_EDITOR:boolean,PROJECT_NAME:string;
-declare const setTimeout: (f:Function,n:number)=>number;
-declare const setInterval: (f:Function,n:number)=>number;
-
 import {BaseAbstractBehaviour} from "../commonBehaviour/abstract/baseAbstractBehaviour";
 import {RendererFactory} from './renderer/rendererFactory'
 import {Repository} from './repository';
@@ -15,7 +11,7 @@ import {GamePad} from './control/gamePad'
 import {Transient} from './misc/decorators'
 
 import {CommonObject} from '../model/commonObject'
-import {Camera} from './camera'
+import {Camera} from './renderer/camera'
 import {SCALE_STRATEGY} from "./misc/consts";
 import {Point2d} from "./geometry/point2d";
 import {AbstractRenderer} from "./renderer/abstract/abstractRenderer";
@@ -23,7 +19,6 @@ import {Scene} from '../model/impl/scene';
 import {LightArray} from "./light/lightArray";
 import {UIBuilder} from "../model/impl/ui/uiBuilder";
 import {ColliderEngine} from "./physics/colliderEngine";
-import * as MathEx from "../core/mathEx";
 import {GameObject} from "../model/impl/gameObject";
 import {DebugError} from "../debugError";
 import {AudioPlayer} from "./media/audioPlayer";
@@ -32,7 +27,9 @@ import {EarClippingTriangulator} from "../model/impl/ui/drawable/helpers/earClip
 declare let window:any;
 declare let require:Function;
 
-
+declare const DEBUG:boolean,IN_EDITOR:boolean,PROJECT_NAME:string;
+declare const setTimeout: (f:Function,n:number)=>number;
+declare const setInterval: (f:Function,n:number)=>number;
 
 @Transient({
     repository: true,

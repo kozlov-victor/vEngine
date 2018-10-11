@@ -4,7 +4,7 @@ export enum SHAPE_TYPE {
 }
 
 export enum FILL_TYPE {
-    COLOR,TEXTURE
+    COLOR,TEXTURE,LINEAR_GRADIENT
 }
 
 export const fragmentSource = `
@@ -16,11 +16,22 @@ export const fragmentSource = `
 
 vec4 getFillColor(){
     if (u_fillType==${FILL_TYPE.COLOR}) return u_fillColor;
+    else if (u_fillType==${FILL_TYPE.LINEAR_GRADIENT}) {
+        vec2 polarCoords = vec2(length(v_position.xy),atan(v_position.y/v_position.x));
+        polarCoords.y+=u_fillLinearGradient[2].x;
+        vec2 rectCoords = vec2(polarCoords.x*cos(polarCoords.y),polarCoords.x*sin(polarCoords.y));
+        return mix(u_fillLinearGradient[0],u_fillLinearGradient[1],rectCoords.x);
+        //return vec4(u_fillLinearGradient[0].x,u_fillLinearGradient[0].y,u_fillLinearGradient[0].z,ONE);
+    }
     else if (u_fillType==${FILL_TYPE.TEXTURE}) {
-        float tx = u_texRect[0]+(v_position.x-u_rectOffsetLeft)/u_width*u_texRect[2]; 
-        float ty = u_texRect[1]+(v_position.y-u_rectOffsetTop)/u_height*u_texRect[3];
-        return texture2D(texture, vec2(tx,ty));
-    }    
+        float tx = (v_position.x-u_rectOffsetLeft)/u_width*u_texRect[2]; 
+        float ty = (v_position.y-u_rectOffsetTop)/u_height*u_texRect[3];
+        vec2 txVec = vec2(tx,ty);
+        txVec += fract(u_texOffset);
+        txVec = mod(txVec,u_texRect.zw);
+        txVec += u_texRect.xy;
+        return texture2D(texture, txVec);
+    }
     else return ERROR_COLOR;
 }
 float calcRadiusAtAngle(float x,float y) {
@@ -85,3 +96,7 @@ void main(){
 
 
 `;
+
+
+// float mixVal = distance(v_position.xy,vec2(HALF,HALF));
+// return mix(u_fillLinearGradient[0],u_fillLinearGradient[1],mixVal);
