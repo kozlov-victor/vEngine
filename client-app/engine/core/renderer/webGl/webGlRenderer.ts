@@ -26,6 +26,7 @@ import {Rectangle} from "../../../model/impl/ui/drawable/rectangle";
 import {Image} from "../../../model/impl/ui/drawable/image";
 import {SHAPE_TYPE, FILL_TYPE} from "./renderPrograms/impl/base/shapeDrawer.frag";
 import {Scene} from "../../../model/impl/scene";
+import {Shape} from "../../../model/impl/ui/generic/shape";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -77,6 +78,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     private nullTexture:Texture;
     private flipTextureInfo:TextureInfo[];
     private flipUniformInfo:UniformsInfo;
+    private currShapeUniformInfo:UniformsInfo;
 
     constructor(game:Game){
         super(game);
@@ -101,6 +103,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
         this._initFlipTexture();
+        this.currShapeUniformInfo = {} as UniformsInfo;
         // gl.depthFunc(gl.LEQUAL);
     }
 
@@ -110,7 +113,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         let offsetX:number = 0, offsetY:number = 0;
         let rw:number = fullScreen.width, rh:number = fullScreen.height;
         let maxSize:number = Math.max(rw,rh);
-        let uniforms:UniformsInfo = this.flipUniformInfo = {};
+        let uniforms:UniformsInfo = this.flipUniformInfo = {} as UniformsInfo;
         let sd:ShapeDrawer = this.shapeDrawer;
         if (maxSize==rw) {
             uniforms[sd.u_width] = 1;
@@ -138,51 +141,42 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         uniforms[sd.u_fillType] = FILL_TYPE.TEXTURE;
         uniforms[sd.u_texRect] = [0,0,1,1];
         uniforms[sd.u_texOffset] = [0,0];
+        uniforms[sd.u_alpha] = 1;
     }
 
     draw(renderable:GameObjectProto){
-
-        let texToDraw:Texture = this.renderableCache[renderable.spriteSheet.getDefaultResourcePath()].texture;
-        texToDraw = texToDraw.applyFilters(renderable.filters,this.frameBuffer);
-
-
-        let texInfo:TextureInfo[] = [{texture:texToDraw,name:'texture'}];
-        if (renderable.spriteSheet.hasResourceWithName('normalMap')) {
-            texInfo.push({
-                texture:this.renderableCache[renderable.spriteSheet.getResourcePathByName('normalMap')].texture,
-                name: 'normalTexture'
-            });
-        }
-        let drawableInfo:DrawableInfo = { // todo move to renderable
-            blendMode:renderable.blendMode,
-            acceptLight:renderable.acceptLight,
-            alpha: renderable.alpha
-        };
-        this.drawTextureInfo(
-            texInfo,
-            drawableInfo,
-            renderable.shaderMaterial,
-            renderable.getFrameRect(),
-            Rect.fromPool().setXYWH(0,0,renderable.getFrameRect().width,renderable.getFrameRect().height)
-        );
+        this.drawImage(renderable.spriteSheet);
+        // let texToDraw:Texture = this.renderableCache[renderable.spriteSheet.getDefaultResourcePath()].texture;
+        // texToDraw = texToDraw.applyFilters(renderable.filters,this.frameBuffer);
+        // let texInfo:TextureInfo[] = [{texture:texToDraw,name:'texture'}];
+        // if (renderable.spriteSheet.hasResourceWithName('normalMap')) {
+        //     texInfo.push({
+        //         texture:this.renderableCache[renderable.spriteSheet.getResourcePathByName('normalMap')].texture,
+        //         name: 'normalTexture'
+        //     });
+        // }
+        // let drawableInfo:DrawableInfo = { // todo move to renderable
+        //     blendMode:renderable.blendMode,
+        //     acceptLight:renderable.acceptLight,
+        //     alpha: renderable.alpha
+        // };
+        // this.drawTextureInfo(
+        //     texInfo,
+        //     drawableInfo,
+        //     renderable.shaderMaterial,
+        //     renderable.getFrameRect(),
+        //     Rect.fromPool().setXYWH(0,0,renderable.getFrameRect().width,renderable.getFrameRect().height)
+        // );
     }
 
 
-    drawImage(img:Image){
-        let texturePath = img.getDefaultResourcePath();
-        if (DEBUG && !this.renderableCache[texturePath]) {
-            throw new DebugError(`can not find texture with path ${texturePath}`);
-        }
-        let texture:Texture = this.renderableCache[texturePath].texture;
-        texture = texture.applyFilters(img.filters,this.frameBuffer);
-        let texInfo:TextureInfo[] = [{texture,name:'texture'}];
-
-        let rw:number = img.getRect().width;
-        let rh:number = img.getRect().height;
+    private prepareShapeUniformInfo(shape:Shape):UniformsInfo{
+        let uniforms:UniformsInfo = this.currShapeUniformInfo;
+        let rw:number = shape.getRect().width;
+        let rh:number = shape.getRect().height;
         let maxSize:number = Math.max(rw,rh);
         let offsetX:number = 0,offsetY:number = 0;
         let sd:ShapeDrawer = this.shapeDrawer;
-        let uniforms:UniformsInfo = {};
         if (maxSize==rw) {
             uniforms[sd.u_width] = 1;
             uniforms[sd.u_height] = rh/rw;
@@ -199,10 +193,35 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         uniforms[sd.u_vertexMatrix] = makePositionMatrix(
             Rect.fromPool().setXYWH( -offsetX, -offsetY,maxSize,maxSize),
             Size.fromPool().setWH(this.game.width,this.game.height));
-        uniforms[sd.u_lineWidth] = Math.min(img.lineWidth/maxSize,1);
+        uniforms[sd.u_lineWidth] = Math.min(shape.lineWidth/maxSize,1);
+        uniforms[sd.u_color] = shape.color.asGL();
+        uniforms[sd.u_alpha] = shape.alpha;
+
+        if (shape.fillColor.type=='LinearGradient') {
+            uniforms[sd.u_fillLinearGradient] = shape.fillColor.asGL();
+            uniforms[sd.u_fillType] = FILL_TYPE.LINEAR_GRADIENT;
+        } else if (shape.fillColor.type=='Color') {
+            uniforms[sd.u_fillColor] = shape.fillColor.asGL();
+            uniforms[sd.u_fillType] = FILL_TYPE.COLOR;
+        }
+
+        return uniforms;
+    }
+
+    drawImage(img:Image){
+        let texturePath = img.getDefaultResourcePath();
+        if (DEBUG && !this.renderableCache[texturePath]) {
+            throw new DebugError(`can not find texture with path ${texturePath}`);
+        }
+        let texture:Texture = this.renderableCache[texturePath].texture;
+        texture = texture.applyFilters(img.filters,this.frameBuffer);
+        let texInfo:TextureInfo[] = [{texture,name:'texture'}];
+
+        let maxSize:number = Math.max(img.width,img.height);
+        let sd:ShapeDrawer = this.shapeDrawer;
+        let uniforms:UniformsInfo = this.prepareShapeUniformInfo(img);
+        // uniforms[sd.u_fillColor] unused;
         uniforms[sd.u_borderRadius] = Math.min(img.borderRadius/maxSize,1);
-        uniforms[sd.u_color] = img.color.asGL();
-        uniforms[sd.u_fillColor] = img.fillColor.asGL();
         uniforms[sd.u_shapeType] = SHAPE_TYPE.RECT;
         uniforms[sd.u_fillType] = FILL_TYPE.TEXTURE;
         uniforms[sd.u_texRect] =
@@ -242,65 +261,44 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
     };
 
 
-    private drawTextureInfo(texInfo:TextureInfo[],
-                            drawableInfo:DrawableInfo,
-                            shaderMaterial:ShaderMaterial,
-                            srcRect:Rect,
-                            dstRect:Rect){
-
-        let scene:Scene = this.game.getCurrScene();
-
-        let drawer:IDrawer;
-        let uniforms:UniformsInfo = {
-            u_textureMatrix: makeTextureMatrix(srcRect,texInfo[0].texture.getSize()),
-            u_vertexMatrix: makePositionMatrix(dstRect, Size.fromPool().setWH(this.game.width,this.game.height)), // todo
-            u_alpha: drawableInfo.alpha
-        };
-
-        // if (drawableInfo.blendMode==='add') drawer = this.addBlendDrawer; // todo extract to separate class method
-        // else if (drawableInfo.acceptLight || texInfo.length>1) { // todo
-        //     drawer = this.spriteRectLightDrawer;
-        //     uniforms['u_useNormalMap'] = texInfo.length>1;
-        //     scene.ambientLight.setUniforms(uniforms);
-        //     this.game.lightArray.setUniforms(uniforms);
-        //     shaderMaterial.setUniforms(uniforms);
-        // } else {
-        //     //drawer = this.spriteRectDrawer;
-        // }
-        //drawer.draw(texInfo,uniforms,this.frameBuffer); // todo remove uniforms variable
-    }
+    // private drawTextureInfo(texInfo:TextureInfo[],
+    //                         drawableInfo:DrawableInfo,
+    //                         shaderMaterial:ShaderMaterial,
+    //                         srcRect:Rect,
+    //                         dstRect:Rect){
+    //
+    //     let scene:Scene = this.game.getCurrScene();
+    //
+    //     let drawer:IDrawer;
+    //     let uniforms:UniformsInfo = {
+    //         u_textureMatrix: makeTextureMatrix(srcRect,texInfo[0].texture.getSize()),
+    //         u_vertexMatrix: makePositionMatrix(dstRect, Size.fromPool().setWH(this.game.width,this.game.height)), // todo
+    //         u_alpha: drawableInfo.alpha
+    //     };
+    //
+    //     // if (drawableInfo.blendMode==='add') drawer = this.addBlendDrawer; // todo extract to separate class method
+    //     // else if (drawableInfo.acceptLight || texInfo.length>1) { // todo
+    //     //     drawer = this.spriteRectLightDrawer;
+    //     //     uniforms['u_useNormalMap'] = texInfo.length>1;
+    //     //     scene.ambientLight.setUniforms(uniforms);
+    //     //     this.game.lightArray.setUniforms(uniforms);
+    //     //     shaderMaterial.setUniforms(uniforms);
+    //     // } else {
+    //     //     //drawer = this.spriteRectDrawer;
+    //     // }
+    //     //drawer.draw(texInfo,uniforms,this.frameBuffer); // todo remove uniforms variable
+    // }
 
 
     drawRectangle(rectangle:Rectangle){
         let rw:number = rectangle.width;
         let rh:number = rectangle.height;
         let maxSize:number = Math.max(rw,rh);
-        let offsetX:number = 0,offsetY:number = 0;
-        let uniforms:UniformsInfo = {};
         let sd:ShapeDrawer = this.shapeDrawer;
-        if (maxSize==rw) {
-            uniforms[sd.u_width] = 1;
-            uniforms[sd.u_height] = rh/rw;
-            offsetY = (maxSize - rh)/2;
-        } else {
-            uniforms[sd.u_height] = 1;
-            uniforms[sd.u_width] = rw/rh;
-            offsetX = (maxSize - rw)/2;
-        }
-        uniforms[sd.u_vertexMatrix] = makePositionMatrix(
-            Rect.fromPool().setXYWH( -offsetX, -offsetY,maxSize,maxSize),
-            Size.fromPool().setWH(this.game.width,this.game.height));
-        uniforms[sd.u_lineWidth] = Math.min(rectangle.lineWidth/maxSize,1);
+
+        let uniforms:UniformsInfo = this.prepareShapeUniformInfo(rectangle);
         uniforms[sd.u_borderRadius] = Math.min(rectangle.borderRadius/maxSize,1);
-        uniforms[sd.u_color] = rectangle.color.asGL();
         uniforms[sd.u_shapeType] = SHAPE_TYPE.RECT;
-        if (rectangle.fillColor.type=='LinearGradient') {
-            uniforms[sd.u_fillLinearGradient] = rectangle.fillColor.asGL();
-            uniforms[sd.u_fillType] = FILL_TYPE.LINEAR_GRADIENT;
-        } else if (rectangle.fillColor.type=='Color') {
-            uniforms[sd.u_fillColor] = rectangle.fillColor.asGL();
-            uniforms[sd.u_fillType] = FILL_TYPE.COLOR;
-        }
         let texInfo:TextureInfo[] = [{texture:this.nullTexture,name:'texture'}];
         this.shapeDrawer.draw(texInfo,uniforms,null);
     }
@@ -323,7 +321,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         let maxR = Math.max(ellipse.radiusX,ellipse.radiusY);
         let maxR2 = maxR*2;
 
-        let uniforms:UniformsInfo = {} as UniformsInfo;
+        let uniforms:UniformsInfo = this.prepareShapeUniformInfo(ellipse);
         let sd:ShapeDrawer = this.shapeDrawer;
         uniforms[sd.u_vertexMatrix] = makePositionMatrix(
             Rect.fromPool().setXYWH(ellipse.pos.x,ellipse.pos.y,maxR2,maxR2),
@@ -337,14 +335,11 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
             uniforms[sd.u_ry] = 0.5;
             uniforms[sd.u_rx] = ellipse.radiusX/ellipse.radiusY*0.5;
         }
-        if (ellipse.fillColor.type=='LinearGradient') {
-            uniforms[sd.u_fillLinearGradient] = ellipse.fillColor.asGL();
-            uniforms[sd.u_fillType] = FILL_TYPE.LINEAR_GRADIENT;
-        } else if (ellipse.fillColor.type=='Color') {
-            uniforms[sd.u_fillColor] = ellipse.fillColor.asGL();
-            uniforms[sd.u_fillType] = FILL_TYPE.COLOR;
-        }
         uniforms[sd.u_shapeType] = SHAPE_TYPE.ELLIPSE;
+        uniforms[sd.u_width] = 1;
+        uniforms[sd.u_height] = 1;
+        uniforms[sd.u_rectOffsetLeft] = 1;
+        uniforms[sd.u_rectOffsetTop] = 1;
         let texInfo:TextureInfo[] = [{texture:this.nullTexture,name:'texture'}];
         this.shapeDrawer.draw(texInfo,uniforms,null);
     }

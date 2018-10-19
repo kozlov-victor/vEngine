@@ -1,5 +1,5 @@
 import {ColorizeFilter} from "@engine/core/renderer/webGl/filters/textureFilters/colorizeFilter";
-import {Color} from "@engine/core/color";
+import {Color} from "@engine/core/renderer/color";
 import {Game} from "@engine/core/game";
 import {GameObject} from "@engine/model/impl/gameObject";
 

@@ -82,6 +82,10 @@
                 {
                     "type": "GameObject",
                     "id": 6
+                },
+                {
+                    "type": "GameObject",
+                    "id": 16
                 }
             ]
         }
@@ -109,6 +113,28 @@
             "type": "SpriteSheet",
             "numOfFramesH": 2,
             "id": 3
+        },
+        {
+            "name": "guss",
+            "width": 476,
+            "height": 400,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "resourceMap": {
+                "main": "resources/guss.png"
+            },
+            "type": "SpriteSheet",
+            "id": 14
         }
     ],
     "GameObjectProto": [
@@ -145,6 +171,33 @@
                 "x": 0,
                 "y": 0
             }
+        },
+        {
+            "name": "guss",
+            "width": 476,
+            "height": 400,
+            "pos": {
+                "x": 0,
+                "y": 0
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "anchor": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 14,
+                "type": "SpriteSheet"
+            },
+            "velocity": {
+                "x": 0,
+                "y": 0
+            },
+            "id": 15
         }
     ],
     "FrameAnimation": [
@@ -164,8 +217,8 @@
             "id": 6,
             "name": "dino",
             "pos": {
-                "x": 207,
-                "y": 299
+                "x": 47,
+                "y": 232
             },
             "scale": {
                 "x": 1,
@@ -193,6 +246,24 @@
             "type": "GameObject",
             "gameObjectProto": {
                 "id": 8,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 16,
+            "name": "guss",
+            "pos": {
+                "x": 124,
+                "y": 59
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 15,
                 "type": "GameObjectProto"
             }
         }

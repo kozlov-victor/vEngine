@@ -19,6 +19,7 @@ export class ShapeDrawer extends AbstractDrawer {
     u_height:string;
     u_borderRadius:string;
     u_color:string;
+    u_alpha:string;
     u_fillLinearGradient:string;
     u_fillColor:string;
     u_shapeType:string;
@@ -53,6 +54,7 @@ export class ShapeDrawer extends AbstractDrawer {
         this.u_borderRadius = gen.addFragmentUniform(GL_TYPE.FLOAT,'u_borderRadius');
         // color and texture data uniforms
         this.u_color = gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_color');
+        this.u_alpha = gen.addFragmentUniform(GL_TYPE.FLOAT,'u_alpha');
         this.u_fillColor = gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_fillColor');
         this.u_fillLinearGradient = gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_fillLinearGradient[3]');
         // texture

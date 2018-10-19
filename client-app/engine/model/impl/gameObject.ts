@@ -46,9 +46,6 @@ export class GameObject extends GameObjectProto {
         //     this.filters.push(filter2);
     }
 
-    kill(){
-        this.parent.children.remove(it=>it.id===this.id);
-    }
 
     setIndividualBehaviour(instance){
         instance.game = this.game;

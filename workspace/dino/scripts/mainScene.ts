@@ -50,6 +50,11 @@ export class MainSceneBehaviour {
             }
         });
         this.scene.findObject({name: 'dino'}).appendChild(bgView);
+        let banner = this.scene.findObject({name:'guss'});
+        banner.spriteSheet.alpha = 0;
+        this.scene.setTimer(()=>{
+            banner.tween({target:banner.spriteSheet,to:{alpha:1},time:5000});
+        },5000);
     }
 
 }

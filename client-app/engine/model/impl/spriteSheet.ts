@@ -1,20 +1,18 @@
 
 import {Game} from "../../core/game";
 import {Rect} from "../../core/geometry/rect";
-import {Resource} from "../resource";
+import {Image} from "./ui/drawable/image";
 
-export class SpriteSheet extends Resource {
+export class SpriteSheet extends Image {
 
     type:string = 'SpriteSheet';
-    width:number = 0;
-    height:number = 0;
     numOfFramesH:number = 1;
     numOfFramesV:number = 1;
+
     _frameWidth:number = 0;
     _frameHeight:number = 0;
     _numOfFrames:number = 0;
 
-    private _frameRect:Rect = new Rect();
 
     constructor(game:Game) {
         super(game);
@@ -25,6 +23,7 @@ export class SpriteSheet extends Resource {
         this._frameWidth = ~~(this.width / this.numOfFramesH);
         this._frameHeight = ~~(this.height / this.numOfFramesV);
         this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
+        this.setWH(this._frameWidth,this._frameHeight);
     }
 
     getFramePosX(frameIndex:number) {
@@ -35,14 +34,17 @@ export class SpriteSheet extends Resource {
         return ~~(frameIndex / this.numOfFramesH) * this._frameHeight;
     }
 
-    getFrameRect(index:number):Rect{
-        let fr:Rect = this._frameRect;
-        fr.setXYWH(
-            this.getFramePosX(index),
-            this.getFramePosY(index),
+    setFrameIndex(frameIndex:number){
+        this.srcRect.setXYWH(
+            this.getFramePosX(frameIndex),
+            this.getFramePosY(frameIndex),
             this._frameWidth,
-            this._frameHeight);
-        return fr;
+            this._frameHeight
+        );
+    }
+
+    getFrameRect(index:number):Rect{
+        throw 'unused method'
     }
 
 }

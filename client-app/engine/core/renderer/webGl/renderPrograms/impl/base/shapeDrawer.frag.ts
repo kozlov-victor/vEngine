@@ -91,6 +91,7 @@ void main(){
     if (u_shapeType==${SHAPE_TYPE.ELLIPSE}) drawEllipse();
     else if (u_shapeType==${SHAPE_TYPE.RECT}) drawRect();
     else gl_FragColor = ERROR_COLOR;
+    gl_FragColor.a*=u_alpha;
 }
 
 

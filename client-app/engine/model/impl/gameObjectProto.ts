@@ -1,7 +1,5 @@
 
 import {Point2d} from "../../core/geometry/point2d";
-declare const IN_EDITOR:boolean,DEBUG:boolean;
-
 import {FrameAnimation} from "./frameAnimation";
 import {SpriteSheet} from "./spriteSheet";
 import {Game} from "../../core/game";
@@ -11,6 +9,9 @@ import {ShaderMaterial} from "../../core/light/shaderMaterial";
 import {RigidShape} from "../../core/physics/rigidShapes";
 import {RenderableModel} from "../renderableModel";
 import {BaseAbstractBehaviour} from "../../commonBehaviour/abstract/baseAbstractBehaviour";
+
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 
 let cloneId:number = 0;
 
@@ -82,18 +83,11 @@ export class GameObjectProto extends RenderableModel {
 
     setFrameIndex(index:number){
         this.currFrameIndex = index % this.spriteSheet._numOfFrames;
-        this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
-        this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);
+        this.spriteSheet.setFrameIndex(this.currFrameIndex);
     }
 
     getFrameRect(){
-        this._frameRect.setXYWH(
-            this._sprPosX,
-            this._sprPosY,
-            this.width,
-            this.height
-        );
-        return this._frameRect;
+        return this.spriteSheet.srcRect;
     }
 
     update(time:number,delta:number) {

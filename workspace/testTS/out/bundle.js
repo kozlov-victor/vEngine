@@ -157,7 +157,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var size_1 = __webpack_require__(15);
 var point2d_1 = __webpack_require__(3);
 var objectPool_1 = __webpack_require__(9);
-var observableEntity_1 = __webpack_require__(30);
+var observableEntity_1 = __webpack_require__(29);
 var Rect = function (_super) {
     __extends(Rect, _super);
     function Rect(x, y, width, height, onChangedFn) {
@@ -387,7 +387,7 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var objectPool_1 = __webpack_require__(9);
-var observableEntity_1 = __webpack_require__(30);
+var observableEntity_1 = __webpack_require__(29);
 var Point2d = function (_super) {
     __extends(Point2d, _super);
     function Point2d(x, y, onChangedFn) {
@@ -552,7 +552,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var rect_1 = __webpack_require__(1);
 var mouse_1 = __webpack_require__(26);
-var renderableModel_1 = __webpack_require__(21);
+var renderableModel_1 = __webpack_require__(22);
 var debugError_1 = __webpack_require__(0);
 var OVERFLOW;
 (function (OVERFLOW) {
@@ -2131,7 +2131,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var rect_1 = __webpack_require__(1);
 var debugError_1 = __webpack_require__(0);
 var scrollableContainer_1 = __webpack_require__(79);
-var image_1 = __webpack_require__(28);
+var image_1 = __webpack_require__(20);
 var TEXT_ALIGN;
 (function (TEXT_ALIGN) {
     TEXT_ALIGN["LEFT"] = "LEFT";
@@ -2455,7 +2455,72 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var gameObjectProto_1 = __webpack_require__(29);
+var rect_1 = __webpack_require__(1);
+var debugError_1 = __webpack_require__(0);
+var shape_1 = __webpack_require__(27);
+var color_1 = __webpack_require__(2);
+var point2d_1 = __webpack_require__(3);
+var Image = function (_super) {
+    __extends(Image, _super);
+    function Image(game) {
+        var _this = _super.call(this, game) || this;
+        _this.srcRect = new rect_1.Rect();
+        _this.borderRadius = 0;
+        _this.offset = new point2d_1.Point2d();
+        _this.fillColor.set(color_1.Color.NONE);
+        return _this;
+    }
+    Image.prototype.setSrc = function (uri) {
+        this.setDefaultResourcePath(uri);
+    };
+    Image.prototype.getSrc = function () {
+        return this.getDefaultResourcePath();
+    };
+    Image.prototype.revalidate = function () {
+        if (true && !this.getDefaultResourcePath()) {
+            console.error(this);
+            throw new debugError_1.DebugError("can not render Image: default resource path not specified in resourceMap property");
+        }
+        var tex = this.game.renderer.getTextureInfo(this.getDefaultResourcePath());
+        if (this.width === 0) this.width = tex.size.width;
+        if (this.height === 0) this.height = tex.size.height;
+        if (this.srcRect.width === 0) this.srcRect.width = tex.size.width;
+        if (this.srcRect.height === 0) this.srcRect.height = tex.size.height;
+    };
+    Image.prototype.draw = function () {
+        this.game.renderer.drawImage(this);
+        return true;
+    };
+    return Image;
+}(shape_1.Shape);
+exports.Image = Image;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = this && this.__extends || function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var gameObjectProto_1 = __webpack_require__(28);
 var commonBehaviours = __webpack_require__(57);
 var noop_1 = __webpack_require__(33);
 var GameObject = function (_super) {
@@ -2526,7 +2591,7 @@ var GameObject = function (_super) {
 exports.GameObject = GameObject;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2550,7 +2615,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var resource_1 = __webpack_require__(22);
+var resource_1 = __webpack_require__(30);
 var debugError_1 = __webpack_require__(0);
 var mathEx_1 = __webpack_require__(7);
 var object_1 = __webpack_require__(17);
@@ -2648,67 +2713,6 @@ var RenderableModel = function (_super) {
     return RenderableModel;
 }(resource_1.Resource);
 exports.RenderableModel = RenderableModel;
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __extends = this && this.__extends || function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
-            d.__proto__ = b;
-        } || function (d, b) {
-            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-}();
-Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(10);
-var Resource = function (_super) {
-    __extends(Resource, _super);
-    function Resource() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.resourceMap = {};
-        return _this;
-    }
-    Resource.prototype.getResourceMap = function () {
-        return this.resourceMap;
-    };
-    Resource.prototype.getDefaultResourcePath = function () {
-        return this.resourceMap['main'];
-    };
-    Resource.prototype.setDefaultResourcePath = function (path) {
-        this.resourceMap['main'] = path;
-    };
-    Resource.prototype.setResourcePath = function (path, name) {
-        this.resourceMap[name] = path;
-    };
-    Resource.prototype.getResourcePathByName = function (name) {
-        return this.resourceMap[name];
-    };
-    Resource.prototype.hasResourceWithName = function (name) {
-        return !!this.resourceMap[name];
-    };
-    Resource.prototype.getAllResourcePathes = function () {
-        var _this = this;
-        return Object.keys(this.resourceMap).map(function (k) {
-            return _this.resourceMap[k];
-        });
-    };
-    return Resource;
-}(baseModel_1.BaseModel);
-exports.Resource = Resource;
 
 /***/ }),
 /* 23 */
@@ -3139,7 +3143,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var renderableModel_1 = __webpack_require__(21);
+var renderableModel_1 = __webpack_require__(22);
 var color_1 = __webpack_require__(2);
 var Shape = function (_super) {
     __extends(Shape, _super);
@@ -3192,75 +3196,10 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var rect_1 = __webpack_require__(1);
-var debugError_1 = __webpack_require__(0);
-var shape_1 = __webpack_require__(27);
-var color_1 = __webpack_require__(2);
-var point2d_1 = __webpack_require__(3);
-var Image = function (_super) {
-    __extends(Image, _super);
-    function Image(game) {
-        var _this = _super.call(this, game) || this;
-        _this.srcRect = new rect_1.Rect();
-        _this.borderRadius = 0;
-        _this.offset = new point2d_1.Point2d();
-        _this.fillColor.set(color_1.Color.NONE);
-        return _this;
-    }
-    Image.prototype.setSrc = function (uri) {
-        this.setDefaultResourcePath(uri);
-    };
-    Image.prototype.getSrc = function () {
-        return this.getDefaultResourcePath();
-    };
-    Image.prototype.revalidate = function () {
-        if (true && !this.getDefaultResourcePath()) {
-            console.error(this);
-            throw new debugError_1.DebugError("can not render Image: default resource path not specified in resourceMap property");
-        }
-        var tex = this.game.renderer.getTextureInfo(this.getDefaultResourcePath());
-        if (this.width === 0) this.width = tex.size.width;
-        if (this.height === 0) this.height = tex.size.height;
-        if (this.srcRect.width === 0) this.srcRect.width = tex.size.width;
-        if (this.srcRect.height === 0) this.srcRect.height = tex.size.height;
-    };
-    Image.prototype.draw = function () {
-        this.game.renderer.drawImage(this);
-        return true;
-    };
-    return Image;
-}(shape_1.Shape);
-exports.Image = Image;
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var __extends = this && this.__extends || function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
-            d.__proto__ = b;
-        } || function (d, b) {
-            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-        };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() {
-            this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-}();
-Object.defineProperty(exports, "__esModule", { value: true });
 var point2d_1 = __webpack_require__(3);
 var rect_1 = __webpack_require__(1);
 var shaderMaterial_1 = __webpack_require__(53);
-var renderableModel_1 = __webpack_require__(21);
+var renderableModel_1 = __webpack_require__(22);
 var cloneId = 0;
 var GameObjectProto = function (_super) {
     __extends(GameObjectProto, _super);
@@ -3319,12 +3258,10 @@ var GameObjectProto = function (_super) {
     };
     GameObjectProto.prototype.setFrameIndex = function (index) {
         this.currFrameIndex = index % this.spriteSheet._numOfFrames;
-        this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
-        this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);
+        this.spriteSheet.setFrameIndex(this.currFrameIndex);
     };
     GameObjectProto.prototype.getFrameRect = function () {
-        this._frameRect.setXYWH(this._sprPosX, this._sprPosY, this.width, this.height);
-        return this._frameRect;
+        return this.spriteSheet.srcRect;
     };
     GameObjectProto.prototype.update = function (time, delta) {
         _super.prototype.update.call(this, time, delta);
@@ -3363,10 +3300,10 @@ var GameObjectProto = function (_super) {
     return GameObjectProto;
 }(renderableModel_1.RenderableModel);
 exports.GameObjectProto = GameObjectProto;
-var gameObject_1 = __webpack_require__(20);
+var gameObject_1 = __webpack_require__(21);
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3419,6 +3356,67 @@ var ObservableEntity = function () {
     return ObservableEntity;
 }();
 exports.ObservableEntity = ObservableEntity;
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var __extends = this && this.__extends || function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var baseModel_1 = __webpack_require__(10);
+var Resource = function (_super) {
+    __extends(Resource, _super);
+    function Resource() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.resourceMap = {};
+        return _this;
+    }
+    Resource.prototype.getResourceMap = function () {
+        return this.resourceMap;
+    };
+    Resource.prototype.getDefaultResourcePath = function () {
+        return this.resourceMap['main'];
+    };
+    Resource.prototype.setDefaultResourcePath = function (path) {
+        this.resourceMap['main'] = path;
+    };
+    Resource.prototype.setResourcePath = function (path, name) {
+        this.resourceMap[name] = path;
+    };
+    Resource.prototype.getResourcePathByName = function (name) {
+        return this.resourceMap[name];
+    };
+    Resource.prototype.hasResourceWithName = function (name) {
+        return !!this.resourceMap[name];
+    };
+    Resource.prototype.getAllResourcePathes = function () {
+        var _this = this;
+        return Object.keys(this.resourceMap).map(function (k) {
+            return _this.resourceMap[k];
+        });
+    };
+    return Resource;
+}(baseModel_1.BaseModel);
+exports.Resource = Resource;
 
 /***/ }),
 /* 31 */
@@ -3909,7 +3907,7 @@ var checkBox_1 = __webpack_require__(81);
 exports.CheckBox = checkBox_1.CheckBox;
 var container_1 = __webpack_require__(4);
 exports.Container = container_1.Container;
-var image_1 = __webpack_require__(28);
+var image_1 = __webpack_require__(20);
 exports.Image = image_1.Image;
 var rectangle_1 = __webpack_require__(14);
 exports.Rectangle = rectangle_1.Rectangle;
@@ -5297,7 +5295,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var gameObject_1 = __webpack_require__(20);
+var gameObject_1 = __webpack_require__(21);
 var GameObject3d = function (_super) {
     __extends(GameObject3d, _super);
     function GameObject3d() {
@@ -6135,6 +6133,7 @@ var WebGlRenderer = function (_super) {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
         this._initFlipTexture();
+        this.currShapeUniformInfo = {};
     };
     WebGlRenderer.prototype._initFlipTexture = function () {
         var fullScreen = this.fullScreenSize;
@@ -6170,37 +6169,16 @@ var WebGlRenderer = function (_super) {
         uniforms[sd.u_texOffset] = [0, 0];
     };
     WebGlRenderer.prototype.draw = function (renderable) {
-        var texToDraw = this.renderableCache[renderable.spriteSheet.getDefaultResourcePath()].texture;
-        texToDraw = texToDraw.applyFilters(renderable.filters, this.frameBuffer);
-        var texInfo = [{ texture: texToDraw, name: 'texture' }];
-        if (renderable.spriteSheet.hasResourceWithName('normalMap')) {
-            texInfo.push({
-                texture: this.renderableCache[renderable.spriteSheet.getResourcePathByName('normalMap')].texture,
-                name: 'normalTexture'
-            });
-        }
-        var drawableInfo = {
-            blendMode: renderable.blendMode,
-            acceptLight: renderable.acceptLight,
-            alpha: renderable.alpha
-        };
-        this.drawTextureInfo(texInfo, drawableInfo, renderable.shaderMaterial, renderable.getFrameRect(), rect_1.Rect.fromPool().setXYWH(0, 0, renderable.getFrameRect().width, renderable.getFrameRect().height));
+        this.drawImage(renderable.spriteSheet);
     };
-    WebGlRenderer.prototype.drawImage = function (img) {
-        var texturePath = img.getDefaultResourcePath();
-        if (true && !this.renderableCache[texturePath]) {
-            throw new debugError_1.DebugError("can not find texture with path " + texturePath);
-        }
-        var texture = this.renderableCache[texturePath].texture;
-        texture = texture.applyFilters(img.filters, this.frameBuffer);
-        var texInfo = [{ texture: texture, name: 'texture' }];
-        var rw = img.getRect().width;
-        var rh = img.getRect().height;
+    WebGlRenderer.prototype.prepareShapeUniformInfo = function (shape) {
+        var uniforms = this.currShapeUniformInfo;
+        var rw = shape.getRect().width;
+        var rh = shape.getRect().height;
         var maxSize = Math.max(rw, rh);
         var offsetX = 0,
             offsetY = 0;
         var sd = this.shapeDrawer;
-        var uniforms = {};
         if (maxSize == rw) {
             uniforms[sd.u_width] = 1;
             uniforms[sd.u_height] = rh / rw;
@@ -6215,10 +6193,29 @@ var WebGlRenderer = function (_super) {
             uniforms[sd.u_rectOffsetTop] = 0;
         }
         uniforms[sd.u_vertexMatrix] = makePositionMatrix(rect_1.Rect.fromPool().setXYWH(-offsetX, -offsetY, maxSize, maxSize), size_1.Size.fromPool().setWH(this.game.width, this.game.height));
-        uniforms[sd.u_lineWidth] = Math.min(img.lineWidth / maxSize, 1);
+        uniforms[sd.u_lineWidth] = Math.min(shape.lineWidth / maxSize, 1);
+        uniforms[sd.u_color] = shape.color.asGL();
+        if (shape.fillColor.type == 'LinearGradient') {
+            uniforms[sd.u_fillLinearGradient] = shape.fillColor.asGL();
+            uniforms[sd.u_fillType] = shapeDrawer_frag_1.FILL_TYPE.LINEAR_GRADIENT;
+        } else if (shape.fillColor.type == 'Color') {
+            uniforms[sd.u_fillColor] = shape.fillColor.asGL();
+            uniforms[sd.u_fillType] = shapeDrawer_frag_1.FILL_TYPE.COLOR;
+        }
+        return uniforms;
+    };
+    WebGlRenderer.prototype.drawImage = function (img) {
+        var texturePath = img.getDefaultResourcePath();
+        if (true && !this.renderableCache[texturePath]) {
+            throw new debugError_1.DebugError("can not find texture with path " + texturePath);
+        }
+        var texture = this.renderableCache[texturePath].texture;
+        texture = texture.applyFilters(img.filters, this.frameBuffer);
+        var texInfo = [{ texture: texture, name: 'texture' }];
+        var maxSize = Math.max(img.width, img.height);
+        var sd = this.shapeDrawer;
+        var uniforms = this.prepareShapeUniformInfo(img);
         uniforms[sd.u_borderRadius] = Math.min(img.borderRadius / maxSize, 1);
-        uniforms[sd.u_color] = img.color.asGL();
-        uniforms[sd.u_fillColor] = img.fillColor.asGL();
         uniforms[sd.u_shapeType] = shapeDrawer_frag_1.SHAPE_TYPE.RECT;
         uniforms[sd.u_fillType] = shapeDrawer_frag_1.FILL_TYPE.TEXTURE;
         uniforms[sd.u_texRect] = [img.srcRect.x / texture.getSize().width, img.srcRect.y / texture.getSize().height, img.srcRect.width / texture.getSize().width, img.srcRect.height / texture.getSize().height];
@@ -6245,44 +6242,14 @@ var WebGlRenderer = function (_super) {
         this.gl.disable(this.gl.DEPTH_TEST);
     };
     ;
-    WebGlRenderer.prototype.drawTextureInfo = function (texInfo, drawableInfo, shaderMaterial, srcRect, dstRect) {
-        var scene = this.game.getCurrScene();
-        var drawer;
-        var uniforms = {
-            u_textureMatrix: makeTextureMatrix(srcRect, texInfo[0].texture.getSize()),
-            u_vertexMatrix: makePositionMatrix(dstRect, size_1.Size.fromPool().setWH(this.game.width, this.game.height)),
-            u_alpha: drawableInfo.alpha
-        };
-    };
     WebGlRenderer.prototype.drawRectangle = function (rectangle) {
         var rw = rectangle.width;
         var rh = rectangle.height;
         var maxSize = Math.max(rw, rh);
-        var offsetX = 0,
-            offsetY = 0;
-        var uniforms = {};
         var sd = this.shapeDrawer;
-        if (maxSize == rw) {
-            uniforms[sd.u_width] = 1;
-            uniforms[sd.u_height] = rh / rw;
-            offsetY = (maxSize - rh) / 2;
-        } else {
-            uniforms[sd.u_height] = 1;
-            uniforms[sd.u_width] = rw / rh;
-            offsetX = (maxSize - rw) / 2;
-        }
-        uniforms[sd.u_vertexMatrix] = makePositionMatrix(rect_1.Rect.fromPool().setXYWH(-offsetX, -offsetY, maxSize, maxSize), size_1.Size.fromPool().setWH(this.game.width, this.game.height));
-        uniforms[sd.u_lineWidth] = Math.min(rectangle.lineWidth / maxSize, 1);
+        var uniforms = this.prepareShapeUniformInfo(rectangle);
         uniforms[sd.u_borderRadius] = Math.min(rectangle.borderRadius / maxSize, 1);
-        uniforms[sd.u_color] = rectangle.color.asGL();
         uniforms[sd.u_shapeType] = shapeDrawer_frag_1.SHAPE_TYPE.RECT;
-        if (rectangle.fillColor.type == 'LinearGradient') {
-            uniforms[sd.u_fillLinearGradient] = rectangle.fillColor.asGL();
-            uniforms[sd.u_fillType] = shapeDrawer_frag_1.FILL_TYPE.LINEAR_GRADIENT;
-        } else if (rectangle.fillColor.type == 'Color') {
-            uniforms[sd.u_fillColor] = rectangle.fillColor.asGL();
-            uniforms[sd.u_fillType] = shapeDrawer_frag_1.FILL_TYPE.COLOR;
-        }
         var texInfo = [{ texture: this.nullTexture, name: 'texture' }];
         this.shapeDrawer.draw(texInfo, uniforms, null);
     };
@@ -6297,7 +6264,7 @@ var WebGlRenderer = function (_super) {
     WebGlRenderer.prototype.drawEllipse = function (ellipse) {
         var maxR = Math.max(ellipse.radiusX, ellipse.radiusY);
         var maxR2 = maxR * 2;
-        var uniforms = {};
+        var uniforms = this.prepareShapeUniformInfo(ellipse);
         var sd = this.shapeDrawer;
         uniforms[sd.u_vertexMatrix] = makePositionMatrix(rect_1.Rect.fromPool().setXYWH(ellipse.pos.x, ellipse.pos.y, maxR2, maxR2), size_1.Size.fromPool().setWH(this.game.width, this.game.height));
         uniforms[sd.u_lineWidth] = Math.min(ellipse.lineWidth / maxR, 1);
@@ -6308,14 +6275,11 @@ var WebGlRenderer = function (_super) {
             uniforms[sd.u_ry] = 0.5;
             uniforms[sd.u_rx] = ellipse.radiusX / ellipse.radiusY * 0.5;
         }
-        if (ellipse.fillColor.type == 'LinearGradient') {
-            uniforms[sd.u_fillLinearGradient] = ellipse.fillColor.asGL();
-            uniforms[sd.u_fillType] = shapeDrawer_frag_1.FILL_TYPE.LINEAR_GRADIENT;
-        } else if (ellipse.fillColor.type == 'Color') {
-            uniforms[sd.u_fillColor] = ellipse.fillColor.asGL();
-            uniforms[sd.u_fillType] = shapeDrawer_frag_1.FILL_TYPE.COLOR;
-        }
         uniforms[sd.u_shapeType] = shapeDrawer_frag_1.SHAPE_TYPE.ELLIPSE;
+        uniforms[sd.u_width] = 1;
+        uniforms[sd.u_height] = 1;
+        uniforms[sd.u_rectOffsetLeft] = 1;
+        uniforms[sd.u_rectOffsetTop] = 1;
         var texInfo = [{ texture: this.nullTexture, name: 'texture' }];
         this.shapeDrawer.draw(texInfo, uniforms, null);
     };
@@ -7564,7 +7528,7 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var image_1 = __webpack_require__(28);
+var image_1 = __webpack_require__(20);
 var debugError_1 = __webpack_require__(0);
 var NinePatchImage = function (_super) {
     __extends(NinePatchImage, _super);
@@ -8057,9 +8021,9 @@ var frameAnimation_1 = __webpack_require__(92);
 exports.FrameAnimation = frameAnimation_1.FrameAnimation;
 var spriteSheet_1 = __webpack_require__(93);
 exports.SpriteSheet = spriteSheet_1.SpriteSheet;
-var gameObjectProto_1 = __webpack_require__(29);
+var gameObjectProto_1 = __webpack_require__(28);
 exports.GameObjectProto = gameObjectProto_1.GameObjectProto;
-var gameObject_1 = __webpack_require__(20);
+var gameObject_1 = __webpack_require__(21);
 exports.GameObject = gameObject_1.GameObject;
 var commonBehaviour_1 = __webpack_require__(94);
 exports.CommonBehaviour = commonBehaviour_1.CommonBehaviour;
@@ -8216,21 +8180,17 @@ var __extends = this && this.__extends || function () {
     };
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
-var rect_1 = __webpack_require__(1);
-var resource_1 = __webpack_require__(22);
+var image_1 = __webpack_require__(20);
 var SpriteSheet = function (_super) {
     __extends(SpriteSheet, _super);
     function SpriteSheet(game) {
         var _this = _super.call(this, game) || this;
         _this.type = 'SpriteSheet';
-        _this.width = 0;
-        _this.height = 0;
         _this.numOfFramesH = 1;
         _this.numOfFramesV = 1;
         _this._frameWidth = 0;
         _this._frameHeight = 0;
         _this._numOfFrames = 0;
-        _this._frameRect = new rect_1.Rect();
         return _this;
     }
     SpriteSheet.prototype.revalidate = function () {
@@ -8238,6 +8198,7 @@ var SpriteSheet = function (_super) {
         this._frameWidth = ~~(this.width / this.numOfFramesH);
         this._frameHeight = ~~(this.height / this.numOfFramesV);
         this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
+        this.setWH(this._frameWidth, this._frameHeight);
     };
     SpriteSheet.prototype.getFramePosX = function (frameIndex) {
         return frameIndex % this.numOfFramesH * this._frameWidth;
@@ -8245,13 +8206,14 @@ var SpriteSheet = function (_super) {
     SpriteSheet.prototype.getFramePosY = function (frameIndex) {
         return ~~(frameIndex / this.numOfFramesH) * this._frameHeight;
     };
+    SpriteSheet.prototype.setFrameIndex = function (frameIndex) {
+        this.srcRect.setXYWH(this.getFramePosX(frameIndex), this.getFramePosY(frameIndex), this._frameWidth, this._frameHeight);
+    };
     SpriteSheet.prototype.getFrameRect = function (index) {
-        var fr = this._frameRect;
-        fr.setXYWH(this.getFramePosX(index), this.getFramePosY(index), this._frameWidth, this._frameHeight);
-        return fr;
+        throw 'unused method';
     };
     return SpriteSheet;
-}(resource_1.Resource);
+}(image_1.Image);
 exports.SpriteSheet = SpriteSheet;
 
 /***/ }),
@@ -8774,7 +8736,7 @@ var __extends = this && this.__extends || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var debugError_1 = __webpack_require__(0);
 var rect_1 = __webpack_require__(1);
-var resource_1 = __webpack_require__(22);
+var resource_1 = __webpack_require__(30);
 var FontContext = function () {
     function FontContext() {
         this.width = 0;

@@ -79,6 +79,10 @@ export abstract class RenderableModel extends Resource implements IParentChild{
         this.parent.children.unshift(this);
     }
 
+    kill(){
+        this.parent.children.remove(it=>it.id===this.id);
+    }
+
     render(force:boolean = false){
         if (!force && !this.isInViewPort()) return;
         let renderer:AbstractRenderer = this.game.renderer;

@@ -4,7 +4,7 @@
 import {AbstractFilter} from "../abstract/abstractFilter";
 import {ShaderGenerator} from "../../shaders/generators/shaderGenerator";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
-import {Color} from "../../../../color";
+import {Color} from "../../../color";
 
 export class ColorizeFilter extends AbstractFilter{
 

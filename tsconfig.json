@@ -17,10 +17,10 @@
         "noEmitOnError": true,
         "removeComments": true,
         "baseUrl": "."
-//    ,
-//        "paths": {
-//            "@engine/*": ["client-app/engine/*"]
-//        }
+        ,
+        "paths": {
+            "@engine/*": ["client-app/engine/*"]
+        }
     },
     "exclude": [
         "node_modules"
