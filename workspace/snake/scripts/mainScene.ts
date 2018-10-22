@@ -64,7 +64,7 @@ export class MainSceneBehaviour {
         this.scene.getDefaultLayer().appendChild(layoutView);
         //this.scene.getDefaultLayer().findObject({name:'top'}).kill();
         this.scene.getDefaultLayer().findObject({name:'top'}).moveToFront();
-        (this.scene.getDefaultLayer().findObject({name:'top'}) as GameObject).spriteSheet.alpha = 0.6;
+        //(this.scene.getDefaultLayer().findObject({name:'top'}) as GameObject).spriteSheet.alpha = 0.6;
         new Snake(this.game,this.scene,layoutView);
     }
 

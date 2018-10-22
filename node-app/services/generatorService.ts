@@ -172,14 +172,18 @@ class GeneratorService {
             let debugJs:string = '';
             if (params.debug) debugJs = await fs.readFile(`./workspace/${params.projectName}/virtual/debug.js`) as string;
             indexHtml = indexHtml.replace('${debug}',params.debug?`<script>${debugJs}</script>`:'');
-            indexHtml = indexHtml.replace('${hash}',(this.cnt++).toString());
             indexHtml = indexHtml.replace('${projectName}',params.projectName);
-            await fs.createFile(`workspace/${params.projectName}/out/index.html`,indexHtml);
 
             console.log('creating bundle');
             let appBundleJs = await fs.readFile(`./workspace/${params.projectName}/virtual/bundle.js`);
-            await fs.createFile(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
+            if (params.embedScript) {
+                indexHtml = indexHtml.replace('${bundle}',`<script>${appBundleJs}</script>`);
+            } else {
+                await fs.createFile(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
+                indexHtml = indexHtml.replace('${bundle}',`<script src="bundle.js?${this.cnt++}"></script>`);
+            }
             await fs.deleteFolder(`./workspace/${params.projectName}/virtual/`);
+            await fs.createFile(`workspace/${params.projectName}/out/index.html`,indexHtml);
             console.log('completed');
         }
 

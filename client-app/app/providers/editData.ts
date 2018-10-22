@@ -89,7 +89,8 @@ class EditData {
                 debug: false,
                 minify:false,
                 windowed: false,
-                embedResources: false
+                embedResources: false,
+                embedScript: false,
             };
         }
     }

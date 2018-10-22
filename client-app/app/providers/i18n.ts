@@ -59,6 +59,7 @@ export abstract class I18n {
             minify:'minify',
             windowed:'windowed',
             embedResources: 'embed resources',
+            embedScript: 'embed script',
             stop: 'stop',
             addGameObject:'add game object',
             nothingToAdd:'nothing to add',
