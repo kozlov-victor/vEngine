@@ -4,7 +4,7 @@ import {GameObject} from "../../../model/impl/gameObject";
 import {Rect} from "../../geometry/rect";
 import {Point2d} from "../../geometry/point2d";
 import {AbstractCanvasRenderer} from "../abstract/abstractCanvasRenderer";
-import {Color} from "../../color";
+import {Color} from "../../renderer/color";
 import {Size} from "../../geometry/size";
 import { AbstractFilter } from '../webGl/filters/abstract/abstractFilter';
 import { DrawableInfo } from '../webGl/renderPrograms/interface/drawableInfo';
@@ -72,7 +72,7 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
     }
 
     drawRectangle(rectangle:Rectangle){
-        this.ctx.fillStyle = rectangle.fillColor.asCSS();
+        this.ctx.fillStyle = (rectangle.fillColor as Color).asCSS();
         this.ctx.strokeStyle = rectangle.color.asCSS();
         this.ctx.strokeWidth = rectangle.lineWidth;
         //this.ctx.strokeRect(0,0,rectangle.width,rectangle.height);

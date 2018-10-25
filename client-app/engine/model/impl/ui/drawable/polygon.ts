@@ -1,6 +1,6 @@
 
 import {Game} from "@engine/core/game";
-import {Color} from "@engine/core/color";
+import {Color} from "@engine/core/renderer/color";
 
 type float = number;
 

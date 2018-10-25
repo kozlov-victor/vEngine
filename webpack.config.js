@@ -9,9 +9,10 @@ const debug = true;
 class WebpackDonePlugin{
     apply(compiler){
         compiler.hooks.done.tap('compilation',  (stats)=> {
+            if (!fs.existsSync('assets/generated')) fs.mkdirSync('assets/generated');
             let date = new Date();
             let hash = date.getTime();
-            fs.writeFileSync('app-meta.json',JSON.stringify({hash}));
+            fs.writeFileSync('assets/generated/app-meta.json',JSON.stringify({hash}));
             if (stats.compilation.errors && stats.compilation.errors.length ) {
                 console.error(`errors: ${stats.compilation.errors.length}`);
                 let errorMessage = `window.showError("compiled with ${stats.compilation.errors.length} error(s)");`;
